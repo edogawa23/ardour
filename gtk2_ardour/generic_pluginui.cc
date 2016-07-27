@@ -308,6 +308,8 @@ GenericPluginUI::build ()
 	automation_play_all_button.signal_clicked.connect(sigc::bind (sigc::mem_fun (*this, &GenericPluginUI::set_all_automation), ARDOUR::Play));
 	automation_write_all_button.signal_clicked.connect(sigc::bind (sigc::mem_fun (*this, &GenericPluginUI::set_all_automation), ARDOUR::Write));
 	automation_touch_all_button.signal_clicked.connect(sigc::bind (sigc::mem_fun (*this, &GenericPluginUI::set_all_automation), ARDOUR::Touch));
+
+	plugin->PresetLoaded.connect (*this, invalidator (*this), boost::bind (&GenericPluginUI::update_input_displays, this), gui_context ());
 }
 
 
@@ -1003,6 +1005,17 @@ GenericPluginUI::update_control_display (ControlUI* cui)
 			cui->adjustment->set_value (val);
 		}
 	}*/
+}
+
+void
+GenericPluginUI::update_input_displays ()
+{
+	for (vector<ControlUI*>::iterator i = input_controls_with_automation.begin();
+	     i != input_controls_with_automation.end();
+	     ++i) {
+		update_control_display(*i);
+	}
+	return;
 }
 
 void

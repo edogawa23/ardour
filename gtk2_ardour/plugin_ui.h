@@ -280,6 +280,7 @@ class GenericPluginUI : public PlugUIBase, public Gtk::VBox
 
 	void ui_parameter_changed (ControlUI* cui);
 	void update_control_display (ControlUI* cui);
+	void update_input_displays ();
 	void control_combo_changed (ControlUI* cui);
 
 	void astate_clicked (ControlUI*);
