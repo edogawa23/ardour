@@ -81,6 +81,7 @@
 #include "ardour/filename_extensions.h"
 #include "ardour/gain_control.h"
 #include "ardour/graph.h"
+#include "ardour/io_plug.h"
 #include "ardour/luabindings.h"
 #include "ardour/midiport_manager.h"
 #include "ardour/scene_changer.h"
@@ -92,6 +93,7 @@
 #include "ardour/playlist_factory.h"
 #include "ardour/plugin.h"
 #include "ardour/plugin_insert.h"
+#include "ardour/plugin_manager.h"
 #include "ardour/polarity_processor.h"
 #include "ardour/presentation_info.h"
 #include "ardour/process_thread.h"
@@ -246,6 +248,7 @@ Session::Session (AudioEngine &eng,
 	, _mempool ("Session", 3145728)
 	, lua (lua_newstate (&PBD::ReallocPool::lalloc, &_mempool))
 	, _n_lua_scripts (0)
+	, _io_plugins (new IOPlugList)
 	, _butler (new Butler (*this))
 	, _transport_fsm (new TransportFSM (*this))
 	, _locations (new Locations (*this))
@@ -706,6 +709,13 @@ Session::destroy ()
 		auditioner->drop_references ();
 	}
 	auditioner.reset ();
+
+	/* unregister IO Plugin */
+	{
+		RCUWriter<IOPlugList> writer (_io_plugins);
+		boost::shared_ptr<IOPlugList> iop = writer.get_copy ();
+		iop->clear ();
+	}
 
 	/* drop references to routes held by the monitoring section
 	 * specifically _monitor_out aux/listen references */
@@ -1353,8 +1363,20 @@ Session::hookup_io ()
 		delete _bundle_xml_node;
 	}
 
-	/* Get everything connected
-	*/
+	{
+		PluginManager& mgr (PluginManager::instance());
+		PluginInfoList plugs = mgr.lv2_plugin_info();
+		RCUWriter<IOPlugList> writer (_io_plugins);
+		boost::shared_ptr<IOPlugList> iop = writer.get_copy ();
+		for (auto const& i : plugs) {
+			if ("http://gareus.org/oss/lv2/b_whirl#extended" == i->unique_id){
+				Glib::Threads::Mutex::Lock lm (AudioEngine::instance()->process_lock ());
+				iop->push_back (boost::make_shared<IOPlug>(*this, i, true)); // XXX
+			}
+		}
+	}
+
+	/* Get everything connected */
 
 	AudioEngine::instance()->reconnect_ports ();
 
@@ -5107,6 +5129,14 @@ Session::audition_playlist ()
 	queue_event (ev);
 }
 
+
+void
+Session::load_io_plugin (boost::shared_ptr<IOPlug> ioplugin)
+{
+	RCUWriter<IOPlugList> writer (_io_plugins);
+	boost::shared_ptr<IOPlugList> iop = writer.get_copy ();
+	iop->push_back (ioplugin);
+}
 
 void
 Session::register_lua_function (

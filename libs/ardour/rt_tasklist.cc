@@ -22,6 +22,7 @@
 
 #include "ardour/audioengine.h"
 #include "ardour/debug.h"
+#include "ardour/process_thread.h"
 #include "ardour/rt_tasklist.h"
 #include "ardour/utils.h"
 
@@ -107,6 +108,9 @@ RTTaskList::run ()
 	Glib::Threads::Mutex::Lock tm (_tasklist_mutex, Glib::Threads::NOT_LOCK);
 	bool wait = true;
 
+	ProcessThread* pt = new ProcessThread ();
+	pt->get_buffers ();
+
 	while (true) {
 		if (wait) {
 			_task_run_sem.wait ();
@@ -138,6 +142,9 @@ RTTaskList::run ()
 
 		wait = true;
 	}
+
+	pt->drop_buffers ();
+	delete pt;
 }
 
 void

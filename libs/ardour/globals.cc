@@ -650,7 +650,7 @@ ARDOUR::init (bool try_optimization, const char* localedir, bool with_gui)
 	   how many more per-thread buffer sets we need above
 	   the h/w concurrency, but its definitely > 1 more.
 	*/
-	BufferManager::init (hardware_concurrency () + 4);
+	BufferManager::init (2 * hardware_concurrency () + 4);
 
 	PannerManager::instance ().discover_panners ();
 
