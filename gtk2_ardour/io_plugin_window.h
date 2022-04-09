@@ -19,7 +19,15 @@
 #ifndef _gtkardour_ioplugin_window_h_
 #define _gtkardour_ioplugin_window_h_
 
+#include <gtkmm/box.h>
+
+#include "pbd/signals.h"
+
 #include "ardour_window.h"
+
+namespace ARDOUR {
+	class IOPlug;
+}
 
 class IOPluginWindow : public ArdourWindow
 {
@@ -30,11 +38,24 @@ public:
 	void set_session (ARDOUR::Session*);
 
 protected:
-
 	void on_show ();
 	void on_hide ();
 
 private:
+	class IOPlugUI : public Gtk::VBox
+	{
+	public:
+		IOPlugUI (boost::shared_ptr<ARDOUR::IOPlug>);
+	private:
+		void self_delete ();
+		boost::shared_ptr<ARDOUR::IOPlug> _iop;
+		PBD::ScopedConnection             _con;
+	};
+
+	Gtk::HBox _box_pre;
+	Gtk::HBox _box_post;
+
+	void refill ();
 };
 
 #endif
