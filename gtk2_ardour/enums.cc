@@ -61,7 +61,8 @@ setup_gtk_ardour_enums ()
 	Gtk::ResponseType dialog_response;
 	AddRouteDialog::TypeWanted type_wanted;
 	TempoEditBehavior tempo_edit_behavior;
-
+	NoteNameDisplay note_name_display;
+	
 #define REGISTER(e) enum_writer.register_distinct (typeid(e).name(), i, s); i.clear(); s.clear()
 #define REGISTER_BITS(e) enum_writer.register_bits (typeid(e).name(), i, s); i.clear(); s.clear()
 #define REGISTER_ENUM(e) i.emplace_back (e); s.emplace_back (#e)
@@ -234,4 +235,9 @@ setup_gtk_ardour_enums ()
 	REGISTER_CLASS_ENUM (Editing, TempoMapping);
 	REGISTER_CLASS_ENUM (Editing, TempoChanging);
 	REGISTER (tempo_edit_behavior);
+
+	REGISTER_CLASS_ENUM (Editing, Always);
+	REGISTER_CLASS_ENUM (Editing, WithMIDNAM);
+	REGISTER_CLASS_ENUM (Editing, Never);
+	REGISTER (note_name_display);
 }
