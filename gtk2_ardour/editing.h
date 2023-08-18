@@ -42,6 +42,7 @@
 #define WAVEFORMSHAPE(a) /*empty*/
 #define INSERTTIMEOPT(a) /*empty*/
 #define TEMPOEDITBEHAVIOR(a) /*empty*/
+#define NOTENAMEDISPLAY(a) /*empty*/
 
 namespace Editing {
 
@@ -210,6 +211,19 @@ TempoEditBehavior str2tempoeditbehavior(const std::string &);
 
 #undef TEMPOEDITBEHAVIOR
 #define TEMPOEDITBEHAVIOR(a) /*empty*/
+
+#undef NOTENAMEDISPLAY
+#define NOTENAMEDISPLAY(a) a,
+enum NoteNameDisplay {
+	#include "editing_syms.h"
+};
+
+extern const char *notenamedisplaystrs[];
+inline const char* enum2str(NoteNameDisplay m) {return notenamedisplaystrs[m];}
+TempoEditBehavior str2notenamedisplay(const std::string &);
+
+#undef NOTENAMEDISPLAY
+#define NOTENAMEDISPLAY(a) /*empty*/
 
 /////////////////////
 // These don't need their state saved. yet...
