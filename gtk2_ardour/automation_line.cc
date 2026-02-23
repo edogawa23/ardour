@@ -483,6 +483,13 @@ AutomationLine::delta_to_string (double delta) const
 	if (!get_uses_gain_mapping () && _desc.logarithmic) {
 		return "x " + ARDOUR::value_as_string (_desc, delta);
 	} else {
+		switch (_desc.type) {
+			case MidiPitchBenderAutomation:
+				delta += 8192;
+				break;
+			default:
+				break;
+		}
 		return u8"\u0394 " + ARDOUR::value_as_string (_desc, delta);
 	}
 }
