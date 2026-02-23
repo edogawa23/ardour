@@ -963,6 +963,19 @@ ExportProfileManager::get_warnings ()
 			ExportFilenamePtr filename    = i->filename;
 			filename->include_format_name = duplicates_found;
 		}
+
+		if (duplicates_found) {
+			/* make sure that include_format_name does not produce duplicates either */
+			std::string format_name;
+			for (auto const& fm : formats) {
+				if (format_name.empty ()) {
+					format_name = fm->format->name ();
+				} else if (format_name == fm->format->name ()) {
+					warnings->errors.push_back (_("Chosen format combination results in identical file-names!"));
+					return warnings;
+				}
+			}
+		}
 	}
 
 	/* handle_duplicate timespan names */
