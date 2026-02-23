@@ -897,10 +897,10 @@ ExportProfileManager::get_warnings ()
 	TimespanStatePtr timespan_state = timespans.front ();
 
 	/* Check "global" config ***/
-	TimespanListPtr timespans = timespan_state->timespans;
+	TimespanListPtr timespan_list = timespan_state->timespans;
 
 	/* Check Timespans are not empty */
-	if (timespans->empty ()) {
+	if (timespan_list->empty ()) {
 		warnings->errors.push_back (_("No timespan has been selected!"));
 	}
 
@@ -962,6 +962,23 @@ ExportProfileManager::get_warnings ()
 		for (auto const& i : filenames) {
 			ExportFilenamePtr filename    = i->filename;
 			filename->include_format_name = duplicates_found;
+		}
+	}
+
+	/* handle_duplicate timespan names */
+	for (auto const& timespan_state: timespans) {
+		TimespanListPtr timespan_list = timespan_state->timespans;
+		if (!timespan_list) {
+			continue;
+		}
+		std::string n;
+		for (auto const& ts: *(timespan_list)) {
+			if (n.empty ()) {
+				n = ts->name();
+			} else if (n == ts->name()) {
+				warnings->errors.push_back (_("Multiple Timespan/Ranges have the same name resulting in identical file-names!"));
+				return warnings;
+			}
 		}
 	}
 
