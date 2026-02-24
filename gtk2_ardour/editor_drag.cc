@@ -5065,7 +5065,7 @@ LineDrag::finished (GdkEvent* event, bool movement_occurred)
 
 	} else {
 
-		click_functor (event, grab_time(), _fixed_grab_y);
+		click_functor (event, grab_time(), event->button.x);
 	}
 }
 
