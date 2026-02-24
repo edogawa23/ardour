@@ -5030,8 +5030,7 @@ LineDrag::motion (GdkEvent* event, bool first_move)
 	}
 
 	double cy = _fixed_grab_y + _cumulative_y_drag + dy;
-
-	_cumulative_y_drag = cy - _fixed_grab_y;
+	_cumulative_y_drag += dy;
 
 	cy = max (0.0, cy);
 	cy = min ((double)_line->height (), cy);
