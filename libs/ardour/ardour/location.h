@@ -96,6 +96,8 @@ public:
 	int set_end (timepos_t const & e, bool force = false);
 	int set (timepos_t const & start, timepos_t const & end);
 
+	void update_section_end (timepos_t const&);
+
 	int move_to (timepos_t const & pos);
 
 	const std::string& name() const { return _name; }
