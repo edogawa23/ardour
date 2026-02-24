@@ -3124,11 +3124,7 @@ These settings will only take effect after %1 is restarted.\n\
 #if !(defined PLATFORM_WINDOWS || defined __APPLE__)
 	bo = new BoolOption (
 			"allow-to-resize-init-dialog",
-#if 0 // after A9 string freeze is lifted
 			_("Allow resizing of session and engine dialogs"),
-#else
-			_("Allow resizing the audio/MIDI setup dialog"),
-#endif
 			sigc::mem_fun (UIConfiguration::instance(), &UIConfiguration::get_allow_to_resize_init_dialog),
 			sigc::mem_fun (UIConfiguration::instance(), &UIConfiguration::set_allow_to_resize_init_dialog)
 			);
