@@ -1098,7 +1098,6 @@ ARDOUR_UI::archive_session ()
 			break;
 
 		default:
-#if 0 // CAN BREAK STRING FREEZE
 		case -1:
 			errmsg = _("Session Archiving failed. See Log window for further info.");
 			break;
@@ -1108,9 +1107,6 @@ ARDOUR_UI::archive_session ()
 		case -3:
 			errmsg = _("Session Archiving failed.\nCannot write archive. Disk full or file size exceeded.");
 			break;
-#else
-			errmsg = _("Session Archiving failed.");
-#endif
 	}
 	if (!errmsg.empty ()) {
 		ArdourMessageDialog msg (errmsg);
