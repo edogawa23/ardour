@@ -1099,7 +1099,8 @@ Editor::button_press_handler_1 (ArdourCanvas::Item* item, GdkEvent* event, ItemT
 			{
 				AutomationTimeAxisView* atv = static_cast<AutomationTimeAxisView*> (item->get_data ("trackview"));
 				if (atv) {
-					_drags->set (new AutomationDrawDrag (*this, nullptr, atv->base_item(), false, Temporal::AudioTime), event);
+					_drags->set (new AutomationDrawDrag (*this, nullptr, atv->base_item(), false, Temporal::AudioTime,
+					                                     [&](GdkEvent* ev, timepos_t const & pos) { return rb_click (ev, pos); }), event);
 				}
 			}
 			break;
@@ -1126,7 +1127,8 @@ Editor::button_press_handler_1 (ArdourCanvas::Item* item, GdkEvent* event, ItemT
 			RegionView* rv;
 			if ((rv = dynamic_cast<RegionView*> (clicked_regionview))) {
 				ArdourCanvas::Rectangle* r = dynamic_cast<ArdourCanvas::Rectangle*> (rv->get_canvas_frame());
-				_drags->set (new AutomationDrawDrag (*this, rv->get_canvas_group(), *r, true, Temporal::AudioTime), event);
+				_drags->set (new AutomationDrawDrag (*this, rv->get_canvas_group(), *r, true, Temporal::AudioTime,
+				                                     [&](GdkEvent* ev, timepos_t const & pos) { return rb_click (ev, pos); }), event);
 			}
 		}
 			break;
@@ -1648,15 +1650,9 @@ Editor::button_release_handler (ArdourCanvas::Item* item, GdkEvent* event, ItemT
 				break;
 			}
 
-			case AutomationTrackItem: {
-				bool with_guard_points = Keyboard::modifier_state_equals (event->button.state, Keyboard::PrimaryModifier);
-				atv = dynamic_cast<AutomationTimeAxisView*>(clicked_axisview);
-				if (atv) {
-					atv->add_automation_event (event, where, event->button.y, with_guard_points);
-				}
-				return true;
+			case AutomationTrackItem:
 				break;
-			}
+
 			default:
 				break;
 			}

@@ -7621,8 +7621,10 @@ FreehandLineDrag<OrderedPointList,OrderedPoint>::mid_drag_key_event (GdkEventKey
 
 /**********************/
 
-AutomationDrawDrag::AutomationDrawDrag (EditingContext& ec, ArdourCanvas::Item* p, ArdourCanvas::Rectangle& r, bool hbounded, Temporal::TimeDomain time_domain)
+AutomationDrawDrag::AutomationDrawDrag (EditingContext& ec, ArdourCanvas::Item* p, ArdourCanvas::Rectangle& r, bool hbounded, Temporal::TimeDomain time_domain,
+                                        std::function<bool(GdkEvent*,timepos_t const &)> cf)
 	: FreehandLineDrag<Evoral::ControlList::OrderedPoints,Evoral::ControlList::OrderedPoint> (ec, p, r, hbounded, time_domain)
+	, click_functor (cf)
 {
 	DEBUG_TRACE (DEBUG::Drags, "New AutomationDrawDrag\n");
 }
@@ -7635,9 +7637,7 @@ void
 AutomationDrawDrag::finished (GdkEvent* event, bool motion_occured)
 {
 	if (!motion_occured) {
-		/* DragManager will tell editor that no motion happened, and
-		   Editor::button_release_handler() will do the right thing.
-		*/
+		(void) click_functor (event, grab_time());
 		return;
 	}
 
