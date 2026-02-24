@@ -54,6 +54,7 @@ public:
 
 protected:
 	void on_response (int);
+	bool on_delete_event (GdkEventAny*);
 
 private:
 	enum SelectionType {

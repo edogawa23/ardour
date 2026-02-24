@@ -69,6 +69,7 @@ StripImportDialog::StripImportDialog (Session* s)
 
 	_open_button->signal_clicked ().connect (mem_fun (*this, &StripImportDialog::maybe_switch_to_import_page), false);
 	_ok_button->signal_clicked ().connect (mem_fun (*this, &StripImportDialog::ok_activated), false);
+	_cancel_button->signal_clicked ().connect ([this] { ArdourDialog::response (RESPONSE_CANCEL);});
 
 	_open_button->set_sensitive (false);
 	_ok_button->set_sensitive (false);
@@ -765,10 +766,19 @@ StripImportDialog::ok_activated ()
 }
 
 void
- StripImportDialog::on_response (int response_id)
+StripImportDialog::on_response (int response_id)
 {
 	_cancel_button->set_sensitive (false);
 	_ok_button->set_sensitive (false);
+}
+
+bool
+StripImportDialog::on_delete_event (GdkEventAny* ev)
+{
+	if (!_cancel_button->sensitive ()) {
+		return true;
+	}
+	return ArdourDialog::on_delete_event (ev);
 }
 
 void
