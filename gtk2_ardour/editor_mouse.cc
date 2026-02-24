@@ -1320,7 +1320,6 @@ bool
 Editor::button_release_handler (ArdourCanvas::Item* item, GdkEvent* event, ItemType item_type)
 {
 	timepos_t where (canvas_event_time (event));
-	AutomationTimeAxisView* atv = 0;
 
 	/* no action if we're recording */
 
