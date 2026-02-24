@@ -1628,8 +1628,13 @@ Editor::button_release_handler (ArdourCanvas::Item* item, GdkEvent* event, ItemT
 			switch (item_type) {
 			case RegionItem:
 			{
-				/* since we have FreehandLineDrag we can only get here after a drag, when no movement has happened.
-				 * Except when a drag was aborted by pressing Esc.
+				/* since we have FreehandLineDrag we can only
+				 * get here after a drag, when no movement has
+				 * happened.  Except when a drag was aborted by
+				 * pressing Esc. We can't handle this with a
+				 * click functor because we (may) need the
+				 * canvas item here, and that would involve
+				 * significant code refactoring.
 				 */
 				if (!were_dragging) {
 					return true;
@@ -1650,6 +1655,7 @@ Editor::button_release_handler (ArdourCanvas::Item* item, GdkEvent* event, ItemT
 			}
 
 			case AutomationTrackItem:
+				/* handled by a click functor given to an AutomationDrawDrag */
 				break;
 
 			default:
