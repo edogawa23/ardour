@@ -90,6 +90,7 @@ function factory () return function ()
 
        if type(ngrp) == "string" and not(ngrp == "") then
            ngrp = Session:new_route_group(ngrp)
+           Session:add_route_group(ngrp)
            if cgrp ~= ngrp:name() then
                ngrp:add(t)
            end

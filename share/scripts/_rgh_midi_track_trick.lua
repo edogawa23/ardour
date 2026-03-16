@@ -52,6 +52,7 @@ function factory (p) return function ()
 		end
 		if rv['group'] and rv['group'] ~= '' then
 			group = Session:new_route_group (rv['group'])
+			Session:add_route_group(group)
 		end
 	end
 	collectgarbage ()

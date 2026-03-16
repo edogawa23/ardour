@@ -3582,6 +3582,7 @@ LuaBindings::non_rt (lua_State* L)
 		.addFunction ("new_midi_track", &Session::new_midi_track)
 		.addFunction ("new_midi_route", &Session::new_midi_route)
 		.addFunction ("new_route_group", &Session::new_route_group)
+		.addFunction ("add_route_group", &Session::add_route_group)
 		.addFunction ("add_master_bus", &Session::add_master_bus)
 		.endClass ()
 

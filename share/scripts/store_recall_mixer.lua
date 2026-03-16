@@ -307,6 +307,9 @@ function factory() return function()
 						if rt:isnil() then rt = Session:route_by_name(name) end
 						if not(rt:isnil()) then group:add(rt) end
 					end
+					if group:size() > 0 then
+            Session:add_route_group(group)
+					end
 				end
 			end
 
@@ -473,6 +476,7 @@ function factory() return function()
 
 				if not(group_ptr) then
 					new_group = Session:new_route_group(group_name)
+					Session:add_route_group(new_group)
 					dlg_title = string.format("Cannot Find: (Group) %s.", group_name, new_group:name())
 					action_title = "will create and use settings"
 				else
