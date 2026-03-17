@@ -81,7 +81,6 @@ void
 AutomationControl::session_going_away ()
 {
 	SessionHandleRef::session_going_away ();
-	DropReferences (); /* EMIT SIGNAL */
 	_no_session = true;
 }
 
