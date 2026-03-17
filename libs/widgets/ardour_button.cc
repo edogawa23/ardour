@@ -961,18 +961,7 @@ void ArdourButton::set_active_color (const uint32_t color)
 
 	fill_active_color = color;
 
-	unsigned char r, g, b, a;
-	UINT_TO_RGBA(color, &r, &g, &b, &a);
-
-	double white_contrast = (max (double(r), 255.) - min (double(r), 255.)) +
-		(max (double(g), 255.) - min (double(g), 255.)) +
-		(max (double(b), 255.) - min (double(b), 255.));
-
-	double black_contrast = (max (double(r), 0.) - min (double(r), 0.)) +
-		(max (double(g), 0.) - min (double(g), 0.)) +
-		(max (double(b), 0.) - min (double(b), 0.));
-
-	text_active_color = (white_contrast > black_contrast) ?
+	text_active_color = Gtkmm2ext::color_to_luminance(UIConfigurationBase::instance().color ("gtk_foreground")) > Gtkmm2ext::color_to_luminance(color) ?
 		UIConfigurationBase::instance().color ("gtk_foreground") : /* nomimally white */
 		UIConfigurationBase::instance().color ("gtk_background");  /* nomimally black */
 
@@ -986,20 +975,9 @@ void ArdourButton::set_inactive_color (const uint32_t color)
 
 	fill_inactive_color = color;
 
-	unsigned char r, g, b, a;
-	UINT_TO_RGBA(color, &r, &g, &b, &a);
-
-	double white_contrast = (max (double(r), 255.) - min (double(r), 255.)) +
-		(max (double(g), 255.) - min (double(g), 255.)) +
-		(max (double(b), 255.) - min (double(b), 255.));
-
-	double black_contrast = (max (double(r), 0.) - min (double(r), 0.)) +
-		(max (double(g), 0.) - min (double(g), 0.)) +
-		(max (double(b), 0.) - min (double(b), 0.));
-
-	text_inactive_color = (white_contrast > black_contrast) ?
-		UIConfigurationBase::instance().color ("gtk_foreground") : /* nominally white */
-		UIConfigurationBase::instance().color ("gtk_background");  /* nominally black */
+	text_inactive_color = Gtkmm2ext::color_to_luminance(UIConfigurationBase::instance().color ("gtk_foreground")) > Gtkmm2ext::color_to_luminance(color) ?
+		UIConfigurationBase::instance().color ("gtk_foreground") : /* nomimally white */
+		UIConfigurationBase::instance().color ("gtk_background");  /* nomimally black */
 
 	/* XXX what about led colors ? */
 	CairoWidget::set_dirty ();
