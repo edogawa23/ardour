@@ -1,7 +1,6 @@
 #include "mutex_test.h"
 #include <cppunit/TestAssert.h>
 #include <thread>
-#include <sys/time.h>
 
 CPPUNIT_TEST_SUITE_REGISTRATION (MutexTest);
 

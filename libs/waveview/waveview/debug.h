@@ -19,7 +19,6 @@
 #ifndef _WAVEVIEW_DEBUG_H_
 #define _WAVEVIEW_DEBUG_H_
 
-#include <sys/time.h>
 #include <map>
 #include "pbd/debug.h"
 

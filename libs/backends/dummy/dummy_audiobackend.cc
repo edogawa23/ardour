@@ -19,9 +19,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include <math.h>
-#include <sys/time.h>
-#include <stdlib.h>
+#include <cmath>
+#include <cstdlib>
 
 #include <glibmm.h>
 
