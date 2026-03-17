@@ -226,6 +226,11 @@ Gtkmm2ext::contrasting_text_color (uint32_t c)
 }
 
 
+double
+Gtkmm2ext::color_to_luminance (uint32_t c)
+{
+	return luminance(c);
+}
 
 HSV::HSV ()
 	: h (0.0)

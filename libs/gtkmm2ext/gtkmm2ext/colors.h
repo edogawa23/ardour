@@ -60,6 +60,7 @@ extern LIBGTKMM2EXT_API Color color_at_alpha (Color, double a);
 extern LIBGTKMM2EXT_API void  color_to_hsv (Color color, double& h, double& s, double& v);
 extern LIBGTKMM2EXT_API void  color_to_rgba (Color, double& r, double& g, double& b, double& a);
 extern LIBGTKMM2EXT_API Color rgba_to_color (double r, double g, double b, double a);
+extern LIBGTKMM2EXT_API double color_to_luminance (uint32_t c);
 
 uint32_t LIBGTKMM2EXT_API contrasting_text_color (uint32_t c);
 
