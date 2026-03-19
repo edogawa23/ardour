@@ -443,9 +443,8 @@ lua_forkexec (lua_State *L)
 	if (x->start()) {
 		reaper (x);
 		luabridge::Stack<bool>::push (L, false);
-		return -1;
 	} else {
-		luabridge::Stack<bool>::push (L, false);
+		luabridge::Stack<bool>::push (L, true);
 	}
 	return 1;
 }
