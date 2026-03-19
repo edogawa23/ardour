@@ -4783,16 +4783,39 @@ Route::update_signal_latency (bool apply_to_delayline, bool* delayline_update_ne
 
 	PBD::RWLock::ReaderLock lm (_processor_lock);
 
+	/* update send delays first, so that send->effective_latency() below is calculated correctly */
+	if (apply_to_delayline) {
+		for (auto & proc : _processors) {
+			if (std::shared_ptr<Send> snd = std::dynamic_pointer_cast<Send> (proc)) {
+				if (snd->output ()) {
+					const samplecnt_t snd_lat = snd->output ()->connected_latency (true);
+					DEBUG_TRACE (DEBUG::LatencyRoute, string_compose ("%1/%2: set delay-out = %3 (was %4)\n", _name, snd->output ()->name(), snd_lat, snd->get_delay_out()));
+					snd->set_delay_out (snd_lat);
+				}
+			}
+		}
+	}
+
 	samplecnt_t l_in  = 0;
 	samplecnt_t l_out = 0;
 	for (ProcessorList::reverse_iterator i = _processors.rbegin(); i != _processors.rend(); ++i) {
 		if (std::shared_ptr<LatentSend> snd = std::dynamic_pointer_cast<LatentSend> (*i)) {
-			snd->set_delay_in (l_out + _output_latency);
+			if (apply_to_delayline) {
+				DEBUG_TRACE (DEBUG::LatencyRoute, string_compose ("%1/%2: set-delay-in = %3 + %4 (was %5)\n", _name, (*i)->name(), l_out, _output_latency, snd->get_delay_in()));
+				snd->set_delay_in (l_out + _output_latency);
+			} else if (delayline_update_needed && snd->get_delay_in () != l_out + _output_latency) {
+				*delayline_update_needed = true;
+			}
 		}
 
 		if (std::shared_ptr<PluginInsert> pi = std::dynamic_pointer_cast<PluginInsert> (*i)) {
 			if (std::shared_ptr<IO> pio = pi->sidechain_input ()) {
 				samplecnt_t lat = l_out + _output_latency;
+				/* Sidechain is really an input (sink),
+				 * but we set playback latency since what matters is how
+				 * long it will take for the data to arrive at the output
+				 * along with the main (input) data to the plugin.
+				 */
 				pio->set_private_port_latencies (lat, true);
 				pio->set_public_port_latencies (lat, true);
 			}
@@ -4808,7 +4831,6 @@ Route::update_signal_latency (bool apply_to_delayline, bool* delayline_update_ne
 	_signal_latency = l_out;
 
 	for (auto & proc : _processors) {
-
 		/* set sidechain, send and insert port latencies */
 		if (std::shared_ptr<PortInsert> pi = std::dynamic_pointer_cast<PortInsert> (proc)) {
 			if (pi->input ()) {
@@ -4826,10 +4848,10 @@ Route::update_signal_latency (bool apply_to_delayline, bool* delayline_update_ne
 				snd->output ()->set_private_port_latencies (capt_lat_in + l_in, false);
 				/* take send-target's playback latency into account */
 				const samplecnt_t snd_lat = snd->output ()->connected_latency (true);
-				if (apply_to_delayline) {
-					/* DelayLine::set_delay requires process-lock */
-					snd->set_delay_out (snd_lat);
-				} else if (delayline_update_needed && snd->get_delay_out () != snd_lat) {
+				if (!apply_to_delayline && delayline_update_needed && snd->get_delay_out () != snd_lat) {
+					/* DelayLine::set_delay requires process-lock, so request update
+					 * snd->set_delay_out (snd_lat); is called above
+					 */
 					*delayline_update_needed = true;
 				}
 			}
