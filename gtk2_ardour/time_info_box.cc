@@ -24,6 +24,7 @@
 #include "gtkmm2ext/gui_thread.h"
 #include "gtkmm2ext/utils.h"
 #include "gtkmm2ext/actions.h"
+#include "gtkmm2ext/colors.h"
 
 #include "ardour/location.h"
 #include "ardour/profile.h"
@@ -35,6 +36,7 @@
 #include "editor.h"
 #include "region_view.h"
 #include "time_info_box.h"
+#include "ui_config.h"
 
 #include "pbd/i18n.h"
 
@@ -62,6 +64,10 @@ TimeInfoBox::TimeInfoBox (std::string state_node_name, bool with_punch)
 	selection_length = new AudioClock (
 			string_compose ("%1-selection-length", state_node_name),
 			false, "selection", false, false, true, false);
+
+	selection_start->set_corner_radius(0);
+	selection_end->set_corner_radius(0);
+	selection_length->set_corner_radius(0);
 
 	selection_title.set_text (_("Selection"));
 
@@ -385,4 +391,10 @@ TimeInfoBox::punch_changed (Location* loc)
 
 	punch_start->set (loc->start());
 	punch_end->set (loc->end());
+}
+
+Gdk::Color
+TimeInfoBox::get_bg () const
+{
+	return Gtkmm2ext::gdk_color_from_rgba(UIConfiguration::instance().color (string_compose ("selection clock: background", get_name())));
 }

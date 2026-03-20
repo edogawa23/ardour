@@ -76,5 +76,6 @@ private:
 
 	bool clock_button_release_event (GdkEventButton* ev, AudioClock* src);
 	void track_mouse_mode ();
-};
 
+	Gdk::Color get_bg () const;
+};
