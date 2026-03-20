@@ -961,7 +961,7 @@ void ArdourButton::set_active_color (const uint32_t color)
 
 	fill_active_color = color;
 
-	text_active_color = Gtkmm2ext::color_to_luminance(UIConfigurationBase::instance().color ("gtk_foreground")) > Gtkmm2ext::color_to_luminance(color) ?
+	text_active_color = !(_elements & Body) || Gtkmm2ext::color_to_luminance(UIConfigurationBase::instance().color ("gtk_foreground")) > Gtkmm2ext::color_to_luminance(color) ?
 		UIConfigurationBase::instance().color ("gtk_foreground") : /* nomimally white */
 		UIConfigurationBase::instance().color ("gtk_background");  /* nomimally black */
 
@@ -975,7 +975,7 @@ void ArdourButton::set_inactive_color (const uint32_t color)
 
 	fill_inactive_color = color;
 
-	text_inactive_color = Gtkmm2ext::color_to_luminance(UIConfigurationBase::instance().color ("gtk_foreground")) > Gtkmm2ext::color_to_luminance(color) ?
+	text_inactive_color = !(_elements & Body) || Gtkmm2ext::color_to_luminance(UIConfigurationBase::instance().color ("gtk_foreground")) > Gtkmm2ext::color_to_luminance(color) ?
 		UIConfigurationBase::instance().color ("gtk_foreground") : /* nomimally white */
 		UIConfigurationBase::instance().color ("gtk_background");  /* nomimally black */
 
