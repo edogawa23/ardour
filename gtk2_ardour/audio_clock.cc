@@ -219,10 +219,6 @@ AudioClock::set_colors ()
 
 	/* rescale for Pango colors ... sigh */
 
-	r = lrint (r * 65535.0);
-	g = lrint (g * 65535.0);
-	b = lrint (b * 65535.0);
-
 	UINT_TO_RGBA (text_color, &r, &g, &b, &a);
 	r = lrint ((r/255.0) * 65535.0);
 	g = lrint ((g/255.0) * 65535.0);
@@ -246,6 +242,9 @@ AudioClock::set_colors ()
 	} else {
 		_layout->set_attributes (editing_attributes);
 	}
+
+	/* text colors won't update if only the attributes are updated */
+	_layout->set_text (_layout->get_text ());
 
 	queue_draw ();
 }
