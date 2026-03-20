@@ -33,6 +33,8 @@ MutexTest::test_cond ()
 
 	thread t1 ([&]() { _cond.signal (); });
 	_cond.wait (_mutex);
+	CPPUNIT_ASSERT (lm.locked ()); // check that mutex is locked
+	CPPUNIT_ASSERT (!_mutex.trylock ()); // check that mutex is locked
 	t1.join();
 
 	thread t2 ([&]() { PBD::Mutex::Lock lm (_mutex); _cond.signal (); });

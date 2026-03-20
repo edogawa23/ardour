@@ -121,21 +121,19 @@ public:
 
 	void wait (Mutex& mutex)
 	{
-		std::unique_lock m (mutex._mutex, std::adopt_lock);
-		_cond.wait (m);
+		_cond.wait (mutex);
 	}
 
 	bool wait_for (Mutex& mutex, std::chrono::milliseconds const& rel_time)
 	{
-		std::unique_lock m (mutex._mutex, std::adopt_lock);
-		return std::cv_status::no_timeout == _cond.wait_for (m, rel_time);
+		return std::cv_status::no_timeout == _cond.wait_for (mutex, rel_time);
 	}
 
 private:
 	Cond (Cond const&)            = delete;
 	Cond& operator= (Cond const&) = delete;
 
-	std::condition_variable _cond;
+	std::condition_variable_any _cond;
 };
 
 } // namespace PBD
