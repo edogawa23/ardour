@@ -416,10 +416,10 @@
     <ColorAlias name="selected waveform fill" alias="neutral:backgroundest"/>
     <ColorAlias name="selected waveform outline" alias="neutral:foregroundest"/>
     <ColorAlias name="selection" alias="alert:cyan"/>
-    <ColorAlias name="selection clock: background" alias="neutral:backgroundest"/>
+    <ColorAlias name="selection clock: background" alias="theme:bg2"/>
     <ColorAlias name="selection clock: cursor" alias="alert:ruddy"/>
     <ColorAlias name="selection clock: edited text" alias="alert:ruddy"/>
-    <ColorAlias name="selection clock: text" alias="theme:contrasting clock"/>
+    <ColorAlias name="selection clock: text" alias="neutral:foregroundest"/>
     <ColorAlias name="selection rect" alias="neutral:backgroundest"/>
     <ColorAlias name="send alert button: fill" alias="widget:blue darker"/>
     <ColorAlias name="send alert button: fill active" alias="alert:cyan"/>
