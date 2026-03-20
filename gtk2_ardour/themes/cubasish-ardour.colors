@@ -24,7 +24,7 @@
     <Color name="neutral:foreground2" value="ccccccff"/>  <!--marker track,  marker bar-->
     <Color name="neutral:foreground" value="e5e5e5ff"/>  <!--gtk_foreground,  arrange base,  gtk_texts,  -->
     <Color name="neutral:foregroundest" value="ffffffff"/>  <!--grid line major,  recording waveform fill,  waveform fill-->
-    <Color name="widget:bg" value="b3b4bbff"/>    <!--generic button,  mouse mode button: fill,  transport button: fill-->
+    <Color name="widget:bg" value="63646bff"/>    <!--generic button,  mouse mode button: fill,  transport button: fill-->
     <Color name="widget:blue" value="8193cbff"/>  <!--gtk_bright_color,  midi input button: fill active,  selected time axis frame-->
     <Color name="widget:blue darker" value="191c1fff"/>  <!--gtk_audio_bus,  audio bus base,  stereo panner inverted bg-->
     <Color name="widget:gray" value="e0e0e0ff"/>  <!--gtk_processor_fader,  processor fader: fill,  time stretch outline-->
@@ -486,8 +486,8 @@
     <ColorAlias name="transport loop rect" alias="neutral:backgroundest"/>
     <ColorAlias name="transport marker bar" alias="neutral:background2"/>
     <ColorAlias name="transport option button: fill" alias="widget:bg"/>
-    <ColorAlias name="transport option button: fill active" alias="theme:contrasting clock"/>
-    <ColorAlias name="transport option button: led active" alias="theme:contrasting clock"/>
+    <ColorAlias name="transport option button: fill active" alias="alert:blue"/>
+    <ColorAlias name="transport option button: led active" alias="alert:blue"/>
     <ColorAlias name="transport punch rect" alias="alert:red"/>
     <ColorAlias name="transport recenable button: fill" alias="widget:bg"/>
     <ColorAlias name="transport recenable button: fill active" alias="alert:ruddy"/>

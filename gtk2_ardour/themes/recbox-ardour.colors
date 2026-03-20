@@ -26,7 +26,7 @@
     <Color name="midi meter 56" value="ff4c29ff"/>
     <Color name="neutral:background" value="141a1bff"/>
     <Color name="neutral:background2" value="30464bff"/>
-    <Color name="neutral:backgroundest" value="f2f2f2ff"/>
+    <Color name="neutral:backgroundest" value="020809ff"/>
     <Color name="neutral:foreground" value="f2f2f2ff"/>
     <Color name="neutral:foreground2" value="dde8deff"/>
     <Color name="neutral:foregroundest" value="1b282cff"/>
@@ -40,7 +40,7 @@
     <Color name="theme:contrasting less" value="d9ebf1ff"/>
     <Color name="theme:contrasting selection" value="2f9b85ff"/>
     <Color name="widget:bg" value="2f3c40ff"/>
-    <Color name="widget:blue" value="282733ff"/>
+    <Color name="widget:blue" value="39245aff"/>
     <Color name="widget:blue darker" value="1b282dff"/>
     <Color name="widget:gray" value="2e2e40ff"/>
     <Color name="widget:green" value="4a91b2ff"/>
@@ -97,7 +97,7 @@
     <ColorAlias name="crossfade editor point fill" alias="alert:green"/>
     <ColorAlias name="crossfade editor point outline" alias="alert:blue"/>
     <ColorAlias name="crossfade editor wave" alias="neutral:foregroundest"/>
-    <ColorAlias name="crossfade line" alias="neutral:backgroundest"/>
+    <ColorAlias name="crossfade line" alias="neutral:foreground"/>
     <ColorAlias name="cue editor start rect fill" alias="neutral:midground"/>
     <ColorAlias name="cue editor start rect outline" alias="alert:orange"/>
     <ColorAlias name="cue editor end rect fill" alias="neutral:midground"/>
@@ -297,7 +297,7 @@
     <ColorAlias name="mono panner outline" alias="theme:bg"/>
     <ColorAlias name="mono panner position fill" alias="theme:contrasting less"/>
     <ColorAlias name="mono panner position outline" alias="theme:bg"/>
-    <ColorAlias name="mono panner text" alias="neutral:backgroundest"/>
+    <ColorAlias name="mono panner text" alias="neutral:foreground"/>
     <ColorAlias name="mouse mode button: fill" alias="widget:bg"/>
     <ColorAlias name="mouse mode button: fill active" alias="alert:greenish"/>
     <ColorAlias name="mouse mode button: led active" alias="alert:green"/>
@@ -470,11 +470,11 @@
     <ColorAlias name="tracknumber label: fill active" alias="neutral:background2"/>
     <ColorAlias name="tracknumber label: led active" alias="alert:red"/>
     <ColorAlias name="transport active option button: fill" alias="widget:bg"/>
-    <ColorAlias name="transport active option button: fill active" alias="alert:green"/>
-    <ColorAlias name="transport active option button: led active" alias="alert:green"/>
+    <ColorAlias name="transport active option button: fill active" alias="alert:greenish"/>
+    <ColorAlias name="transport active option button: led active" alias="alert:greenish"/>
     <ColorAlias name="transport button: fill" alias="widget:bg"/>
-    <ColorAlias name="transport button: fill active" alias="alert:green"/>
-    <ColorAlias name="transport button: led active" alias="alert:green"/>
+    <ColorAlias name="transport button: fill active" alias="alert:greenish"/>
+    <ColorAlias name="transport button: led active" alias="alert:greenish"/>
     <ColorAlias name="transport clock: background" alias="theme:bg2"/>
     <ColorAlias name="transport clock: cursor" alias="theme:contrasting alt"/>
     <ColorAlias name="transport clock: edited text" alias="theme:contrasting alt"/>
@@ -488,7 +488,7 @@
     <ColorAlias name="transport marker bar" alias="neutral:background2"/>
     <ColorAlias name="transport option button: fill" alias="widget:bg"/>
     <ColorAlias name="transport option button: fill active" alias="alert:greenish"/>
-    <ColorAlias name="transport option button: led active" alias="alert:green"/>
+    <ColorAlias name="transport option button: led active" alias="alert:greenish"/>
     <ColorAlias name="transport punch rect" alias="widget:ruddy"/>
     <ColorAlias name="transport recenable button: fill" alias="widget:bg"/>
     <ColorAlias name="transport recenable button: fill active" alias="alert:ruddy"/>
