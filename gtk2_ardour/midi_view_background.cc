@@ -116,6 +116,9 @@ uint8_t
 MidiViewBackground::y_to_note (int y) const
 {
 
+	/* we add 1px to y because otherwise when y is an exact multiple of note_height, n would be off by one.
+	 * e.g. when drawing a new note provided coords are from a rect sitting on the first pixel of the note line.
+	 */
 	int const n = highest_note() - floor((double) (y + 1) / note_height());
 
 	if (n < lowest_note()) {
