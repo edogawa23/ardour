@@ -159,6 +159,8 @@ class LIBWIDGETS_API ArdourButton : public CairoWidget , public Gtkmm2ext::Activ
 
 	void set_image (const Glib::RefPtr<Gdk::Pixbuf>&);
 
+	uint32_t get_contrasting_color (const uint32_t background_color);
+
 	void set_fixed_colors   (const uint32_t active_color, const uint32_t inactive_color);
 	void set_active_color   (const uint32_t active_color);
 	void set_inactive_color (const uint32_t inactive_color);
