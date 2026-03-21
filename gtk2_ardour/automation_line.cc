@@ -777,7 +777,7 @@ AutomationLine::drag_motion (timecnt_t const & pdt, float fraction, bool ignore_
 	 */
 
 	if (dt.is_negative() || (dt.is_positive() && !with_push)) {
-		const timepos_t line_limit = get_origin() + maximum_time() + _offset;
+		const timepos_t line_limit = maximum_time().decrement() + _offset;
 		for (auto const & ccp : contiguous_points){
 			dt = ccp->clamp_dt (dt, line_limit);
 		}
