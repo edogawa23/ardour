@@ -20,12 +20,10 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef ardour_control_protocol_manager_h
-#define ardour_control_protocol_manager_h
+#pragma once
 
-#include <string>
 #include <list>
-
+#include <string>
 
 #include "pbd/rwlock.h"
 #include "pbd/stateful.h"
@@ -34,84 +32,85 @@
 
 #include "ardour/session_handle.h"
 
-namespace ARDOUR {
+namespace ARDOUR
+{
 
 class ControlProtocol;
 class ControlProtocolDescriptor;
 class Session;
 
-class LIBARDOUR_API ControlProtocolInfo {
-	public:
-		ControlProtocolDescriptor* descriptor;
-		ControlProtocol* protocol;
-		std::string name;
-		std::string path;
-		bool requested;
-		bool automatic;
-		XMLNode* state;
+class LIBARDOUR_API ControlProtocolInfo
+{
+public:
+	ControlProtocolDescriptor* descriptor;
+	ControlProtocol*           protocol;
+	std::string                name;
+	std::string                path;
+	bool                       requested;
+	bool                       automatic;
+	XMLNode*                   state;
 
-		ControlProtocolInfo()
-			: descriptor (0)
-			, protocol (0)
-			, requested (false)
-			, automatic (false)
-			, state (0)
-	{}
-		~ControlProtocolInfo();
+	ControlProtocolInfo ()
+		: descriptor (0)
+		, protocol (0)
+		, requested (false)
+		, automatic (false)
+		, state (0)
+	{
+	}
+	~ControlProtocolInfo ();
 
-		bool active () const;
-
+	bool active () const;
 };
 
 class LIBARDOUR_API ControlProtocolManager : public PBD::Stateful, public ARDOUR::SessionHandlePtr
 {
-  public:
+public:
 	~ControlProtocolManager ();
 
-	static ControlProtocolManager& instance();
+	static ControlProtocolManager& instance ();
 
 	void set_session (Session*);
 	void discover_control_protocols ();
-	void foreach_known_protocol (std::function<void(const ControlProtocolInfo*)>);
+	void foreach_known_protocol (std::function<void (const ControlProtocolInfo*)>);
 	void midi_connectivity_established (bool);
 	void drop_protocols ();
 	void probe_midi_control_protocols ();
 	void probe_usb_control_protocols (bool, uint16_t, uint16_t);
 
-	const std::list<ControlProtocolInfo*>& control_protocol_infos () const {
-		return control_protocol_info;
+	const std::list<ControlProtocolInfo*>& control_protocol_infos () const
+	{
+		return _control_protocol_info;
 	}
 
 	int activate (ControlProtocolInfo&);
-        int deactivate (ControlProtocolInfo&);
+	int deactivate (ControlProtocolInfo&);
 
 	static const std::string state_node_name;
 
-	int set_state (const XMLNode&, int version);
+	int      set_state (const XMLNode&, int version);
 	XMLNode& get_state () const;
 
-        PBD::Signal<void(ControlProtocolInfo*)> ProtocolStatusChange;
+	PBD::Signal<void (ControlProtocolInfo*)> ProtocolStatusChange;
 
-        void stripable_selection_changed (ARDOUR::StripableNotificationListPtr);
-        static PBD::Signal<void(ARDOUR::StripableNotificationListPtr)> StripableSelectionChanged;
+	void                                                            stripable_selection_changed (ARDOUR::StripableNotificationListPtr);
+	static PBD::Signal<void (ARDOUR::StripableNotificationListPtr)> StripableSelectionChanged;
 
-  private:
+private:
 	ControlProtocolManager ();
 	static ControlProtocolManager* _instance;
 
-	mutable PBD::RWLock             protocols_lock;
-	std::list<ControlProtocol*>     control_protocols;
-	std::list<ControlProtocolInfo*> control_protocol_info;
+	mutable PBD::RWLock             _protocols_lock;
+	std::list<ControlProtocol*>     _control_protocols;
+	std::list<ControlProtocolInfo*> _control_protocol_info;
 
 	void session_going_away ();
 
-	int control_protocol_discover (std::string path);
+	int                        control_protocol_discover (std::string path);
 	ControlProtocolDescriptor* get_descriptor (std::string path);
-	ControlProtocolInfo* cpi_by_name (std::string);
-	ControlProtocol* instantiate (ControlProtocolInfo&);
-	int teardown (ControlProtocolInfo&, bool lock_required);
+	ControlProtocolInfo*       cpi_by_name (std::string);
+	ControlProtocol*           instantiate (ControlProtocolInfo&);
+	int                        teardown (ControlProtocolInfo&, bool lock_required);
 };
 
-} // namespace
-
-#endif // ardour_control_protocol_manager_h
+} // namespace ARDOUR
