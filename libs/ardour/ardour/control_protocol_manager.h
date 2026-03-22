@@ -76,6 +76,10 @@ class LIBARDOUR_API ControlProtocolManager : public PBD::Stateful, public ARDOUR
 	void probe_midi_control_protocols ();
 	void probe_usb_control_protocols (bool, uint16_t, uint16_t);
 
+	const std::list<ControlProtocolInfo*>& control_protocol_infos () const {
+		return control_protocol_info;
+	}
+
 	int activate (ControlProtocolInfo&);
         int deactivate (ControlProtocolInfo&);
 
