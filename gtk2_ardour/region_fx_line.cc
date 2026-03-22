@@ -91,4 +91,8 @@ RegionFxLine::region_changed (PBD::PropertyChange const& what_changed)
 	if (what_changed.contains (interesting_stuff)) {
 		reset ();
 	}
+
+	if (what_changed.contains (ARDOUR::Properties::length)) {
+		set_maximum_time (timepos_t (_rv.region()->length()));
+	}
 }
