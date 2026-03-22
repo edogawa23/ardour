@@ -1630,7 +1630,7 @@ class ControlSurfacesOptions : public OptionEditorMiniPage
 			_store->clear ();
 
 			ControlProtocolManager& m = ControlProtocolManager::instance ();
-			for (auto const& i : m.control_protocol_info) {
+			for (auto const& i : m.control_protocol_infos ()) {
 				TreeModel::Row r = *_store->append ();
 				r[_model.name] = i->name;
 				r[_model.enabled] = 0 != i->protocol;
