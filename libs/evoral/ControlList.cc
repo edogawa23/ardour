@@ -1353,7 +1353,11 @@ ControlList::truncate_end (timepos_t const& last_time)
 	{
 		PBD::RWLock::WriterLock lm (_lock);
 
-		timepos_t    last_coordinate = last_time;
+		/* last_time is an exclusive length but
+		 * last event must be *within* the region boundaries, hence the decrement()
+		 * TODO ideally we'd adapt the method to work with an exclusive length
+		 */
+		timepos_t    last_coordinate = last_time.decrement();
 		ControlEvent cp (last_coordinate, 0);
 		double       last_val;
 
@@ -1456,7 +1460,11 @@ ControlList::truncate_start (timecnt_t const& overall)
 		iterator   i;
 		double     first_legal_value;
 		timepos_t  first_legal_coordinate;
-		timepos_t  overall_length (overall);
+		/* overall is an exclusive length but
+		 * last event must be *within* the region boundaries, hence the decrement()
+		 * TODO ideally we'd adapt the method to work with an exclusive length
+		 */
+		timepos_t  overall_length (overall.decrement());
 
 		if (_events.empty ()) {
 			/* nothing to truncate */
