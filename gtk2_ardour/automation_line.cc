@@ -659,7 +659,11 @@ AutomationLine::ContiguousControlPoints::clamp_dt (timecnt_t const & dt, timepos
 	 */
 
 	possible_pos = max (possible_pos, Temporal::timepos_t (possible_pos.time_domain()));
-	possible_pos = min (possible_pos, line_limit);
+
+	/* line_limit is exclusive
+	 * but the last event must be *within* the region boundaries, hence the decrement()
+	 */
+	possible_pos = min (possible_pos, line_limit.decrement());
 
 	possible_pos = max (possible_pos, before_x); // can't move earlier than preceding point
 	possible_pos = min (possible_pos, after_x);  // can't move later than following point
@@ -777,7 +781,7 @@ AutomationLine::drag_motion (timecnt_t const & pdt, float fraction, bool ignore_
 	 */
 
 	if (dt.is_negative() || (dt.is_positive() && !with_push)) {
-		const timepos_t line_limit = maximum_time().decrement() + _offset;
+		const timepos_t line_limit = maximum_time() + _offset;
 		for (auto const & ccp : contiguous_points){
 			dt = ccp->clamp_dt (dt, line_limit);
 		}
