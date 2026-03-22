@@ -661,8 +661,8 @@ AutomationLine::ContiguousControlPoints::clamp_dt (timecnt_t const & dt, timepos
 	possible_pos = max (possible_pos, Temporal::timepos_t (possible_pos.time_domain()));
 	possible_pos = min (possible_pos, line_limit);
 
-	possible_pos = max (possible_pos, before_x); // can't move later than following point
-	possible_pos = min (possible_pos, after_x);  // can't move earlier than preceding point
+	possible_pos = max (possible_pos, before_x); // can't move earlier than preceding point
+	possible_pos = min (possible_pos, after_x);  // can't move later than following point
 
 	return (*reference_point->model())->when.distance (possible_pos);
 }
