@@ -57,6 +57,7 @@
 #include "ardour/buffer_set.h"
 #include "ardour/bundle.h"
 #include "ardour/chan_mapping.h"
+#include "ardour/control_protocol_manager.h"
 #include "ardour/convolver.h"
 #include "ardour/dB.h"
 #include "ardour/delayline.h"
@@ -283,6 +284,8 @@ CLASSKEYS(ARDOUR::AudioEngine);
 CLASSKEYS(ARDOUR::BufferSet);
 CLASSKEYS(ARDOUR::ChanCount);
 CLASSKEYS(ARDOUR::ChanMapping);
+CLASSKEYS(ARDOUR::ControlProtocolInfo);
+CLASSKEYS(ARDOUR::ControlProtocolManager);
 CLASSKEYS(ARDOUR::CoreSelection);
 CLASSKEYS(ARDOUR::DSP::DspShm);
 CLASSKEYS(ARDOUR::DataType);
@@ -330,6 +333,7 @@ CLASSKEYS(Evoral::ControlEvent);
 
 CLASSKEYS(std::list<Evoral::ControlEvent*>);
 CLASSKEYS(std::list<ARDOUR::TimelineRange>);
+CLASSKEYS(std::list<ARDOUR::ControlProtocolInfo>);
 
 CLASSKEYS(std::vector<Evoral::Parameter>);
 CLASSKEYS(std::vector<ARDOUR::Plugin::PresetRecord>);
@@ -3067,6 +3071,23 @@ LuaBindings::common (lua_State* L)
 		.addFunction ("vcas", &VCAManager::vcas)
 		.addFunction ("n_vcas", &VCAManager::n_vcas)
 		.endClass()
+
+
+		.beginClass <ControlProtocolInfo> ("ControlProtocolInfo")
+		.addData ("name", &ControlProtocolInfo::name)
+		.addFunction ("active", &ControlProtocolInfo::active)
+		.endClass()
+
+		.beginConstStdList <ControlProtocolInfo*> ("ControlProtocolInfoList")
+		.endClass ()
+
+		.beginClass <ControlProtocolManager> ("ControlProtocolManager")
+		.addStaticFunction ("manager", &ControlProtocolManager::instance)
+		.addFunction ("control_protocol_infos", &ControlProtocolManager::control_protocol_infos)
+		.addFunction ("activate", &ControlProtocolManager::activate)
+		.addFunction ("deactivate", &ControlProtocolManager::deactivate)
+		.endClass()
+
 
 		.deriveClass <RCConfiguration, PBD::Configuration> ("RCConfiguration")
 #undef  CONFIG_VARIABLE

@@ -114,6 +114,12 @@ ControlProtocolInfo::~ControlProtocolInfo ()
 #endif
 }
 
+bool
+ControlProtocolInfo::active () const
+{
+	return protocol && protocol->active ();
+}
+
 ControlProtocolManager::ControlProtocolManager ()
 {
 }

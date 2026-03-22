@@ -59,6 +59,8 @@ class LIBARDOUR_API ControlProtocolInfo {
 	{}
 		~ControlProtocolInfo();
 
+		bool active () const;
+
 };
 
 class LIBARDOUR_API ControlProtocolManager : public PBD::Stateful, public ARDOUR::SessionHandlePtr
@@ -83,8 +85,6 @@ class LIBARDOUR_API ControlProtocolManager : public PBD::Stateful, public ARDOUR
 	int activate (ControlProtocolInfo&);
         int deactivate (ControlProtocolInfo&);
 
-	std::list<ControlProtocolInfo*> control_protocol_info;
-
 	static const std::string state_node_name;
 
 	int set_state (const XMLNode&, int version);
@@ -99,8 +99,9 @@ class LIBARDOUR_API ControlProtocolManager : public PBD::Stateful, public ARDOUR
 	ControlProtocolManager ();
 	static ControlProtocolManager* _instance;
 
-	mutable PBD::RWLock          protocols_lock;
-	std::list<ControlProtocol*>  control_protocols;
+	mutable PBD::RWLock             protocols_lock;
+	std::list<ControlProtocol*>     control_protocols;
+	std::list<ControlProtocolInfo*> control_protocol_info;
 
 	void session_going_away ();
 
