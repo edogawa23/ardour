@@ -111,7 +111,6 @@ class StartupFSM : public sigc::trackable
 	void show_pre_release_dialog ();
 	void show_plugin_scan_dialog ();
 
-	void copy_demo_sessions ();
 	bool get_session_parameters_from_command_line (bool new_session_required);
 	bool get_session_parameters_from_path (std::string const & path, std::string const & template_name, bool new_session_required);
 	void queue_finish ();

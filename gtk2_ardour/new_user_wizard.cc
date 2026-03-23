@@ -398,9 +398,6 @@ NewUserWizard::on_apply ()
 
 	}
 
-	ARDOUR_UI::instance()->copy_demo_sessions ();
-
-
 	_signal_response (int (RESPONSE_OK));
 }
 
