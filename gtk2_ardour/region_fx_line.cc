@@ -49,6 +49,7 @@ RegionFxLine::init ()
 	_rv.region()->PropertyChanged.connect (_region_changed_connection, invalidator (*this), std::bind (&RegionFxLine::region_changed, this, _1), gui_context());
 	group->raise_to_top ();
 	group->set_y_position (2);
+	set_maximum_time (timepos_t (_rv.region()->length()));
 }
 
 Temporal::timepos_t
