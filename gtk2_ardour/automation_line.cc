@@ -785,6 +785,12 @@ AutomationLine::drag_motion (timecnt_t const & pdt, float fraction, bool ignore_
 		for (auto const & ccp : contiguous_points){
 			dt = ccp->clamp_dt (dt, line_limit);
 		}
+		if (!_drag_points.front()->can_slide() || !_drag_points.back()->can_slide()) {
+			/* ControlPointDrag::motion only checks if grabbed point can slide
+			 * ensure we are not moving a x-locked point within a contiguous range
+			 */
+			dt = timecnt_t (0);
+		}
 	}
 
 	/* compute deflection */
