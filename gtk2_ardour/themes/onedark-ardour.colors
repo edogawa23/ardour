@@ -3,8 +3,8 @@
   <Colors>
     <Color name="alert:blue" value="61AFEFFF"/>  <!-- OneDark Blue -->
     <Color name="alert:cyan" value="56B6C2FF"/>  <!-- OneDark Cyan -->
-    <Color name="alert:green" value="98C379FF"/>  <!-- OneDark Green -->
-    <Color name="alert:greenish" value="98C379FF"/>  <!-- OneDark Green (closest) -->
+    <Color name="alert:green" value="7AA87AFF"/>  <!-- OneDark Green -->
+    <Color name="alert:greenish" value="7AA87AFF"/>  <!-- OneDark Green (closest) -->
     <Color name="alert:orange" value="D19A66FF"/>  <!-- OneDark Orange -->
     <Color name="alert:red" value="E06C75FF"/>  <!-- OneDark Red -->
     <Color name="alert:ruddy" value="BE5046FF"/>  <!-- OneDark Darker Red (for variety) -->
@@ -13,7 +13,7 @@
     <Color name="theme:bg1" value="2C313AFF"/>  <!-- Slightly lighter bg -->
     <Color name="theme:bg2" value="21252BFF"/>  <!-- Even darker, near OneDark Black -->
     <Color name="theme:contrasting" value="E06C75FF"/>  <!-- OneDark Red (play head) -->
-    <Color name="theme:contrasting clock" value="98C379FF"/>  <!-- OneDark Green (clock text) -->
+    <Color name="theme:contrasting clock" value="7AA87AFF"/>  <!-- OneDark Green (clock text) -->
     <Color name="theme:contrasting less" value="7AA87AFF"/>  <!-- Muted green -->
     <Color name="theme:contrasting selection" value="3E4452FF"/>  <!-- OneDark Selection (Visual selection bg) -->
     <Color name="theme:contrasting alt" value="E5C07BFF"/>  <!-- OneDark Yellow/Gold (delta clock) -->
@@ -25,11 +25,11 @@
     <Color name="neutral:foreground" value="ABB2BFFF"/>  <!-- OneDark Foreground (text/icons) -->
     <Color name="neutral:foregroundest" value="C8CCD4FF"/>  <!-- Brighter white (grid line major) -->
     <Color name="widget:bg" value="3E4452FF"/>  <!-- OneDark Selection (generic button) -->
-    <Color name="widget:blue" value="61AFEFFF"/>  <!-- OneDark Blue (processor fader fill) -->
+    <Color name="widget:blue" value="3a7cb2FF"/>  <!-- OneDark (slightly faded) Blue (processor fader fill) -->
     <Color name="widget:blue lighter" value="7DC1F0FF"/>  <!-- Lighter variant of OneDark Blue -->
     <Color name="widget:blue darker" value="2C384AFF"/>  <!-- Darker variant of OneDark Blue -->
     <Color name="widget:gray" value="5C6370FF"/>  <!-- OneDark Comment Grey (processor fader) -->
-    <Color name="widget:green" value="98C379FF"/>  <!-- OneDark Green (processor postfader) -->
+    <Color name="widget:green" value="7AA87AFF"/>  <!-- OneDark (slightly faded) Green (processor postfader) -->
     <Color name="widget:green darker" value="3A4A3AFF"/>  <!-- Darker variant of OneDark Green -->
     <Color name="widget:orange" value="D19A66FF"/>  <!-- OneDark Orange (tempo marker) -->
     <Color name="widget:ruddy" value="BE5046FF"/>  <!-- OneDark Darker Red (processor prefader) -->
@@ -68,21 +68,21 @@
     <ColorAlias name="audio bus base" alias="widget:blue darker"/>
     <ColorAlias name="audio master bus base" alias="neutral:backgroundest"/>
     <ColorAlias name="automation line insensitive" alias="neutral:foreground2"/>
-    <ColorAlias name="audio track base" alias="neutral:backgroundest"/>
+    <ColorAlias name="audio track base" alias="neutral:background"/>
     <ColorAlias name="automation line" alias="alert:green"/>
     <ColorAlias name="automation track outline" alias="theme:bg1"/>
     <ColorAlias name="big clock active: background" alias="neutral:backgroundest"/>
     <ColorAlias name="big clock active: cursor" alias="theme:contrasting alt"/>
     <ColorAlias name="big clock active: edited text" alias="theme:contrasting alt"/>
     <ColorAlias name="big clock active: text" alias="alert:red"/>
-    <ColorAlias name="big clock: background" alias="theme:bg2"/>
+    <ColorAlias name="big clock: background" alias="neutral:backgroundest"/>
     <ColorAlias name="big clock: cursor" alias="theme:contrasting alt"/>
     <ColorAlias name="big clock: edited text" alias="theme:contrasting alt"/>
     <ColorAlias name="big clock: text" alias="theme:contrasting clock"/>
     <ColorAlias name="border color" alias="neutral:backgroundest"/>
     <ColorAlias name="cd marker bar" alias="neutral:background2"/>
     <ColorAlias name="clipped waveform" alias="alert:red"/>
-    <ColorAlias name="clock: background" alias="theme:bg2"/>
+    <ColorAlias name="clock: background" alias="neutral:backgroundest"/>
     <ColorAlias name="clock: cursor" alias="theme:contrasting alt"/>
     <ColorAlias name="clock: edited text" alias="theme:contrasting alt"/>
     <ColorAlias name="clock: text" alias="theme:contrasting clock"/>
@@ -152,14 +152,14 @@
     <ColorAlias name="gtk_clip_indicator" alias="alert:red"/>
     <ColorAlias name="gtk_contrasting_indicator" alias="alert:green"/>
     <ColorAlias name="gtk_control_master" alias="theme:bg1"/>
-    <ColorAlias name="gtk_control_text" alias="neutral:foreground"/>
+    <ColorAlias name="gtk_control_text" alias="neutral:foregroundest"/>
     <ColorAlias name="gtk_control_text2" alias="alert:ruddy"/>
     <ColorAlias name="gtk_darkest" alias="theme:bg2"/>
     <ColorAlias name="gtk_entry_cursor" alias="alert:red"/>
     <ColorAlias name="gtk_fg_selected" alias="theme:bg2"/>
     <ColorAlias name="gtk_fg_tooltip" alias="neutral:foregroundest"/>
     <ColorAlias name="gtk_foldback_bg" alias="theme:bg1"/>
-    <ColorAlias name="gtk_foreground" alias="neutral:foreground"/>
+    <ColorAlias name="gtk_foreground" alias="neutral:foregroundest"/>
     <ColorAlias name="gtk_light_text_on_dark" alias="neutral:foregroundest"/>
     <ColorAlias name="gtk_lightest" alias="neutral:foregroundest"/>
     <ColorAlias name="gtk_midi_channel_selector" alias="widget:blue"/>
@@ -348,8 +348,8 @@
     <ColorAlias name="processor control knob" alias="theme:bg"/>
     <ColorAlias name="processor control knob: arc end" alias="widget:blue"/>
     <ColorAlias name="processor control knob: arc start" alias="widget:blue"/>
-    <ColorAlias name="processor fader: fill" alias="widget:blue lighter"/>
-    <ColorAlias name="processor fader: fill active" alias="widget:blue lighter"/>
+    <ColorAlias name="processor fader: fill" alias="widget:blue"/>
+    <ColorAlias name="processor fader: fill active" alias="widget:blue"/>
     <ColorAlias name="processor fader: led active" alias="alert:green"/>
     <ColorAlias name="processor postfader: fill" alias="widget:green"/>
     <ColorAlias name="processor postfader: fill active" alias="widget:green"/>
@@ -472,7 +472,7 @@
     <ColorAlias name="tracknumber label: fill active" alias="neutral:background2"/>
     <ColorAlias name="tracknumber label: led active" alias="alert:red"/>
     <ColorAlias name="transport active option button: fill" alias="widget:bg"/>
-    <ColorAlias name="transport active option button: fill active" alias="alert:blue"/>
+    <ColorAlias name="transport active option button: fill active" alias="alert:green"/>
     <ColorAlias name="transport active option button: led active" alias="alert:green"/>
     <ColorAlias name="transport button: fill" alias="widget:bg"/>
     <ColorAlias name="transport button: fill active" alias="alert:green"/>
@@ -489,7 +489,7 @@
     <ColorAlias name="transport loop rect" alias="widget:blue"/>
     <ColorAlias name="transport marker bar" alias="neutral:background2"/>
     <ColorAlias name="transport option button: fill" alias="widget:bg"/>
-    <ColorAlias name="transport option button: fill active" alias="widget:blue lighter"/>
+    <ColorAlias name="transport option button: fill active" alias="alert:green"/>
     <ColorAlias name="transport option button: led active" alias="alert:green"/>
     <ColorAlias name="transport punch rect" alias="widget:ruddy"/>
     <ColorAlias name="transport recenable button: fill" alias="widget:bg"/>
