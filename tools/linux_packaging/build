@@ -893,16 +893,6 @@ fi
 
 ################################################################################
 
-if test x$DEMO_SESSION_URL != x ; then
-	mkdir -p $Shared/sessions
-	DEMO_SESSIONS=$(curl ${CURLOPT} --fail $DEMO_SESSION_URL/index.txt)
-	for demo in $DEMO_SESSIONS; do
-		curl ${CURLOPT} --fail -# -o $Shared/sessions/$demo $DEMO_SESSION_URL/$demo
-	done
-fi
-
-################################################################################
-
 #
 # Add the uninstaller
 #

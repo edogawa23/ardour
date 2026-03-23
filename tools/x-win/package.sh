@@ -460,16 +460,6 @@ fi
 
 ################################################################################
 
-if test x$DEMO_SESSION_URL != x ; then
-	mkdir -p $DESTDIR/share/${LOWERCASE_DIRNAME}/sessions
-	DEMO_SESSIONS=$(curl ${CURLOPT} --fail $DEMO_SESSION_URL/index.txt)
-	for demo in $DEMO_SESSIONS; do
-		curl ${CURLOPT} --fail -# -o $DESTDIR/share/${LOWERCASE_DIRNAME}/sessions/$demo $DEMO_SESSION_URL/$demo
-	done
-fi
-
-################################################################################
-
 ( cd $DESTDIR ; find . ) > ${TMPDIR}/file_list.txt
 
 ################################################################################
