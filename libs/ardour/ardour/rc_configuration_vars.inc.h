@@ -201,7 +201,6 @@ CONFIG_VARIABLE (MeterType, meter_type_bus, "meter-type-bus", MeterPeak)
 
 CONFIG_VARIABLE (bool, try_autostart_engine, "try-autostart-engine", true)
 CONFIG_VARIABLE (bool, hide_dummy_backend, "hide-dummy-backend", true)
-CONFIG_VARIABLE (bool, copy_demo_sessions, "copy-demo-sessions", true)
 CONFIG_VARIABLE (std::string, auditioner_output_left, "auditioner-output-left", "default")
 CONFIG_VARIABLE (std::string, auditioner_output_right, "auditioner-output-right", "default")
 CONFIG_VARIABLE (bool, replicate_missing_region_channels, "replicate-missing-region-channels", true)
