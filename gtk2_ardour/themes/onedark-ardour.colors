@@ -456,6 +456,9 @@
     <ColorAlias name="stretch clock: cursor" alias="theme:contrasting alt"/>
     <ColorAlias name="stretch clock: edited text" alias="theme:contrasting alt"/>
     <ColorAlias name="stretch clock: text" alias="theme:contrasting clock"/>
+    <ColorAlias name="summary: base" alias="neutral:backgroundest"/>
+    <ColorAlias name="summary: track base" alias="widget:bg"/>
+    <ColorAlias name="summary: view rect" alias="neutral:foregroundest"/>
     <ColorAlias name="sync mark" alias="theme:contrasting clock"/>
     <ColorAlias name="tab button: fill" alias="widget:bg"/>
     <ColorAlias name="tab button: fill active" alias="neutral:midground"/>

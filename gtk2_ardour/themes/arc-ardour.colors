@@ -487,6 +487,9 @@
     <ColorAlias name="stretch clock: cursor" alias="arc-green"/>
     <ColorAlias name="stretch clock: edited text" alias="arc-green"/>
     <ColorAlias name="stretch clock: text" alias="arc-green"/>
+    <ColorAlias name="summary: base" alias="arc-background-dark"/>
+    <ColorAlias name="summary: track base" alias="arc-background-light"/>
+    <ColorAlias name="summary: view rect" alias="arc-foreground"/>
     <ColorAlias name="sync mark" alias="arc-green"/>
     <ColorAlias name="tab button: fill" alias="arc-background-light"/>
     <ColorAlias name="tab button: fill active" alias="arc-blue-dark"/>
