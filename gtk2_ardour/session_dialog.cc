@@ -94,7 +94,7 @@ SessionDialog::SessionDialog (DialogTab initial_tab, const std::string& session_
 
 	set_position (WIN_POS_CENTER);
 	get_vbox()->set_spacing (6);
-	get_vbox()->pack_start (_open_table, false, false);
+	get_vbox()->pack_start (_open_table, true, true);
 
 	string image_path;
 	Searchpath rc (ARDOUR::ardour_data_search_path());
@@ -173,11 +173,20 @@ SessionDialog::SessionDialog (DialogTab initial_tab, const std::string& session_
 		}
 	}
 
+#if !defined (LIVETRAX) && !defined (VBM)
+	Label *spacer = manage (new Label());
+	spacer->set_size_request(3, 3);
+	_open_table.attach (*spacer,           0,1, row, row + 1, FILL, FILL); ++row;
+#endif
+
 	_open_table.attach (recent_button,     0,1, row, row + 1, FILL, FILL); ++row;
 	_open_table.attach (existing_button,   0,1, row, row + 1, FILL, FILL); ++row;
 	_open_table.attach (new_button,        0,1, row, row + 1, FILL, FILL); ++row;
 
-	++row;
+	Label *vblank = manage (new Label());
+	vblank->set_size_request(1, 1);
+	_open_table.attach (*vblank,           0,1, row, row + 1, FILL, FILL|EXPAND, 0, 0); ++row;
+
 	Label *vspacer = manage (new Label());
 	vspacer->set_size_request(8, -1);
 	_open_table.attach (*vspacer,          1,2, top, row, FILL,        FILL|EXPAND, 0, 0);
