@@ -388,7 +388,7 @@ void
 EditorSummary::on_size_request (Gtk::Requisition *req)
 {
 	req->width = -1;
-	req->height = 20;
+	req->height = -1;
 }
 
 /** Adjust width when the buttons hide a significant part of the surface
