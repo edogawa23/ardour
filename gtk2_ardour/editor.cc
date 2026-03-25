@@ -592,10 +592,10 @@ Editor::Editor ()
 
 	VBox* summary_zoom_vbox = manage (new Gtk::VBox);
 	HBox* summary_zoom_hbox = manage (new Gtk::HBox);
-	summary_zoom_hbox->set_size_request(-1, 21);
+	summary_zoom_hbox->set_size_request(-1, 21 * UIConfiguration::instance().get_ui_scale());
 
 	HBox* summary_toolbar = manage (new Gtk::HBox);
-	summary_toolbar->set_size_request(21 * 5, -1);
+	summary_toolbar->set_size_request(21 * 5 * UIConfiguration::instance().get_ui_scale(), -1);
 	summary_toolbar->pack_start(*summary_arrow_left, true, true, 0);
 	summary_toolbar->pack_start(zoom_out_button, true, true, 0);
 	summary_toolbar->pack_start(zoom_in_button, true, true, 0);
@@ -656,7 +656,7 @@ Editor::Editor ()
 		/* initial allocation so that summary has minimum size*/
 		fract = 0.999;
 	}
-	editor_summary_pane.set_child_minsize (_summary_vbox, 25);
+	editor_summary_pane.set_child_minsize (_summary_vbox, 3 + 21 * UIConfiguration::instance().get_ui_scale());
 	editor_summary_pane.set_divider (0, fract);
 	editor_summary_pane.set_absolute_divider (0, ArdourWidgets::Pane::DividerMode::AbsoluteAfter);
 
