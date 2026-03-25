@@ -653,8 +653,8 @@ Editor::Editor ()
 
 	float fract;
 	if (!settings || !settings->get_property ("edit-vertical-pane-pos", fract) || fract > 1.0) {
-		/* initial allocation is 90% to canvas, 10% to summary */
-		fract = 0.90;
+		/* initial allocation so that summary has minimum size*/
+		fract = 0.999;
 	}
 	editor_summary_pane.set_child_minsize (_summary_vbox, 25);
 	editor_summary_pane.set_divider (0, fract);
