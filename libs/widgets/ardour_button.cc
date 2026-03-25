@@ -317,8 +317,8 @@ ArdourButton::render (Cairo::RefPtr<Cairo::Context> const& ctx, cairo_rectangle_
 	if (corner_radius < 0) {
 		/* L/R half circle */
 		corner_radius = get_height() / 2. - 2 * scale;
-	} else {
-		std::max(2.f, corner_radius * scale);
+	} else if (corner_radius > 0) {
+		corner_radius = std::max(2.f, corner_radius * scale);
 	}
 	corner_radius = boxy ? 0 : corner_radius;
 
