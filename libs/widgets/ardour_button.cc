@@ -211,6 +211,12 @@ ArdourButton::set_text_internal () {
 	} else {
 		_layout->set_text (_text);
 	}
+	/* automatic? or use a special _tweak ?*/
+	if (_text.find ("\n") != string::npos) {
+		_layout->set_alignment (Pango::ALIGN_CENTER);
+	} else {
+		_layout->set_alignment (Pango::ALIGN_LEFT);
+	}
 }
 
 void
