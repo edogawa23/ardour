@@ -630,6 +630,7 @@ Editor::Editor ()
 	summary_frame->set_name("SummaryFrame");
 	summary_frame->add(*_summary);
 
+	_summary_hbox.pack_start (*summary_left_spacer, false, false);
 	_summary_hbox.pack_start (*summary_frame, true, true);
 
 	_summary_vbox.pack_start (_summary_hbox, true, true);
@@ -655,7 +656,9 @@ Editor::Editor ()
 		/* initial allocation is 90% to canvas, 10% to summary */
 		fract = 0.90;
 	}
+	editor_summary_pane.set_child_minsize (_summary_vbox, 25);
 	editor_summary_pane.set_divider (0, fract);
+	editor_summary_pane.set_absolute_divider (0, ArdourWidgets::Pane::DividerMode::AbsoluteAfter);
 
 	global_vpacker.set_spacing (0);
 	global_vpacker.set_border_width (0);
