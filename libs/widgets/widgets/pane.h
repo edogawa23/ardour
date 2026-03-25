@@ -55,6 +55,12 @@ public:
 		Child (Pane* p, Gtk::Widget* widget, uint32_t ms) : pane (p), w (widget), minsize (ms) {}
 	};
 
+	enum DividerMode {
+		Relative,
+		AbsoluteBefore,
+		AbsoluteAfter
+	};
+
 	typedef std::vector<std::shared_ptr<Child> > Children;
 
 	Pane (bool horizontal);
@@ -63,6 +69,7 @@ public:
 	void set_divider (std::vector<float>::size_type divider, float fract);
 	float get_divider (std::vector<float>::size_type divider = 0) const;
 	void set_child_minsize (Gtk::Widget const &, int32_t);
+	void set_absolute_divider (std::vector<float>::size_type divider, DividerMode mode);
 
 	GType child_type_vfunc() const;
 	void set_drag_cursor (Gdk::Cursor);
@@ -99,6 +106,8 @@ private:
 
 		float fract;
 		bool dragging;
+		DividerMode mode;
+		float absolute_child_size;
 
 		bool on_expose_event (GdkEventExpose* ev);
 	};

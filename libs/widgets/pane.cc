@@ -218,11 +218,34 @@ Pane::on_remove (Widget* w)
 void
 Pane::on_size_allocate (Gtk::Allocation& alloc)
 {
+	Dividers::size_type div = 0;
+
+	/* When using an absolute divider, we want to preserve the absolute pixel size
+	 * of one of the Pane children. When the container resizes, we adujst the fract
+	 * using the last pixel size of the child.
+	 * This path only executes once the child has had a size allocation.
+	 */
+	for (Dividers::const_iterator d = dividers.begin(); d != dividers.end(); ++d, ++div) {
+		if ((*d)->mode != Relative && (*d)->absolute_child_size != -1) {
+			Container::on_size_allocate (alloc);
+
+			/* adjust fract before reallocating children */
+			float size = horizontal ? get_allocation().get_width() : get_allocation().get_height();
+			if ((*d)->mode == AbsoluteBefore) {
+				(*d)->fract = (*d)->absolute_child_size / (size - divider_width);
+			} else if ((*d)->mode == AbsoluteAfter) {
+				(*d)->fract = 1.0f - (*d)->absolute_child_size / (size - divider_width);
+			}
+
+			reallocate (alloc);
+			return;
+		}
+	}
+
 	reallocate (alloc);
 	Container::on_size_allocate (alloc);
 
 	/* minimum pane size constraints */
-	Dividers::size_type div = 0;
 	for (Dividers::const_iterator d = dividers.begin(); d != dividers.end(); ++d, ++div) {
 		// XXX skip dividers that were just hidden in reallocate()
 		Pane::set_divider (div, (*d)->fract);
@@ -235,10 +258,16 @@ Pane::on_size_allocate (Gtk::Allocation& alloc)
 void
 Pane::reallocate (Gtk::Allocation const & alloc)
 {
+	if (alloc.get_width() == 1 && alloc.get_height() == 1) {
+		/* space not allocated yet */
+		return;
+	}
+
 	int remaining;
 	int xpos = alloc.get_x();
 	int ypos = alloc.get_y();
 	float fract;
+	DividerMode mode;
 
 	if (children.empty()) {
 		return;
@@ -262,6 +291,7 @@ Pane::reallocate (Gtk::Allocation const & alloc)
 	Children::iterator child;
 	Children::iterator next;
 	Dividers::iterator div;
+	Divider* current_div = *dividers.begin();
 
 	child = children.begin();
 
@@ -297,16 +327,30 @@ Pane::reallocate (Gtk::Allocation const & alloc)
 		} else {
 			/* child gets the fraction of the remaining space given by the divider that follows it */
 			fract = (*div)->fract;
+			mode = (*div)->mode;
+			current_div = *div;
 		}
 
 		if (horizontal) {
-			child_alloc.set_width ((gint) floor (remaining * fract));
 			child_alloc.set_height (alloc.get_height());
+			child_alloc.set_width ((gint) floor (remaining * fract));
+
+			/* store absolute size */
+			if ((mode == AbsoluteBefore && next != children.end()) || (mode == AbsoluteAfter && next == children.end())) {
+				current_div->absolute_child_size = remaining * fract;
+			}
+
 			remaining = max (0, (remaining - child_alloc.get_width()));
 			xpos += child_alloc.get_width();
 		} else {
 			child_alloc.set_width (alloc.get_width());
 			child_alloc.set_height ((gint) floor (remaining * fract));
+
+			/* store absolute size */
+			if ((mode == AbsoluteBefore && next != children.end()) || (mode == AbsoluteAfter && next == children.end())) {
+				current_div->absolute_child_size = remaining * fract;
+			}
+
 			remaining = max (0, (remaining - child_alloc.get_height()));
 			ypos += child_alloc.get_height ();
 		}
@@ -596,6 +640,30 @@ Pane::set_divider (Dividers::size_type div, float fract)
 	}
 }
 
+void
+Pane::set_absolute_divider (Dividers::size_type div, DividerMode mode)
+{
+	Dividers::iterator d = dividers.begin();
+
+	for (d = dividers.begin(); d != dividers.end() && div != 0; ++d, --div) {
+		/* relax */
+	}
+
+	if (d == dividers.end()) {
+		/* caller is trying to set divider that does not exist
+		 * yet.
+		 */
+		return;
+	}
+
+	(*d)->mode = mode;
+	if ((*d)->mode != Relative) {
+		/* XXX Absolute divider modes have only been tested with 1 divider */
+		assert (dividers.size () < 2);
+	}
+
+}
+
 float
 Pane::get_divider (Dividers::size_type div) const
 {
@@ -641,6 +709,8 @@ Pane::forall_vfunc (gboolean include_internals, GtkCallback callback, gpointer c
 Pane::Divider::Divider ()
 	: fract (0.0)
 	, dragging (false)
+	, mode(Relative)
+	, absolute_child_size(-1)
 {
 	set_events (Gdk::EventMask (Gdk::BUTTON_PRESS|
 	                            Gdk::BUTTON_RELEASE|
