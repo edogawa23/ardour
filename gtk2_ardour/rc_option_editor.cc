@@ -3123,7 +3123,7 @@ These settings will only take effect after %1 is restarted.\n\
 #if !(defined PLATFORM_WINDOWS || defined __APPLE__)
 	bo = new BoolOption (
 			"allow-to-resize-init-dialog",
-			_("Allow resizing of session and engine dialogs"),
+			_("Allow resizing of the engine dialogs"),
 			sigc::mem_fun (UIConfiguration::instance(), &UIConfiguration::get_allow_to_resize_init_dialog),
 			sigc::mem_fun (UIConfiguration::instance(), &UIConfiguration::set_allow_to_resize_init_dialog)
 			);
