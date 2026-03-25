@@ -158,6 +158,8 @@ MonoPanner::on_expose_event (GdkEventExpose*)
 		po = 0x606060ff;
 		pf = 0x404040ff;
 		t  = 0x606060ff;
+	} else if (!_sensitive) {
+		pf = 0xa0a0a0ff;
 	}
 
 	/* background */

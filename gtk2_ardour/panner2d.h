@@ -63,6 +63,7 @@ class Panner2d : public Gtk::DrawingArea
 	void move_signal (int which, const PBD::AngularVector&);
 	void reset (uint32_t n_inputs);
 	void set_send_drawing_mode (bool);
+	void set_sensitive (bool);
 
 	std::shared_ptr<ARDOUR::PannerShell> get_panner_shell() const { return panner_shell; }
 
@@ -140,6 +141,7 @@ class Panner2d : public Gtk::DrawingArea
 	bool    did_move;
 	bool    have_elevation;
 	bool    _send_mode;
+	bool    _sensitive;
 
 	Target *find_closest_object (gdouble x, gdouble y, bool& is_signal);
 
@@ -166,6 +168,7 @@ class Panner2dWindow : public ArdourWindow
 	Panner2dWindow (std::shared_ptr<ARDOUR::PannerShell>, int32_t height, uint32_t inputs);
 
 	void reset (uint32_t n_inputs);
+	void set_sensitive (bool);
 
 	private:
 	Panner2d widget;

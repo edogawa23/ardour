@@ -88,6 +88,7 @@ Panner2d::Panner2d (std::shared_ptr<PannerShell> p, int32_t h)
 	, last_width (0)
 	, have_elevation (false)
 	, _send_mode (false)
+	, _sensitive (true)
 {
 	if (!have_colors) {
 		set_colors ();
@@ -438,6 +439,15 @@ Panner2d::set_send_drawing_mode (bool onoff)
 	}
 }
 
+void
+Panner2d::set_sensitive (bool onoff)
+{
+	if (_sensitive != onoff) {
+		_sensitive = onoff;
+		queue_draw ();
+	}
+}
+
 bool
 Panner2d::on_motion_notify_event (GdkEventMotion *ev)
 {
@@ -598,13 +608,19 @@ Panner2d::on_expose_event (GdkEventExpose *event)
 
 					cairo_new_path (cr);
 					cairo_arc (cr, c.x, c.y, arc_radius, 0, 2.0 * M_PI);
-					if (_send_mode && !panner_shell->is_linked_to_route()) {
+					if (!_sensitive) {
+						CSSRGBA (0xa0a0a0ff);
+					} else if (_send_mode && !panner_shell->is_linked_to_route()) {
 						CSSRGBA(colors.send_pan);
 					} else {
 						CSSRGBA(colors.signal_fill);
 					}
 					cairo_fill_preserve (cr);
-					CSSRGBA(colors.signal_outline);
+					if (!_sensitive) {
+						CSSRGBA (0xa0a0a0ff);
+					} else {
+						CSSRGBA(colors.signal_outline);
+					}
 					cairo_stroke (cr);
 
 					if (!xsmall && !signal->text.empty()) {
@@ -956,6 +972,13 @@ Panner2dWindow::Panner2dWindow (std::shared_ptr<PannerShell> p, int32_t h, uint3
 	set_width();
 	set_bypassed();
 	widget.show ();
+}
+
+void
+Panner2dWindow::set_sensitive (bool sensitive)
+{
+	widget.set_sensitive (sensitive);
+	ArdourWindow::set_sensitive (sensitive);
 }
 
 void

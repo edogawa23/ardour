@@ -187,6 +187,8 @@ StereoPanner::on_expose_event (GdkEventExpose*)
 		o  = 0x606060ff;
 		t  = 0x606060ff;
 		r  = 0x606060ff;
+	} else if (!_sensitive) {
+		f = 0xa0a0a0ff;
 	}
 
 	/* background */
@@ -293,7 +295,7 @@ StereoPanner::on_expose_event (GdkEventExpose*)
 	context->rel_line_to (0.0, -pos_box_size); /* upper left */
 	context->close_path ();
 
-	if (_send_mode && !_panner_shell->is_linked_to_route()) {
+	if (_sensitive && _send_mode && !_panner_shell->is_linked_to_route()) {
 		f = colors_send_pan;
 	}
 

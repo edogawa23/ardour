@@ -512,6 +512,14 @@ PannerUI::update_pan_sensitive ()
 	if (big_window) {
 		big_window->set_sensitive (sensitive);
 	}
+
+	if (_stereo_panner) {
+		_stereo_panner->set_sensitive (sensitive);
+	} else if (_mono_panner) {
+		_mono_panner->set_sensitive (sensitive);
+	} else if (twod_panner) {
+		twod_panner->set_sensitive (sensitive);
+	}
 }
 
 gint

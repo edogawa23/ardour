@@ -37,6 +37,7 @@ PannerInterface::PannerInterface (std::shared_ptr<Panner> p)
 	: _panner (p)
 	, _tooltip (this)
 	, _send_mode (false)
+	, _sensitive (true)
 	, _editor (0)
 {
 	set_can_focus ();
@@ -117,6 +118,24 @@ PannerInterface::edit ()
 	delete _editor;
 	_editor = editor ();
 	_editor->show ();
+}
+
+void
+PannerInterface::end_edit ()
+{
+	delete _editor;
+	_editor = nullptr;
+}
+
+void
+PannerInterface::set_sensitive (bool onoff) {
+	if (_sensitive != onoff) {
+		_sensitive = onoff;
+		if (!_sensitive) {
+			end_edit ();
+		}
+		queue_draw ();
+	}
 }
 
 void

@@ -64,6 +64,9 @@ public:
 	}
 
 	void edit ();
+	void end_edit ();
+
+	void set_sensitive (bool);
 	void set_send_drawing_mode (bool);
 
 protected:
@@ -82,6 +85,7 @@ protected:
 	PannerPersistentTooltip _tooltip;
 
 	bool _send_mode;
+	bool _sensitive;
 
 private:
 	virtual PannerEditor* editor () = 0;
