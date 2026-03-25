@@ -392,10 +392,10 @@ ArdourButton::render (Cairo::RefPtr<Cairo::Context> const& ctx, cairo_rectangle_
 		Gtkmm2ext::set_source_rgba (cr, outline_color);
 		cairo_fill(cr);
 
-		padding_top = 1 * scale;
-		padding_bottom = 1 * scale;
-		padding_left = 1 * scale;
-		padding_right = 1 * scale;
+		padding_top = 1 ;
+		padding_bottom = 1;
+		padding_left = 1;
+		padding_right = 1;
 
 		if (_border_mask != HIDE_NONE) {
 			if (_border_mask & HIDE_TOP) {
