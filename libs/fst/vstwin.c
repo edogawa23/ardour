@@ -393,7 +393,7 @@ fst_load_vst_library(const char * path)
 	if (!wpath) {
 		return NULL;
 	}
-	void* handle = LoadLibraryW ((LPCWSTR)wpath);
+	HMODULE handle = LoadLibraryW((LPCWSTR)wpath);
 	g_free (wpath);
 	return handle;
 }
