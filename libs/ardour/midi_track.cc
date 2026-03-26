@@ -445,10 +445,12 @@ MidiTrack::non_realtime_locate (samplepos_t spos)
 
 	Track::non_realtime_locate (spos);
 
+	/* always clear this state on every locate */
+	_disk_reader->clear_midi_chase ();
+
 	std::shared_ptr<MidiPlaylist> playlist = _disk_writer->midi_playlist();
 
 	if (!playlist) {
-		_disk_reader->clear_midi_chase ();
 		return;
 	}
 
@@ -456,13 +458,11 @@ MidiTrack::non_realtime_locate (samplepos_t spos)
 	std::shared_ptr<MidiRegion> region = std::dynamic_pointer_cast<MidiRegion> (playlist->top_unmuted_region_at (pos));
 
 	if (!region) {
-		_disk_reader->clear_midi_chase ();
 		return;
 	}
 
 	/* the source may be missing, but the control still referenced in the GUI */
 	if (!region->midi_source() || !region->model()) {
-		_disk_reader->clear_midi_chase ();
 		return;
 	}
 
