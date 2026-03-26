@@ -50,6 +50,8 @@ using namespace std;
 using namespace ARDOUR;
 using Gtkmm2ext::Keyboard;
 
+int EditorSummary::button_base_size = 21;
+
 /** Construct an EditorSummary.
  *  @param e Editor to represent.
  */
@@ -66,7 +68,8 @@ EditorSummary::EditorSummary (Editor& e)
 	  _zoom_trim_dragging (false),
 	  _old_follow_playhead (false),
 	  _image (0),
-	  _background_dirty (true)
+	  _background_dirty (true),
+	  _button_size(button_base_size * UIConfiguration::instance().get_ui_scale())
 {
 	CairoWidget::use_nsglview (UIConfiguration::instance().get_nsgl_view_mode () == NSGLHiRes);
 	add_events (Gdk::POINTER_MOTION_MASK|Gdk::KEY_PRESS_MASK|Gdk::KEY_RELEASE_MASK|Gdk::ENTER_NOTIFY_MASK|Gdk::LEAVE_NOTIFY_MASK);
@@ -96,6 +99,7 @@ void
 EditorSummary::on_size_allocate (Gtk::Allocation& alloc)
 {
 	CairoWidget::on_size_allocate (alloc);
+	_button_size = button_base_size * UIConfiguration::instance().get_ui_scale();
 	set_background_dirty ();
 }
 
@@ -397,10 +401,10 @@ EditorSummary::on_size_request (Gtk::Requisition *req)
 int
 EditorSummary::get_variable_width ()
 {
-	if (get_height() > 30) {
+	if (get_height() > _button_size * 3 / 2) {
 		return get_width();
 	} else {
-		return get_width() - (21 * 5 - 1);
+		return get_width() - (_button_size * 5 - 1);
 	}
 }
 
@@ -613,7 +617,7 @@ EditorSummary::get_position (double x, double y) const
 	// whether we're hovering the toolbar or not
 	gint x1, y1;
 	get_pointer(x1, y1);
-	bool const on_toolbar = x1 >= get_width() - (5 * 21) && y1 >= get_height() - 21;
+	bool const on_toolbar = x1 >= get_width() - (5 * _button_size) && y1 >= get_height() - _button_size;
 
 	if (on_toolbar) {
 		return TOOLBAR;
