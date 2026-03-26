@@ -2778,14 +2778,7 @@ Editor::setup_toolbar ()
 	act = ActionManager::get_action (X_("Editor"), X_("zoom-to-session"));
 	full_zoom_button.set_related_action (act);
 
-	if (ARDOUR::Profile->get_mixbus()) {
-		_zoom_box.pack_start (zoom_preset_selector, false, false);
-	} else {
-		// _zoom_box.pack_start (zoom_out_button, false, false);
-		// _zoom_box.pack_start (zoom_in_button, false, false);
-		// _zoom_box.pack_start (full_zoom_button, false, false);
-		_zoom_box.pack_start (zoom_focus_selector, false, false);
-	}
+	_zoom_box.pack_start (zoom_focus_selector, false, false);
 
 	/* Track zoom buttons */
 	_track_box.set_spacing (2);
