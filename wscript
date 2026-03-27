@@ -492,10 +492,13 @@ int main() { return 0; }''',
     autowaf.set_basic_compiler_flags (conf,flags_dict)
 
     if conf.options.asan:
-        conf.check_cxx(cxxflags=["-fsanitize=address", "-fno-omit-frame-pointer"], linkflags=["-fsanitize=address"])
-        cxx_flags.append('-fsanitize=address')
-        cxx_flags.append('-fno-omit-frame-pointer')
-        linker_flags.append('-fsanitize=address')
+        if conf.check_cxx(cxxflags=["-fsanitize=address", "-fno-omit-frame-pointer"], linkflags=["-fsanitize=address"], mandatory = False):
+            cxx_flags.append('-fsanitize=address')
+            cxx_flags.append('-fno-omit-frame-pointer')
+            linker_flags.append('-fsanitize=address')
+        elif conf.check_cxx(cxxflags=["-fsanitize=address"], linkflags=["-fsanitize=address"]):
+            cxx_flags.append('-fsanitize=address')
+            linker_flags.append('-fsanitize=address')
 
     if conf.options.tsan:
         conf.check_cxx(cxxflags=["-fsanitize=thread", "-fno-omit-frame-pointer"], linkflags=["-fsanitize=thread"])
