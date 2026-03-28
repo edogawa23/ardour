@@ -2702,21 +2702,16 @@ Editor::setup_toolbar ()
 	mouse_mode_size_group->add_widget (mouse_draw_button);
 	mouse_mode_size_group->add_widget (mouse_content_button);
 
-	if (!Profile->get_mixbus()) {
-		mouse_mode_size_group->add_widget (zoom_in_button);
-		mouse_mode_size_group->add_widget (zoom_out_button);
-		mouse_mode_size_group->add_widget (full_zoom_button);
-		mouse_mode_size_group->add_widget (zoom_focus_selector);
-		mouse_mode_size_group->add_widget (tav_shrink_button);
-		mouse_mode_size_group->add_widget (tav_expand_button);
-		mouse_mode_size_group->add_widget (follow_playhead_button);
-		mouse_mode_size_group->add_widget (follow_edits_button);
-		mouse_mode_size_group->add_widget (_notebook_tab1);
-		mouse_mode_size_group->add_widget (_notebook_tab2);
-	} else {
-		mouse_mode_size_group->add_widget (zoom_preset_selector);
-		mouse_mode_size_group->add_widget (visible_tracks_selector);
-	}
+	mouse_mode_size_group->add_widget (zoom_in_button);
+	mouse_mode_size_group->add_widget (zoom_out_button);
+	mouse_mode_size_group->add_widget (full_zoom_button);
+	mouse_mode_size_group->add_widget (zoom_focus_selector);
+	mouse_mode_size_group->add_widget (tav_shrink_button);
+	mouse_mode_size_group->add_widget (tav_expand_button);
+	mouse_mode_size_group->add_widget (follow_playhead_button);
+	mouse_mode_size_group->add_widget (follow_edits_button);
+	mouse_mode_size_group->add_widget (_notebook_tab1);
+	mouse_mode_size_group->add_widget (_notebook_tab2);
 
 	mouse_mode_size_group->add_widget (stretch_marker_cb);
 
