@@ -144,8 +144,8 @@ private:
 	void render_background_image ();
 	bool _background_dirty;
 
-	int _toolbar_height;
 	int _toolbar_width;
+	int _toolbar_height;
 
 	PBD::ScopedConnectionList position_connection;
 	PBD::ScopedConnection route_ctrl_id_connection;
