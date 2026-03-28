@@ -267,7 +267,7 @@ Pane::reallocate (Gtk::Allocation const & alloc)
 	int xpos = alloc.get_x();
 	int ypos = alloc.get_y();
 	float fract;
-	DividerMode mode;
+	DividerMode mode = Relative;
 
 	if (children.empty()) {
 		return;
