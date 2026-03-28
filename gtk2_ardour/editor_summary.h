@@ -65,7 +65,6 @@ private:
 		TOOLBAR
 	};
 
-	void on_size_request (Gtk::Requisition *);
 	bool on_button_press_event (GdkEventButton *);
 	bool on_button_release_event (GdkEventButton *);
 	bool on_motion_notify_event (GdkEventMotion *);

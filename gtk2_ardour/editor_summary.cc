@@ -384,17 +384,6 @@ EditorSummary::set_overlays_dirty_rect (int x, int y, int w, int h)
 	queue_draw_area (x, y, w, h);
 }
 
-
-/** Handle a size request.
- *  @param req GTK requisition
- */
-void
-EditorSummary::on_size_request (Gtk::Requisition *req)
-{
-	req->width = -1;
-	req->height = -1;
-}
-
 /** Adjust width when the buttons hide a significant part of the surface
  *  @param req GTK requisition
  */
