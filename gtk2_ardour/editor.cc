@@ -592,10 +592,8 @@ Editor::Editor ()
 
 	VBox* summary_zoom_vbox = manage (new Gtk::VBox);
 	HBox* summary_zoom_hbox = manage (new Gtk::HBox);
-	summary_zoom_hbox->set_size_request(-1, _summary->get_button_size());
 
 	HBox* summary_toolbar = manage (new Gtk::HBox);
-	summary_toolbar->set_size_request(5 * _summary->get_button_size(), -1);
 	summary_toolbar->pack_start(*summary_arrow_left, true, true, 0);
 	summary_toolbar->pack_start(zoom_out_button, true, true, 0);
 	summary_toolbar->pack_start(zoom_in_button, true, true, 0);
@@ -656,7 +654,6 @@ Editor::Editor ()
 		/* initial allocation so that summary has minimum size*/
 		fract = 0.999;
 	}
-	editor_summary_pane.set_child_minsize (_summary_vbox, 3 + _summary->get_button_size()); // 3px for summary_bottom_spacer
 	editor_summary_pane.set_divider (0, fract);
 	editor_summary_pane.set_absolute_divider (0, ArdourWidgets::Pane::DividerMode::AbsoluteAfter);
 
@@ -2702,9 +2699,6 @@ Editor::setup_toolbar ()
 	mouse_mode_size_group->add_widget (mouse_draw_button);
 	mouse_mode_size_group->add_widget (mouse_content_button);
 
-	mouse_mode_size_group->add_widget (zoom_in_button);
-	mouse_mode_size_group->add_widget (zoom_out_button);
-	mouse_mode_size_group->add_widget (full_zoom_button);
 	mouse_mode_size_group->add_widget (zoom_focus_selector);
 	mouse_mode_size_group->add_widget (tav_shrink_button);
 	mouse_mode_size_group->add_widget (tav_expand_button);

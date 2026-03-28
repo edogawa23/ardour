@@ -50,8 +50,6 @@ public:
 	void set_background_dirty ();
 	void routes_added (std::list<RouteTimeAxisView*> const &);
 
-	int get_button_size () {return _button_size;}
-
 private:
 	void parameter_changed (std::string);
 	void on_size_allocate (Gtk::Allocation& alloc);
@@ -65,6 +63,7 @@ private:
 		TOOLBAR
 	};
 
+	void on_size_request (Gtk::Requisition *);
 	bool on_button_press_event (GdkEventButton *);
 	bool on_button_release_event (GdkEventButton *);
 	bool on_motion_notify_event (GdkEventMotion *);
@@ -145,8 +144,8 @@ private:
 	void render_background_image ();
 	bool _background_dirty;
 
-	static int button_base_size;
-	int _button_size;
+	int _toolbar_height;
+	int _toolbar_width;
 
 	PBD::ScopedConnectionList position_connection;
 	PBD::ScopedConnection route_ctrl_id_connection;
