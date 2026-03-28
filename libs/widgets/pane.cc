@@ -236,6 +236,7 @@ Pane::on_size_allocate (Gtk::Allocation& alloc)
 			} else if ((*d)->mode == AbsoluteAfter) {
 				(*d)->fract = 1.0f - (*d)->absolute_child_size / (size - divider_width);
 			}
+			Pane::set_divider (div, (*d)->fract);
 
 			reallocate (alloc);
 			return;
