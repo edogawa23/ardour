@@ -455,6 +455,12 @@ ArdourButton::render (Cairo::RefPtr<Cairo::Context> const& ctx, cairo_rectangle_
 		}
 	}
 
+	if (padding_left != padding_right || padding_top != padding_bottom) {
+		/* Adjust content centering when some borders are hidden */
+		cairo_save (cr);
+		cairo_translate (cr, (double)(padding_left - padding_right) / 2.,  (double)(padding_top - padding_bottom) / 2.);
+	}
+
 	const int text_margin = char_pixel_width();
 
 	//Pixbuf, if any
@@ -692,6 +698,10 @@ ArdourButton::render (Cairo::RefPtr<Cairo::Context> const& ctx, cairo_rectangle_
 		cairo_arc (cr, 0, 0, _diameter * .5 - 3 * scale, 0, 2 * M_PI);
 		cairo_fill(cr);
 
+		cairo_restore (cr);
+	}
+
+	if (padding_left != padding_right || padding_top != padding_bottom) {
 		cairo_restore (cr);
 	}
 
