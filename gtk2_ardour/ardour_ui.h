@@ -272,6 +272,7 @@ public:
 
 	PublicEditor&	  the_editor() { return *editor;}
 	Mixer_UI* the_mixer() { return mixer; }
+	TriggerPage* the_trigger_page() { return trigger_page; }
 
 	Gtk::Menu* shared_popup_menu ();
 
