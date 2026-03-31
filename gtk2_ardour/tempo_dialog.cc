@@ -725,6 +725,7 @@ MeterDialog::init (const Temporal::BBT_Time& when, double bpb, double divisor, b
 		table->attach (lock_style, 1, 2, 3, 4, FILL|EXPAND, SHRINK);
 	}
 
+	set_resizable(false);
 	get_vbox()->set_border_width (12);
 	get_vbox()->pack_start (*table, false, false);
 
