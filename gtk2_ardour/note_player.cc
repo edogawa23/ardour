@@ -21,6 +21,7 @@
 #include <glibmm/main.h>
 
 #include "ardour/midi_track.h"
+#include "ardour/session.h"
 
 #include "note_player.h"
 
@@ -58,6 +59,11 @@ NotePlayer::on ()
 void
 NotePlayer::play ()
 {
+	if (track->session().transport_rolling ()) {
+		Glib::signal_idle().connect_once ([this]() { delete this;});
+		return;
+	}
+
 	on ();
 
 	/* note: if there is more than 1 note, we will silence them all at the same time */
