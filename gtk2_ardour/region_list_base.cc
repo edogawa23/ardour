@@ -27,6 +27,7 @@
 #include <string>
 
 #include "pbd/file_utils.h"
+#include "pbd/natsort.h"
 
 #include "ardour/audiofilesource.h"
 #include "ardour/audioregion.h"
@@ -149,11 +150,21 @@ RegionListBase::setup_toggle (Gtk::TreeViewColumn* tvc, sigc::slot<void, std::st
 	tc->signal_toggled ().connect (cb);
 }
 
+int
+RegionListBase::name_sorter(Gtk::TreeModel::iterator a, Gtk::TreeModel::iterator b) const
+{
+	std::string const& n1 = (*a)[_columns.name];
+	std::string const& n2 = (*b)[_columns.name];
+
+	return natcmp (n1.c_str(), n2.c_str());
+}
+
 void
 RegionListBase::add_name_column ()
 {
 	TreeViewColumn* tvc = append_col (_columns.name, 120);
 	setup_col (tvc, 0, ALIGN_START, _("Name"), ("Region name"), true);
+	_model->set_sort_func(_columns.name, sigc::mem_fun(*this, &RegionListBase::name_sorter)); 
 
 	tvc->set_resizable (true);
 

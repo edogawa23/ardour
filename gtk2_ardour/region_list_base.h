@@ -219,6 +219,8 @@ protected:
 	void drag_end (Glib::RefPtr<Gdk::DragContext> const&);
 	void drag_data_get (Glib::RefPtr<Gdk::DragContext> const&, Gtk::SelectionData&, guint, guint);
 
+	int name_sorter (Gtk::TreeModel::iterator a, Gtk::TreeModel::iterator b) const;
+
 	virtual bool list_region (std::shared_ptr<ARDOUR::Region>) const;
 
 	Columns _columns;
