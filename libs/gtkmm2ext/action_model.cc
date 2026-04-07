@@ -79,20 +79,6 @@ ActionModel::ActionModel ()
 			continue;
 		}
 
-		//kinda kludgy way to avoid displaying menu items as mappable
-		if ( parts[0] == _("Main_menu") )
-			continue;
-		if ( parts[0] == _("JACK") )
-			continue;
-		if ( parts[0] == _("redirectmenu") )
-			continue;
-		if ( parts[0] == _("Editor_menus") )
-			continue;
-		if ( parts[0] == _("RegionList") )
-			continue;
-		if ( parts[0] == _("ProcessorMenu") )
-			continue;
-
 		if ((r = nodes.find (parts[0])) == nodes.end()) {
 			/* top level is missing */
 
