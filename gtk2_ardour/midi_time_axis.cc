@@ -1834,3 +1834,21 @@ MidiTimeAxisView::color_mode() const
 
 	return ARDOUR::TrackColor;
 }
+
+void
+MidiTimeAxisView::entered ()
+{
+	TimeAxisView::entered ();
+
+	if (_editor.internal_editing()) {
+		_editor.enable_midi_bindings ();
+	}
+}
+
+void
+MidiTimeAxisView::exited ()
+{
+	TimeAxisView::exited();
+	_editor.disable_midi_bindings ();
+}
+

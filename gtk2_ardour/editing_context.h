@@ -425,6 +425,8 @@ class EditingContext : public ARDOUR::SessionHandlePtr, public AxisViewProvider,
 	void register_common_actions (Gtkmm2ext::Bindings*, std::string const &);
 	void register_automation_actions (Gtkmm2ext::Bindings*, std::string const &);
 	virtual void set_action_defaults ();
+	void enable_midi_bindings ();
+	void disable_midi_bindings ();
 
 	ArdourCanvas::Rectangle* rubberband_rect;
 

@@ -114,6 +114,9 @@ public:
 
 	void set_visibility_note_range (MidiStreamView::VisibleNoteRange range, bool apply_to_selection = false);
 
+	void entered ();
+	void exited ();
+
 protected:
 	void start_step_editing ();
 	void stop_step_editing ();

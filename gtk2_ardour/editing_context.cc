@@ -564,6 +564,20 @@ EditingContext::register_common_actions (Bindings* common_bindings, std::string 
 }
 
 void
+EditingContext::enable_midi_bindings ()
+{
+	/* enable MIDI editing actions, which in turns enables their bindings */
+	ActionManager::set_sensitive (_midi_actions, true);
+}
+
+void
+EditingContext::disable_midi_bindings ()
+{
+	/* disable MIDI editing actions, which in turns disables their bindings */
+	ActionManager::set_sensitive (_midi_actions, false);
+}
+
+void
 EditingContext::register_midi_actions (Bindings* midi_bindings, std::string const & prefix)
 {
 	EC_LOCAL_TEMPO_SCOPE;

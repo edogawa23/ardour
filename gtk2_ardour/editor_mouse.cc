@@ -205,16 +205,15 @@ Editor::mouse_mode_chosen (MouseMode m)
 		*/
 		_track_canvas->grab_focus ();
 
-		/* enable MIDI editing actions, which in turns enables their
-		   bindings
-		*/
-		ActionManager::set_sensitive (_midi_actions, true);
+		if (entered_track && dynamic_cast<MidiTimeAxisView*> (entered_track)) {
+			enable_midi_bindings ();
+		}
 
 	} else {
 		/* undo some of the above actions, since we're not in internal
 		   edit mode.
 		*/
-		ActionManager::set_sensitive (_midi_actions, false);
+		disable_midi_bindings ();
 	}
 
 	if (was_internal && !internal_editing()) {
