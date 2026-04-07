@@ -56,7 +56,6 @@ ChordBox::ChordBox (EditingContext& ec)
 	, drop_label (_("Drop Notes"))
 	, _root (0)
 	, _culture (WesternEurope12TET)
-	, _scale_provider (nullptr)
 {
 	using namespace Gtk;
 	using namespace Menu_Helpers;
@@ -285,12 +284,6 @@ ChordBox::build_western ()
 	western_vbox.set_spacing (6);
 
 	pack_start (western_vbox);
-}
-
-void
-ChordBox::set_scale_provider (ScaleProvider const * sp)
-{
-	_scale_provider = sp;
 }
 
 void

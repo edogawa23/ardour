@@ -40,7 +40,6 @@ class ChordBox : public Gtk::VBox, public ARDOUR::ChordProvider
 	~ChordBox();
 
 	void set_culture (ARDOUR::MusicalModeCulture);
-	void set_scale_provider (ARDOUR::ScaleProvider const *);
 
 	typedef std::vector<int> IntervalSet;
 
@@ -88,5 +87,4 @@ class ChordBox : public Gtk::VBox, public ARDOUR::ChordProvider
 
 	int _root;
 	ARDOUR::MusicalModeCulture _culture;
-	ARDOUR::ScaleProvider const * _scale_provider;
 };
