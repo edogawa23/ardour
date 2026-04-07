@@ -131,6 +131,50 @@ ChordBox::pack (Gtk::Widget& widget)
 }
 
 void
+ChordBox::fill_table (Gtk::Table& table, std::vector<std::string> const & names)
+{
+	using namespace Gtk;
+	using namespace Menu_Helpers;
+	using namespace ArdourWidgets;
+
+	ArdourButton* butl;
+	ArdourButton* butr;
+	DoubleButton* dbut;
+	int row = 0;
+	int col = 0;
+	std::vector<std::string>::size_type n = 0;
+
+	for (auto & s : names) {
+
+		butl = manage (new ArdourButton (s));
+		butl->signal_clicked.connect ([this,s]() { tet12_replace_chord (s); });
+
+		butr = manage (new ArdourButton ("", ArdourButton::default_elements, true));
+		butr->set_icon (ArdourIcon::ToolDraw);
+		butr->set_elements (ArdourButton::Element (ArdourButton::Body|ArdourButton::Edge|ArdourButton::VectorIcon));
+		butr->set_active_color (UIConfiguration::instance().color ("alert:yellow"));
+		butr->signal_clicked.connect ([this,s]() { tet12_chord_chosen (s); });
+		if (n < names.size()) {
+			butr->set_related_action (editing_context.draw_chord_action (n));
+		}
+
+		dbut = new DoubleButton (*butl, *butr);
+		table.attach (*dbut, col, col+1, row, row+1);
+
+		++n;
+		++col;
+		if (col % 2 == 0) {
+			col = 0;
+			++row;
+		}
+	}
+
+	table.set_homogeneous (true);
+	table.set_col_spacings (6);
+}
+
+
+void
 ChordBox::build_western ()
 {
 	using namespace Gtk;
@@ -142,72 +186,11 @@ ChordBox::build_western ()
 	inversion_table.resize (1, 2);
 	drop_table.resize (2, 2);
 
-	ArdourButton* butl;
-	ArdourButton* butr;
-	DoubleButton* dbut;
 	int row = 0;
 	int col = 0;
-	int action_num = 0;
 
-	std::vector<std::string> triads ({ _("maj"), _("min"), _("sus4"), _("sus2"), _("dim"), _("aug")});
-
-	for (auto & s : triads) {
-
-		butl = manage (new ArdourButton (s));
-		butl->signal_clicked.connect ([this,s]() { tet12_replace_chord (s); });
-
-		butr = manage (new ArdourButton ("", ArdourButton::default_elements, true));
-		butr->set_icon (ArdourIcon::ToolDraw);
-		butr->set_elements (ArdourButton::Element (ArdourButton::Body|ArdourButton::Edge|ArdourButton::VectorIcon));
-		butr->set_active_color (UIConfiguration::instance().color ("alert:yellow"));
-		// butr->signal_clicked.connect ([this,s]() { tet12_chord_chosen (s); });
-		if (action_num < 10) {
-			butr->set_related_action (editing_context.draw_chord_action (action_num++));
-		}
-
-		dbut = new DoubleButton (*butl, *butr);
-		triad_table.attach (*dbut, col, col+1, row, row+1);
-
-		col++;
-		if (col % 2 == 0) {
-			col = 0;
-			row++;
-		}
-	}
-
-	triad_table.set_homogeneous (true);
-	triad_table.set_col_spacings (6);
-
-	/* Tetrads */
-
-	row = 0;
-	col = 0;
-
-	std::vector<std::string> tetrads ({ _("maj7"), _("7"), _("min7"), _("min6"), _("min7b5"), _("dim7"), _("sus2/7"), _("sus4/7"), _("full dim"), _("maj7#5")});
-
-	for (auto & s : tetrads) {
-
-		butl = manage (new ArdourButton (s));
-		butl->signal_clicked.connect ([this,s]() { tet12_replace_chord (s); });
-
-		butr = manage (new ArdourButton ("", ArdourButton::default_elements, true));
-		butr->set_icon (ArdourIcon::ToolDraw);
-		butr->set_elements (ArdourButton::Element (ArdourButton::Body|ArdourButton::Edge|ArdourButton::VectorIcon));
-		butr->set_active_color (UIConfiguration::instance().color ("alert:yellow"));
-		butr->signal_clicked.connect ([this,s]() { tet12_chord_chosen (s); });
-
-		dbut = new DoubleButton (*butl, *butr);
-		tetrad_table.attach (*dbut, col, col+1, row, row+1);
-
-		col++;
-		if (col % 2 == 0) {
-			col = 0;
-			row++;
-		}
-	}
-
-	tetrad_table.set_homogeneous (true);
-	tetrad_table.set_col_spacings (6);
+	fill_table (triad_table, editing_context.triad_name_list());
+	fill_table (tetrad_table, editing_context.tetrad_name_list());
 
 	/* Inversions */
 

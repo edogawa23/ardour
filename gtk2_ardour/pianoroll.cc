@@ -2517,8 +2517,6 @@ Pianoroll::get_midi_chord (int root_pitch, std::vector<int>& pitches) const
 		return false;
 	}
 
-	midi_inspector->chord_box->set_scale_provider (_active_view->midi_region().get());
-
 	return midi_inspector->chord_box->get_midi_chord (root_pitch, pitches);
 }
 

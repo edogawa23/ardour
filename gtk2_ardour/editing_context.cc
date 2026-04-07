@@ -136,6 +136,9 @@ static const gchar *_zoom_focus_strings[] = {
 	0
 };
 
+std::vector<std::string> EditingContext::_triad_name_list ({ _("maj"), _("min"), _("sus4"), _("sus2"), _("dim"), _("aug")});
+std::vector<std::string> EditingContext::_tetrad_name_list ({ _("maj7"), _("dom7"), _("min7"), _("min6"), _("min7b5"), _("dim7"), _("sus2/7"), _("sus4/7"), _("full dim"), _("maj7#5")});
+
 EditingContext::EditingContext (std::string const & name)
 	: rubberband_rect (0)
 	, old_mouse_mode (Editing::MouseObject)
@@ -184,7 +187,6 @@ EditingContext::EditingContext (std::string const & name)
 	, minsec_nmarks (0)
 	, temporary_zoom_focus_change (false)
  	, _dragging_playhead (false)
-
 {
 	using namespace Gtk::Menu_Helpers;
 
@@ -943,6 +945,12 @@ EditingContext::draw_chord_chosen (int num)
 	if (!ract->get_active()) {
 		return;
 	}
+
+	if (num >= _triad_name_list.size()) {
+		return;
+	}
+
+	_draw_chord_name = _triad_name_list[num];
 
 	instant_save ();
 }

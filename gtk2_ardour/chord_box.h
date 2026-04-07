@@ -18,6 +18,9 @@
 
 #pragma once
 
+#include <string>
+#include <vector>
+
 #include "ytkmm/box.h"
 #include "ytkmm/label.h"
 #include "ytkmm/table.h"
@@ -57,6 +60,8 @@ class ChordBox : public Gtk::VBox, public ARDOUR::ChordProvider
 	ArdourWidgets::ArdourDropdown culture_button;
 	std::string target_chord;
 	Gtk::Label name_display;
+
+	void fill_table (Gtk::Table& table, std::vector<std::string> const & names);
 
 	/* Western */
 

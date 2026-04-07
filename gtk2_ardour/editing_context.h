@@ -528,6 +528,11 @@ class EditingContext : public ARDOUR::SessionHandlePtr, public AxisViewProvider,
 	bool get_midi_chord (int root_pitch, std::vector<int>& pitches) const { return false; }
 	Glib::RefPtr<Gtk::RadioAction> draw_chord_action (int num) { return draw_chord_actions[num]; }
 
+	static std::vector<std::string> const & triad_name_list()  { return _triad_name_list; }
+	static std::vector<std::string> const & tetrad_name_list() { return _tetrad_name_list; }
+	std::string const & draw_chord_name() const { return _draw_chord_name; }
+	bool have_draw_chord() const { return !_draw_chord_name.empty(); }
+	
   protected:
 	std::string _name;
 	bool within_track_canvas;
@@ -880,4 +885,7 @@ class EditingContext : public ARDOUR::SessionHandlePtr, public AxisViewProvider,
 
 	bool temporary_zoom_focus_change;
 	bool _dragging_playhead;
+	static std::vector<std::string> _triad_name_list;
+	static std::vector<std::string> _tetrad_name_list;
+	std::string _draw_chord_name;
 };
