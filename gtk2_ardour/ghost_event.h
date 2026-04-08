@@ -11,15 +11,17 @@
 namespace ArdourCanvas {
 	class Container;
 	class Item;
+	class Lollipop;
 }
 
 class NoteBase;
 
+
 class GhostEvent : public sigc::trackable
 {
    public:
-	GhostEvent (::NoteBase *, ArdourCanvas::Container *);
-	GhostEvent (::NoteBase *, ArdourCanvas::Container *, ArdourCanvas::Item* i);
+	GhostEvent (::NoteBase *, ArdourCanvas::Lollipop* lolli);
+	GhostEvent (::NoteBase *, ArdourCanvas::Item* parent);
 	virtual ~GhostEvent ();
 
 	void set_sensitive (bool yn);

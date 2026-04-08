@@ -190,7 +190,6 @@ MidiGhostRegion::MidiGhostRegion(MidiRegionView& rv,
                                  TimeAxisView& source_tv,
                                  double initial_unit_pos)
 	: GhostRegion(rv, tv.ghost_group(), tv, source_tv, initial_unit_pos)
-	, _note_group (new ArdourCanvas::Container (group))
 	,  parent_mrv (rv)
 {
 	_outline = UIConfiguration::instance().color ("ghost track midi outline");
@@ -198,14 +197,11 @@ MidiGhostRegion::MidiGhostRegion(MidiRegionView& rv,
 	if (base_rect) {
 		base_rect->lower_to_bottom();
 	}
-
-	CANVAS_DEBUG_NAME (_note_group, "midi ghost note group");
 }
 
 MidiGhostRegion::~MidiGhostRegion()
 {
 	clear_events ();
-	delete _note_group;
 }
 
 void
@@ -295,7 +291,7 @@ MidiGhostRegion::update_contents_height ()
 void
 MidiGhostRegion::add_note (NoteBase* n)
 {
-	GhostEvent* event = new GhostEvent (n, _note_group);
+	GhostEvent* event = new GhostEvent (n, base_rect);
 	events.insert (make_pair (n->note(), event));
 
 	event->item->set_fill_color (UIConfiguration::instance().color_mod(n->base_color(), "ghost track midi fill"));
@@ -328,7 +324,7 @@ MidiGhostRegion::add_note (NoteBase* n)
 void
 MidiGhostRegion::clear_events()
 {
-	_note_group->clear (true);
+	base_rect->clear (true);
 	events.clear ();
 }
 

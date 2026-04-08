@@ -25,9 +25,8 @@
 #include "ui_config.h"
 
 PianorollVelocityDisplay::PianorollVelocityDisplay (EditingContext& ec, MidiViewBackground& background, MidiView& mv, ArdourCanvas::Rectangle& base_rect, Gtkmm2ext::Color oc)
-	: VelocityDisplay (ec, background, mv, base_rect, *(_note_group = new ArdourCanvas::Container (&base_rect)), events, oc)
+	: VelocityDisplay (ec, background, mv, base_rect, events, oc)
 {
-	CANVAS_DEBUG_NAME (_note_group, "cue velocity lolli container");
 }
 
 void

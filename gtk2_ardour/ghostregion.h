@@ -124,7 +124,6 @@ public:
 	void clear_events();
 
   protected:
-	ArdourCanvas::Container* _note_group;
 	Gtkmm2ext::Color _outline;
 	ArdourCanvas::Rectangle* _tmp_rect;
 	ArdourCanvas::Polygon* _tmp_poly;

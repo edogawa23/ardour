@@ -52,22 +52,20 @@ using namespace Temporal;
 
 static double const lollipop_radius = 6.0;
 
-VelocityDisplay::VelocityDisplay (EditingContext& ec, MidiViewBackground& background, MidiView& mv, ArdourCanvas::Rectangle& base_rect, ArdourCanvas::Container& lc,
+VelocityDisplay::VelocityDisplay (EditingContext& ec, MidiViewBackground& background, MidiView& mv, ArdourCanvas::Rectangle& base_rect, 
                                   GhostEvent::EventList& el, Gtkmm2ext::Color oc)
 	: editing_context (ec)
 	, bg (background)
 	, view (mv)
 	, base (base_rect)
-	, lolli_container (&lc)
 	, events (el)
 	, _outline (oc)
 	, dragging (false)
 	, dragging_line (nullptr)
 	, last_drag_x (-1)
 	, drag_did_change (false)
-	, selected (false)
 	, _optimization_iterator (events.end())
-	, _sensitive (false)
+	, _sensitive (true)
 {
 	base.set_data (X_("ghostregionview"), this);
 	base_connection = base.Event.connect (sigc::mem_fun (*this, &VelocityDisplay::base_event));
@@ -179,10 +177,10 @@ VelocityDisplay::sensitive () const
 void
 VelocityDisplay::add_note (NoteBase* nb)
 {
-	ArdourCanvas::Lollipop* l = new ArdourCanvas::Lollipop (lolli_container);
+	ArdourCanvas::Lollipop* l = new ArdourCanvas::Lollipop (&base);
 	l->set_bounding_parent (&base);
 
-	GhostEvent* event = new GhostEvent (nb, lolli_container, l);
+	GhostEvent* event = new GhostEvent (nb, l);
 	events.insert (std::make_pair (nb->note(), event));
 
 	l->Event.connect (sigc::bind (sigc::mem_fun (*this, &VelocityDisplay::lollevent), event));
@@ -443,6 +441,7 @@ VelocityDisplay::end_line_drag (bool did_change)
 void
 VelocityDisplay::desensitize_lollis ()
 {
+	std::cerr << "lollis desens\n";
 	for (auto & gev : events) {
 		gev.second->item->set_ignore_events (true);
 	}
@@ -451,28 +450,18 @@ VelocityDisplay::desensitize_lollis ()
 void
 VelocityDisplay::sensitize_lollis ()
 {
+	std::cerr << "lollis sens\n";
 	for (auto & gev : events) {
 		gev.second->item->set_ignore_events (false);
 	}
 }
 
 void
-VelocityDisplay::set_selected (bool yn)
-{
-	selected = yn;
-	set_colors ();
-
-	if (yn) {
-		base.parent()->raise_to_top ();
-	}
-}
-
-void
 VelocityDisplay::hide ()
 {
-	if (lolli_container) {
-		lolli_container->hide ();
-		lolli_container->set_ignore_events (true);
+	for (auto & gev : events) {
+		gev.second->item->hide ();
+		gev.second->item->set_ignore_events (false);
 	}
 
 }
@@ -480,8 +469,8 @@ VelocityDisplay::hide ()
 void
 VelocityDisplay::show ()
 {
-	if (lolli_container) {
-		lolli_container->show ();
-		lolli_container->set_ignore_events (false);
+	for (auto & gev : events) {
+		gev.second->item->show ();
+		gev.second->item->set_ignore_events (true);
 	}
 }

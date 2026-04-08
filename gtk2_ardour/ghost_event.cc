@@ -1,5 +1,6 @@
 #include "canvas/container.h"
 #include "canvas/debug.h"
+#include "canvas/lollipop.h"
 #include "canvas/polygon.h"
 
 #include "ghost_event.h"
@@ -7,7 +8,7 @@
 #include "note.h"
 #include "note_base.h"
 
-GhostEvent::GhostEvent (NoteBase* e, ArdourCanvas::Container* g, ArdourCanvas::Item* i)
+GhostEvent::GhostEvent (NoteBase* e, ArdourCanvas::Lollipop* i)
 	: event (e)
 	, item (i)
 	, is_hit (false)
@@ -18,18 +19,18 @@ GhostEvent::GhostEvent (NoteBase* e, ArdourCanvas::Container* g, ArdourCanvas::I
 	}
 }
 
-GhostEvent::GhostEvent (NoteBase* e, ArdourCanvas::Container* g)
+GhostEvent::GhostEvent (NoteBase* e, ArdourCanvas::Item* parent)
 	: event (e)
 {
 	if (dynamic_cast<Note*>(e)) {
-		item = new ArdourCanvas::Rectangle (g, ArdourCanvas::Rect(e->x0(), e->y0(), e->x1(), e->y1()));
+		item = new ArdourCanvas::Rectangle (parent, ArdourCanvas::Rect(e->x0(), e->y0(), e->x1(), e->y1()));
 		is_hit = false;
 	} else {
 		Hit* hit = dynamic_cast<Hit*>(e);
 		if (!hit) {
 			return;
 		}
-		ArdourCanvas::Polygon* poly = new ArdourCanvas::Polygon(g);
+		ArdourCanvas::Polygon* poly = new ArdourCanvas::Polygon(parent);
 		poly->set(Hit::points(e->y1() - e->y0()));
 		poly->set_position(hit->position());
 		item = poly;

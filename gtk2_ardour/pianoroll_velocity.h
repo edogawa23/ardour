@@ -31,7 +31,6 @@ class PianorollVelocityDisplay : public VelocityDisplay
 	void set_height (double);
 
   private:
-	ArdourCanvas::Container* _note_group;
 	GhostEvent::EventList events;
 	GhostEvent::EventList::iterator _optimization_iterator;
 

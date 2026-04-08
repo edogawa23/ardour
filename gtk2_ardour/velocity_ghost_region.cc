@@ -51,7 +51,7 @@ using namespace Temporal;
 
 VelocityGhostRegion::VelocityGhostRegion (MidiRegionView& mrv, TimeAxisView& tv, TimeAxisView& source_tv, double initial_unit_pos)
 	: MidiGhostRegion (mrv, tv, source_tv, initial_unit_pos)
-	, VelocityDisplay (trackview.editor(), *mrv.midi_stream_view(), mrv, *base_rect, *_note_group, MidiGhostRegion::events, MidiGhostRegion::_outline)
+	, VelocityDisplay (trackview.editor(), *mrv.midi_stream_view(), mrv, *base_rect, MidiGhostRegion::events, MidiGhostRegion::_outline)
 
 {
 }
