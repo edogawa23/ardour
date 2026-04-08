@@ -16,6 +16,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+#include "widgets/tooltips.h"
+
 #include "gtkmm2ext/actions.h"
 
 #include "editing_context.h"
@@ -63,7 +65,6 @@ ChordBox::ChordBox (EditingContext& ec)
 
 	if (tet12_chords.empty()) {
 		build_12tet_chords ();
-		register_actions ();
 	}
 
 	/* these must match the enum decl order */
@@ -130,8 +131,24 @@ ChordBox::pack (Gtk::Widget& widget)
 	pack_start (widget, false, false);
 }
 
+bool
+ChordBox::radio_ardour_button_hack (GdkEventButton* ev, ArdourWidgets::ArdourButton* button)
+{
+	Glib::RefPtr<Gtk::Action> act = button->get_related_action ();
+	if (act) {
+		Glib::RefPtr<Gtk::RadioAction> ract = Glib::RefPtr<Gtk::RadioAction>::cast_dynamic (act);
+		if (ract) {
+			if (ract->get_active ()) {
+				editing_context.no_chord_action()->activate ();
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
 void
-ChordBox::fill_table (Gtk::Table& table, std::vector<std::string> const & names)
+ChordBox::fill_table (Gtk::Table& table, std::vector<std::string> const & names, int chord_size)
 {
 	using namespace Gtk;
 	using namespace Menu_Helpers;
@@ -149,13 +166,28 @@ ChordBox::fill_table (Gtk::Table& table, std::vector<std::string> const & names)
 		butl = manage (new ArdourButton (s));
 		butl->signal_clicked.connect ([this,s]() { tet12_replace_chord (s); });
 
-		butr = manage (new ArdourButton ("", ArdourButton::default_elements, true));
+		butr = manage (new ArdourButton);
 		butr->set_icon (ArdourIcon::ToolDraw);
 		butr->set_elements (ArdourButton::Element (ArdourButton::Body|ArdourButton::Edge|ArdourButton::VectorIcon));
 		butr->set_active_color (UIConfiguration::instance().color ("alert:yellow"));
-		butr->signal_clicked.connect ([this,s]() { tet12_chord_chosen (s); });
+		/* Hack code to catch a click on an already active draw chord
+		   button, and deactivate it instead, using the highly-specific
+		   EditingContext::no_chord_action() as the new active action.
+		*/
+		butr->signal_button_release_event().connect (sigc::bind (sigc::mem_fun (*this, &ChordBox::radio_ardour_button_hack), butr), false);
+
 		if (n < names.size()) {
-			butr->set_related_action (editing_context.draw_chord_action (n));
+
+			Glib::RefPtr<RadioAction> ract;
+			if (chord_size == 3) {
+				ract = editing_context.draw_triad_action (n);
+			} else {
+				ract = editing_context.draw_tetrad_action (n);
+			}
+
+			if (ract) {
+				butr->set_related_action (ract);
+			}
 		}
 
 		dbut = new DoubleButton (*butl, *butr);
@@ -189,8 +221,8 @@ ChordBox::build_western ()
 	int row = 0;
 	int col = 0;
 
-	fill_table (triad_table, editing_context.triad_name_list());
-	fill_table (tetrad_table, editing_context.tetrad_name_list());
+	fill_table (triad_table, editing_context.triad_name_list(), 3);
+	fill_table (tetrad_table, editing_context.tetrad_name_list(), 4);
 
 	/* Inversions */
 
@@ -203,12 +235,14 @@ ChordBox::build_western ()
 	but->set_elements (ArdourButton::Element (ArdourButton::Edge|ArdourButton::Body|ArdourButton::Text));
 	but->set_text (_("Move Up"));
 	but->signal_clicked.connect ([this]() { tet12_invert_chord (true); });
+	ArdourWidgets::set_tooltip (*but, _("Move the lowest pitch in the selected chord up by 1 octave"));
 	inversion_table.attach (*but, col, col+1, row, row+1);
 	col++;
 	but = manage (new ArdourButton);
 	but->set_elements (ArdourButton::Element (ArdourButton::Edge|ArdourButton::Body|ArdourButton::Text));
 	but->set_text (_("Move Down"));
 	but->signal_clicked.connect ([this]() { tet12_invert_chord (false); });
+	ArdourWidgets::set_tooltip (*but, _("Move the highest pitch in the selected chord down by 1 octave"));
 	inversion_table.attach (*but, col, col+1, row, row+1);
 	col = 0;
 	row++;
@@ -224,12 +258,14 @@ ChordBox::build_western ()
 	but = manage (new ArdourButton);
 	but->set_elements (ArdourButton::Element (ArdourButton::Edge|ArdourButton::Body|ArdourButton::Text));
 	but->set_text (_("Drop 2"));
+	ArdourWidgets::set_tooltip (*but, _("Move the 2nd lowest pitch in the selected chord down by 1 octave"));
 	but->signal_clicked.connect ([this]() { tet12_drop_chord ({ 1 }); });
 	drop_table.attach (*but, col, col+1, row, row+1);
 	col++;
 	but = manage (new ArdourButton);
 	but->set_elements (ArdourButton::Element (ArdourButton::Edge|ArdourButton::Body|ArdourButton::Text));
 	but->set_text (_("Drop 3"));
+	ArdourWidgets::set_tooltip (*but, _("Move the 3rd lowest pitch in the selected chord down by 1 octave"));
 	but->signal_clicked.connect ([this]() { tet12_drop_chord ({ 2 }); });
 	drop_table.attach (*but, col, col+1, row, row+1);
 	col = 0;
@@ -237,6 +273,7 @@ ChordBox::build_western ()
 	but = manage (new ArdourButton);
 	but->set_elements (ArdourButton::Element (ArdourButton::Edge|ArdourButton::Body|ArdourButton::Text));
 	but->set_text (_("Drop 2 + 4"));
+	ArdourWidgets::set_tooltip (*but, _("Move the 2nd &amp; 4th lowest pitches in the selected chord down by 1 octave (tetrads only)"));
 	but->signal_clicked.connect ([this]() { tet12_drop_chord ({ 1, 3 }); });
 	drop_table.attach (*but, col, col+2, row, row+1);
 	col = 0;
@@ -278,11 +315,12 @@ ChordBox::show_chord (std::string const & name)
 bool
 ChordBox::get_midi_chord (int root_pitch, std::vector<int>& pitches) const
 {
-	if (target_chord.empty()) {
+	std::string const & chord_name = editing_context.draw_chord_name ();
+	if (chord_name.empty()) {
 		return false;
 	}
 
-	auto res = tet12_chords.find (target_chord);
+	auto res = tet12_chords.find (chord_name);
 
 	if (res != tet12_chords.end()) {
 		for (auto & interval : res->second) {
@@ -292,16 +330,6 @@ ChordBox::get_midi_chord (int root_pitch, std::vector<int>& pitches) const
 	}
 
 	return false;
-}
-
-void
-ChordBox::tet12_chord_chosen (std::string const & name)
-{
-	if (tet12_chords.find (name) != tet12_chords.end()) {
-		target_chord = name;
-	} else {
-		target_chord = std::string();
-	}
 }
 
 void
@@ -324,24 +352,4 @@ void
 ChordBox::tet12_drop_chord (std::vector<int> const & which_notes)
 {
 	DropChord (which_notes);
-}
-
-void
-ChordBox::register_actions ()
-{
-#if 0
-	using namespace Gtk;
-
-	Glib::RefPtr<ActionGroup> chord_actions = ActionManager::create_action_group (bindings, X_("Chords"));
-
-	RadioAction::Group triad_group;
-	Glib::RefPtr<RadioAction> ract;
-
-	ActionManager::register_radio_action (chord_actions, triad_group, X_("use-chord-major"), _("Chord|maj"), []() { te12_chord_chosen (_("maj")); });
-	ActionManager::register_radio_action (chord_actions, triad_group, X_("use-chord-minor"), _("Chord|min"), []() { te12_chord_chosen (_("min")); });
-	ActionManager::register_radio_action (chord_actions, triad_group, X_("use-chord-sus4"), _("Chord|sus4"), []() { te12_chord_chosen (_("sus4")); });
-	ActionManager::register_radio_action (chord_actions, triad_group, X_("use-chord-sus2"), _("Chord|sus2"), []() { te12_chord_chosen (_("sus2")); });
-	ActionManager::register_radio_action (chord_actions, triad_group, X_("use-chord-dom"), _("Chord|dom"), []() { te12_chord_chosen (_("dom")); });
-	ActionManager::register_radio_action (chord_actions, triad_group, X_("use-chord-aug"), _("Chord|aug"), []() { te12_chord_chosen (_("aug")); });
-#endif
 }

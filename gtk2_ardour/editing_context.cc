@@ -186,7 +186,7 @@ EditingContext::EditingContext (std::string const & name)
 	, minsec_mark_modulo (0)
 	, minsec_nmarks (0)
 	, temporary_zoom_focus_change (false)
- 	, _dragging_playhead (false)
+	, _dragging_playhead (false)
 {
 	using namespace Gtk::Menu_Helpers;
 
@@ -314,6 +314,9 @@ EditingContext::~EditingContext()
 	}
 	if (_automation_actions) {
 		ActionManager::drop_action_group (_automation_actions);
+	}
+	if (chord_actions) {
+		ActionManager::drop_action_group (chord_actions);
 	}
 }
 
@@ -444,9 +447,10 @@ EditingContext::set_action_defaults ()
 		draw_channel_actions[DRAW_CHAN_AUTO]->set_active (false);
 		draw_channel_actions[DRAW_CHAN_AUTO]->set_active (true);
 	}
-	if (draw_chord_actions.find (0) != draw_chord_actions.end()) {
-		draw_chord_actions[0]->set_active (false);
-		draw_chord_actions[0]->set_active (true);
+	/* default draw chord action is first triad */
+	if (_no_chord_action) {
+		_no_chord_action->set_active (false);
+		_no_chord_action->set_active (true);
 	}
 }
 
@@ -740,16 +744,26 @@ EditingContext::register_midi_actions (Bindings* midi_bindings, std::string cons
 	chord_actions = ActionManager::create_action_group (midi_bindings, prefix + X_("Chords"));
 	RadioAction::Group draw_chord_group;
 
-	draw_chord_actions[0] = ActionManager::register_radio_action (chord_actions, draw_chord_group, X_("draw-chord-0"), _("Draw Chord 1"), sigc::bind (sigc::mem_fun (*this, &EditingContext::draw_chord_chosen), 0));
-	draw_chord_actions[1] = ActionManager::register_radio_action (chord_actions, draw_chord_group, X_("draw-chord-1"), _("Draw Chord 2"), sigc::bind (sigc::mem_fun (*this, &EditingContext::draw_chord_chosen), 1));
-	draw_chord_actions[2] = ActionManager::register_radio_action (chord_actions, draw_chord_group, X_("draw-chord-2"), _("Draw Chord 3"), sigc::bind (sigc::mem_fun (*this, &EditingContext::draw_chord_chosen), 2));
-	draw_chord_actions[3] = ActionManager::register_radio_action (chord_actions, draw_chord_group, X_("draw-chord-3"), _("Draw Chord 4"), sigc::bind (sigc::mem_fun (*this, &EditingContext::draw_chord_chosen), 3));
-	draw_chord_actions[4] = ActionManager::register_radio_action (chord_actions, draw_chord_group, X_("draw-chord-4"), _("Draw Chord 5"), sigc::bind (sigc::mem_fun (*this, &EditingContext::draw_chord_chosen), 4));
-	draw_chord_actions[5] = ActionManager::register_radio_action (chord_actions, draw_chord_group, X_("draw-chord-5"), _("Draw Chord 6"), sigc::bind (sigc::mem_fun (*this, &EditingContext::draw_chord_chosen), 5));
-	draw_chord_actions[6] = ActionManager::register_radio_action (chord_actions, draw_chord_group, X_("draw-chord-6"), _("Draw Chord 7"), sigc::bind (sigc::mem_fun (*this, &EditingContext::draw_chord_chosen), 6));
-	draw_chord_actions[7] = ActionManager::register_radio_action (chord_actions, draw_chord_group, X_("draw-chord-7"), _("Draw Chord 8"), sigc::bind (sigc::mem_fun (*this, &EditingContext::draw_chord_chosen), 7));
-	draw_chord_actions[8] = ActionManager::register_radio_action (chord_actions, draw_chord_group, X_("draw-chord-8"), _("Draw Chord 9"), sigc::bind (sigc::mem_fun (*this, &EditingContext::draw_chord_chosen), 8));
-	draw_chord_actions[9] = ActionManager::register_radio_action (chord_actions, draw_chord_group, X_("draw-chord-9"), _("Draw Chord 10"), sigc::bind (sigc::mem_fun (*this, &EditingContext::draw_chord_chosen), 9));
+	draw_triad_actions.resize (10);
+	draw_tetrad_actions.resize (10);
+
+	_no_chord_action = ActionManager::register_radio_action (chord_actions, draw_chord_group, X_("no-draw-chord"), _("No Chord"), sigc::bind (sigc::mem_fun (*this, &EditingContext::draw_triad_chosen), -1));
+
+	for (int n = 0; n < 10; ++n) {
+		char action_name[64];
+		char action_desc[64];
+		snprintf (action_name, sizeof (action_name), X_("draw-triad-%d"), n);
+		snprintf (action_desc, sizeof (action_desc), X_("Draw Triad #%d"), n + 1);
+		draw_triad_actions[n] = ActionManager::register_radio_action (chord_actions, draw_chord_group, action_name, action_desc,  sigc::bind (sigc::mem_fun (*this, &EditingContext::draw_triad_chosen), n));
+	}
+
+	for (int n = 0; n < 10; ++n) {
+		char action_name[64];
+		char action_desc[64];
+		snprintf (action_name, sizeof (action_name), X_("draw-tetrad-%d"), n);
+		snprintf (action_desc, sizeof (action_desc), X_("Draw Triad #%d"), n + 1);
+		draw_tetrad_actions[n] = ActionManager::register_radio_action (chord_actions, draw_chord_group, action_name, action_desc,  sigc::bind (sigc::mem_fun (*this, &EditingContext::draw_tetrad_chosen), n));
+	}
 
 	ActionManager::set_sensitive (_midi_actions, false);
 }
@@ -928,10 +942,34 @@ EditingContext::grid_type_chosen (GridType gt)
 	SnapChanged (); /* EMIT SIGNAL */
 }
 
+Glib::RefPtr<Gtk::RadioAction>
+EditingContext::draw_triad_action (int num)
+{
+	if (num < (int) draw_triad_actions.size()) {
+		return draw_triad_actions[num];
+	}
+	return Glib::RefPtr<Gtk::RadioAction>();
+}
+
+Glib::RefPtr<Gtk::RadioAction>
+EditingContext::draw_tetrad_action (int num)
+{
+	if (num < (int) draw_tetrad_actions.size()) {
+		return draw_tetrad_actions[num];
+	}
+
+	return Glib::RefPtr<Gtk::RadioAction>();
+}
+
 void
-EditingContext::draw_chord_chosen (int num)
+EditingContext::draw_triad_chosen (int num)
 {
 	EC_LOCAL_TEMPO_SCOPE;
+
+	if (num < 0) {
+		_draw_chord_name = std::string();
+		return;
+	}
 
 	/* this is driven by a toggle on a radio group, and so is invoked twice,
 	   once for the item that became inactive and once for the one that became
@@ -940,17 +978,49 @@ EditingContext::draw_chord_chosen (int num)
 
 	RefPtr<RadioAction> ract;
 
-	ract = draw_chord_actions[std::max (std::min (num, 9), 0)];
+	ract = draw_triad_actions[std::max (std::min (num, 9), 0)];
 
 	if (!ract->get_active()) {
 		return;
 	}
 
-	if (num >= _triad_name_list.size()) {
+	if (num >= (int) _triad_name_list.size()) {
 		return;
 	}
 
 	_draw_chord_name = _triad_name_list[num];
+
+	instant_save ();
+}
+
+void
+EditingContext::draw_tetrad_chosen (int num)
+{
+	EC_LOCAL_TEMPO_SCOPE;
+
+	if (num < 0) {
+		_draw_chord_name = std::string();
+		return;
+	}
+
+	/* this is driven by a toggle on a radio group, and so is invoked twice,
+	   once for the item that became inactive and once for the one that became
+	   active.
+	*/
+
+	RefPtr<RadioAction> ract;
+
+	ract = draw_tetrad_actions[std::max (std::min (num, 9), 0)];
+
+	if (!ract->get_active()) {
+		return;
+	}
+
+	if (num >= (int) _tetrad_name_list.size()) {
+		return;
+	}
+
+	_draw_chord_name = _tetrad_name_list[num];
 
 	instant_save ();
 }
