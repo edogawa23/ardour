@@ -430,6 +430,7 @@ PianorollMidiView::add_automation_lane (Evoral::Parameter const & param, Pianoro
 		for (auto & ev : _events) {
 			velocity_display->add_note (ev.second);
 		}
+		velocity_display->set_sensitive (_sensitive);
 
 		lane = new AutomationLane (*velocity_display, false, lane_parent);
 
@@ -449,6 +450,7 @@ PianorollMidiView::add_automation_lane (Evoral::Parameter const & param, Pianoro
 		                                                     ac->alist(),
 		                                                     ac->desc()));
 
+		line->set_sensitive (_sensitive);
 		line->set_insensitive_line_color (line_color_for (param));
 		lane = new AutomationLane (ac, line, false, lane_parent);
 	}
