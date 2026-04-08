@@ -483,6 +483,16 @@ This mode provides many different operations on both regions and control points,
 @notes|Notes/split-notes-more|                                     s|Split Notes More Finely
 @notes|Notes/split-notes-less|                         <@TERTIARY@>s|Split Notes Less Finely
 
+@notes|Notes/add-interval-m2|				 <@LEVEL4@>KP_1|Add minor 2nd (1 semitone)
+@notes|Notes/add-interval-M2|				 <@LEVEL4@>KP_2|Add major 2nd (2 semitones)
+@notes|Notes/add-interval-m3|				 <@LEVEL4@>KP_3|Add minor 3rd (3 semitones)
+@notes|Notes/add-interval-M3|				 <@LEVEL4@>KP_4|Add major 3rd (4 semitones)
+@notes|Notes/add-interval-P4|				 <@LEVEL4@>KP_5|Add perfect 4th (5 semitones)
+@notes|Notes/add-interval-P5|				 <@LEVEL4@>KP_7|Add perfect 5th (7 semitones)
+@notes|Notes/add-interval-M7|				 <@LEVEL4@>KP_8|Add minor 7th (10 semitones)
+@notes|Notes/add-interval-m7|				 <@LEVEL4@>KP_9|Add major 7th (11 semitones)
+@notes|Notes/add-interval-P8|				 <@LEVEL4@>KP_0|Add octave (12 semitones)
+
 @notes|Notes/duplicate-notes|			       <@PRIMARY@>d|duplicate selected notes
 
 @notes|Notes/transpose-up-octave|                          <@SECONDARY@>Up|Transpose up (1 octave)

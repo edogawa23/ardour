@@ -982,6 +982,56 @@ MidiView::create_note_at (timepos_t const & source_relative_start, double y, Tem
 	}
 }
 
+void
+MidiView::add_semitone_interval (int semitones)
+{
+	/* XXX assumes 1 MIDI pitch number is 1 semitone */
+
+	if (_selection.empty()) {
+		return;
+	}
+
+	/* selection notes must be sorted into pitch order */
+
+	Evoral::Sequence<Temporal::Beats>::NoteNumberComparator sorter;
+	std::vector<std::shared_ptr<NoteType> > notes;
+
+	for (auto & s : _selection) {
+		notes.push_back (s->note());
+	}
+
+	std::sort (notes.begin(), notes.end(), sorter);
+
+	int pitch = notes.front()->note() + semitones;
+	int chan = notes.front()->channel();
+	Temporal::Beats length = notes.front()->length ();
+	int velocity = notes.front()->velocity ();
+	Temporal::Beats t = notes.front()->time ();
+
+	const std::shared_ptr<NoteType> new_note (new NoteType (chan, t, length, pitch, velocity));
+
+	if (_model->contains (new_note)) {
+		return;
+	}
+
+	list<Evoral::event_id_t> to_be_selected;
+	for (auto & s : _selection) {
+		to_be_selected.push_back (s->note()->id());
+	}
+
+	start_note_diff_command(_("add interval"));
+	note_diff_add_note (new_note, true, false);
+	apply_note_diff ();
+
+	to_be_selected.push_back (new_note->id());
+	select_notes (to_be_selected, false);
+	SelectionChanged (); /* EMIT SIGNAL */
+
+	std::vector<std::shared_ptr<NoteType> > snotes;
+	selection_as_notevector (snotes);
+	start_playing_midi_chord (snotes);
+}
+
 bool
 MidiView::chord_is_selected () const
 {

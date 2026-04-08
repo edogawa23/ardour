@@ -551,6 +551,25 @@ Pianoroll::invert_selected_chord (bool up)
 }
 
 void
+Pianoroll::add_semitone_interval (int semitones)
+{
+	if (_editing_policy == ActiveView) {
+
+		if (!_active_view) {
+			return;
+		}
+
+		_active_view->add_semitone_interval (semitones);
+
+	} else if (_editing_policy == AllViews) {
+
+		for (auto & [region,view] : region_view_map) {
+			view->add_semitone_interval (semitones);
+		}
+	}
+}
+
+void
 Pianoroll::drop_selected_chord (std::vector<int> which_notes)
 {
 	if (_editing_policy == ActiveView) {

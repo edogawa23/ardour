@@ -601,6 +601,21 @@ EditingContext::register_midi_actions (Bindings* midi_bindings, std::string cons
 	ActionManager::register_action (_midi_actions, X_("extend-selection"), _("Extend Note Selection"), sigc::bind (sigc::mem_fun (*this, &EditingContext::midi_action), &MidiRegionView::extend_selection));
 	ActionManager::register_action (_midi_actions, X_("duplicate-selection"), _("Duplicate Note Selection"), sigc::bind (sigc::mem_fun (*this, &EditingContext::midi_action), &MidiRegionView::duplicate_selection));
 
+	/* Intervals */
+
+	ActionManager::register_action (_midi_actions, X_("add-interval-m2"), _("Add minor 2nd (1 semitone)"), sigc::bind (sigc::mem_fun (*this, &EditingContext::add_semitone_interval), 1));
+	ActionManager::register_action (_midi_actions, X_("add-interval-M2"), _("Add major 2nd (2 semitones)"), sigc::bind (sigc::mem_fun (*this, &EditingContext::add_semitone_interval), 2));
+	ActionManager::register_action (_midi_actions, X_("add-interval-m3"), _("Add minor 3rd (3 semitones)"), sigc::bind (sigc::mem_fun (*this, &EditingContext::add_semitone_interval), 3));
+	ActionManager::register_action (_midi_actions, X_("add-interval-M3"), _("Add major 3rd (4 semitones)"), sigc::bind (sigc::mem_fun (*this, &EditingContext::add_semitone_interval), 4));
+	ActionManager::register_action (_midi_actions, X_("add-interval-P4"), _("Add perfect 4th (5 semitones)"), sigc::bind (sigc::mem_fun (*this, &EditingContext::add_semitone_interval), 5));
+	ActionManager::register_action (_midi_actions, X_("add-interval-A4"), _("Add tritone (6 semitones)"), sigc::bind (sigc::mem_fun (*this, &EditingContext::add_semitone_interval), 6));
+	ActionManager::register_action (_midi_actions, X_("add-interval-P5"), _("Add perfect 5th (7 semitones)"), sigc::bind (sigc::mem_fun (*this, &EditingContext::add_semitone_interval), 7));
+	ActionManager::register_action (_midi_actions, X_("add-interval-m6"), _("Add minor 6th (8 semitones)"), sigc::bind (sigc::mem_fun (*this, &EditingContext::add_semitone_interval), 8));
+	ActionManager::register_action (_midi_actions, X_("add-interval-M6"), _("Add major 6th (9 semitones)"), sigc::bind (sigc::mem_fun (*this, &EditingContext::add_semitone_interval), 9));
+	ActionManager::register_action (_midi_actions, X_("add-interval-M7"), _("Add minor 7th (10 semitones)"), sigc::bind (sigc::mem_fun (*this, &EditingContext::add_semitone_interval), 10));
+	ActionManager::register_action (_midi_actions, X_("add-interval-m7"), _("Add major 7th (11 semitones)"), sigc::bind (sigc::mem_fun (*this, &EditingContext::add_semitone_interval), 11));
+	ActionManager::register_action (_midi_actions, X_("add-interval-P8"), _("Add octave (12 semitones)"), sigc::bind (sigc::mem_fun (*this, &EditingContext::add_semitone_interval), 12));
+
 	/* Lengthen */
 
 	ActionManager::register_action (_midi_actions, X_("move-starts-earlier-fine"), _("Move Note Start Earlier (fine)"), sigc::bind (sigc::mem_fun (*this, &EditingContext::midi_action), &MidiRegionView::move_note_starts_earlier_fine));
