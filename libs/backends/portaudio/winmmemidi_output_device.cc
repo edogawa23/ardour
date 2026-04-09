@@ -160,7 +160,7 @@ WinMMEMidiOutputDevice::set_device_name (UINT index)
 		m_name = "Unknown Midi Output Device";
 		return false;
 	} else {
-		m_name = capabilities.szPname;
+		m_name = Glib::locale_to_utf8 (capabilities.szPname);
 	}
 	return true;
 }

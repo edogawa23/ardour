@@ -24,6 +24,8 @@
 #include <cassert>
 #include <cmath>
 
+#include <glibmm.h>
+
 #include "pbd/compose.h"
 #include "pbd/microseconds.h"
 #include "pbd/windows_timer_utils.h"
@@ -159,7 +161,7 @@ WinMMEMidiInputDevice::set_device_name (UINT index)
 		m_name = "Unknown Midi Input Device";
 		return false;
 	} else {
-		m_name = capabilities.szPname;
+		m_name = Glib::locale_to_utf8 (capabilities.szPname);
 	}
 	return true;
 }

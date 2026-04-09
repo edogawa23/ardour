@@ -1216,6 +1216,22 @@ PortAudioBackend::register_system_audio_ports()
 	return 0;
 }
 
+static uint32_t
+elf_hash (std::string const& s)
+{
+	const uint8_t* b = (const uint8_t*)s.c_str ();
+	uint32_t       h = 0;
+	for (size_t i = 0; i < s.length (); ++i) {
+		h             = (h << 4) + b[i];
+		uint32_t high = h & 0xF0000000;
+		if (high) {
+			h ^= high >> 24;
+			h &= ~high;
+		}
+	}
+	return h;
+}
+
 int
 PortAudioBackend::register_system_midi_ports (std::string const& device)
 {
@@ -1241,8 +1257,15 @@ PortAudioBackend::register_system_midi_ports (std::string const& device)
 			continue;
 		}
 
-		std::string port_name = "system:midi_capture_" + (*i)->name();
-		PortPtr p = add_port (port_name, DataType::MIDI, static_cast<PortFlags>(IsOutput | IsPhysical | IsTerminal));
+		char tmp[64];
+		for (int x = 0; x < 10; ++x) {
+			snprintf (tmp, sizeof (tmp), "system:midi_capture_%x%d", elf_hash ((*i)->name()), x);
+			if (!find_port (tmp)) {
+				break;
+			}
+		}
+
+		PortPtr p = add_port (std::string (tmp), DataType::MIDI, static_cast<PortFlags>(IsOutput | IsPhysical | IsTerminal));
 
 		if (!p) {
 			return -1;
@@ -1251,11 +1274,14 @@ PortAudioBackend::register_system_midi_ports (std::string const& device)
 		lr.min = lr.max = (_measure_latency ? 0 : info->systemic_input_latency);
 		set_latency_range (p, false, lr);
 
+		BackendPortPtr ap = std::dynamic_pointer_cast<BackendPort> (p);
+		ap->set_hw_port_name ((*i)->name());
+
 		std::shared_ptr<PortMidiPort> midi_port = std::dynamic_pointer_cast<PortMidiPort>(p);
 		midi_port->set_hw_port_name ((*i)->name());
 		midi_clear (midi_port->get_buffer(0));
 		_system_midi_in.push_back (midi_port);
-		DEBUG_MIDI (string_compose ("Registered MIDI input port: %1\n", port_name));
+		DEBUG_MIDI (string_compose ("Registered MIDI input port: %1\n", tmp));
 	}
 
 	const std::vector<WinMMEMidiOutputDevice*> outputs = _midiio->get_outputs();
@@ -1272,8 +1298,14 @@ PortAudioBackend::register_system_midi_ports (std::string const& device)
 			continue;
 		}
 
-		std::string port_name = "system:midi_playback_" + (*i)->name();
-		PortPtr p = add_port (port_name, DataType::MIDI, static_cast<PortFlags>(IsInput | IsPhysical | IsTerminal));
+		char tmp[64];
+		for (int x = 0; x < 10; ++x) {
+			snprintf (tmp, sizeof (tmp), "system:midi_playback_%x%d", elf_hash ((*i)->name()), x);
+			if (!find_port (tmp)) {
+				break;
+			}
+		}
+		PortPtr p = add_port (std::string (tmp), DataType::MIDI, static_cast<PortFlags>(IsInput | IsPhysical | IsTerminal));
 
 		if (!p) {
 			return -1;
@@ -1282,12 +1314,15 @@ PortAudioBackend::register_system_midi_ports (std::string const& device)
 		lr.min = lr.max = (_measure_latency ? 0 : info->systemic_output_latency);
 		set_latency_range (p, false, lr);
 
+		BackendPortPtr ap = std::dynamic_pointer_cast<BackendPort> (p);
+		ap->set_hw_port_name ((*i)->name());
+
 		std::shared_ptr<PortMidiPort> midi_port = std::dynamic_pointer_cast<PortMidiPort>(p);
 		midi_port->set_n_periods(2);
 		midi_port->set_hw_port_name ((*i)->name());
 		midi_clear (midi_port->get_buffer(0));
 		_system_midi_out.push_back (midi_port);
-		DEBUG_MIDI (string_compose ("Registered MIDI output port: %1\n", port_name));
+		DEBUG_MIDI (string_compose ("Registered MIDI output port: %1\n", tmp));
 	}
 	return 0;
 }
