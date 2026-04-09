@@ -77,7 +77,6 @@ VelocityDisplay::VelocityDisplay (EditingContext& ec, MidiViewBackground& backgr
 
 VelocityDisplay::~VelocityDisplay ()
 {
-	base_connection.disconnect ();
 }
 
 bool
