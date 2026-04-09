@@ -72,6 +72,7 @@ VelocityDisplay::VelocityDisplay (EditingContext& ec, MidiViewBackground& backgr
 	base.set_fill_color (UIConfiguration::instance().color_mod ("ghost track base", "ghost track midi fill"));
 	base.set_outline_color (UIConfiguration::instance().color ("automation track outline"));
 	base.set_outline (true);
+	/* XXX this is likely wrong for the pianoroll case */
 	base.set_outline_what (ArdourCanvas::Rectangle::What (ArdourCanvas::Rectangle::LEFT|ArdourCanvas::Rectangle::RIGHT));
 }
 
