@@ -138,7 +138,7 @@ Pianoroll::~Pianoroll ()
 	view_connections.drop_connections ();
 	_update_connection.disconnect ();
 	selection_connection.disconnect ();
-	
+
 	drop_grid (); // unparent gridlines before deleting _canvas_viewport
 
 	delete bg;
@@ -793,8 +793,6 @@ Pianoroll::canvas_allocate (Gtk::Allocation alloc)
 
 	_visible_canvas_width = alloc.get_width();
 	_visible_canvas_height = alloc.get_height();
-
-	std::cerr << "canvas allocate " << _visible_canvas_width << " x " << _visible_canvas_height << std::endl;
 
 	double timebars = n_timebars * timebar_height;
 
