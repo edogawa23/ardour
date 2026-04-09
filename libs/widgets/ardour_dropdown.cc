@@ -137,8 +137,8 @@ ArdourDropdown::set_active (int c)
 			_menu.activate_item (i);
 			set_text (i.get_label());
 			StateChanged ();
+			break;
 		}
-		break;
 	}
 }
 
