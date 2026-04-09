@@ -440,7 +440,6 @@ VelocityDisplay::end_line_drag (bool did_change)
 void
 VelocityDisplay::desensitize_lollis ()
 {
-	std::cerr << "lollis desens\n";
 	for (auto & gev : events) {
 		gev.second->item->set_ignore_events (true);
 	}
@@ -449,7 +448,6 @@ VelocityDisplay::desensitize_lollis ()
 void
 VelocityDisplay::sensitize_lollis ()
 {
-	std::cerr << "lollis sens\n";
 	for (auto & gev : events) {
 		gev.second->item->set_ignore_events (false);
 	}
