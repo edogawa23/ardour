@@ -29,6 +29,15 @@ PianorollVelocityDisplay::PianorollVelocityDisplay (EditingContext& ec, MidiView
 {
 }
 
+PianorollVelocityDisplay::~PianorollVelocityDisplay()
+{
+	for (auto & ev : events) {
+		delete ev.second;
+	}
+	events.clear ();
+	_optimization_iterator = events.end();
+}
+
 void
 PianorollVelocityDisplay::set_height (double h)
 {

@@ -25,6 +25,7 @@ class PianorollVelocityDisplay : public VelocityDisplay
 {
   public:
 	PianorollVelocityDisplay (EditingContext&, MidiViewBackground&, MidiView&, ArdourCanvas::Rectangle& base_rect, Gtkmm2ext::Color oc);
+	~PianorollVelocityDisplay ();
 
 	void remove_note (NoteBase*);
 	void set_colors ();
