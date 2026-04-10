@@ -301,7 +301,7 @@ class JACKAudioBackend : public AudioBackend {
 	/* used to manage _jack_ports, specifically for ports belonging to the
 	   JACK backend or other clients.
 	*/
-	void jack_registration_callback (jack_port_id_t, int);
+	bool jack_registration_callback (jack_port_id_t, int);
 
 	typedef std::map<std::string,std::shared_ptr<JackPort> > JackPorts;
 	mutable SerializedRCUManager<JackPorts> _jack_ports; /* can be modified in ::get_port_by_name () */

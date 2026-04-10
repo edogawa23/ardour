@@ -229,25 +229,30 @@ JACKAudioBackend::_registration_callback (jack_port_id_t id, int reg, void* arg)
 {
 	DEBUG_TRACE (DEBUG::BackendCallbacks, string_compose ("%1/%2 jack port registration callback\n", DEBUG_THREAD_SELF, pthread_name()));
 
+	JACKAudioBackend* backend = static_cast<JACKAudioBackend*> (arg);
+
 	/* we don't use a virtual method for the registration callback, because
 	   JACK is the only backend that delivers the arguments shown above. So
 	   call our own JACK-centric registration callback, then the generic
 	   one.
 	*/
-	static_cast<JACKAudioBackend*> (arg)->jack_registration_callback (id, reg);
-	static_cast<JACKAudioBackend*> (arg)->manager.registration_callback ();
-	static_cast<JACKAudioBackend*> (arg)->engine.latency_callback (false);
-	static_cast<JACKAudioBackend*> (arg)->engine.latency_callback (true);
+	if (!backend->jack_registration_callback (id, reg)) {
+		return;
+	}
+
+	backend->manager.registration_callback ();
+	backend->engine.latency_callback (false);
+	backend->engine.latency_callback (true);
 }
 
-void
+bool
 JACKAudioBackend::jack_registration_callback (jack_port_id_t id, int reg)
 {
-	GET_PRIVATE_JACK_POINTER (_priv_jack);
+	GET_PRIVATE_JACK_POINTER_RET (_priv_jack, false);
 	jack_port_t* jack_port = jack_port_by_id (_priv_jack, id);
 
 	if (!jack_port) {
-		return;
+		return false;
 	}
 
 	/* We only need to care about ports that we do not register/unregister
@@ -268,22 +273,34 @@ JACKAudioBackend::jack_registration_callback (jack_port_id_t id, int reg)
 	 */
 
 	if (!jack_port_is_mine (_priv_jack, jack_port)) {
-
 		const char* name = jack_port_name (jack_port);
+		const char* type = jack_port_type (jack_port);
+
+		if (strcmp (type, "other") == 0) {
+			/* Ports that fall under "other" include video ports. Avoiding them
+			 * here avoids a ton of churn caused by actions such as hovering
+			 * over panel icons in kwin which causes stutter in Ardour.
+			 */
+			return false;
+		}
 
 		std::shared_ptr<JackPorts> ports = _jack_ports.write_copy();
 
 		if (!reg) {
 			if (ports->erase (name)) {
+				PBD::debug << "JACK port (" << name << ", " << type << ") unregistered" << endmsg;
 				_jack_ports.update (ports);
 			} else {
+				PBD::debug << "JACK port (" << name << ", " << type << ") unregistered, but not found locally" << endmsg;
 				_jack_ports.no_update();
 			}
 		} else {
 			if (ports->find (name) != ports->end()) {
 				/* hmmm, we already have this port */
-				std::cout << "re-registration of JACK port named " << name << std::endl;
+				PBD::debug << "JACK port (" << name << ", " << type << ") re-registered" << endmsg;
 				ports->erase (name);
+			} else {
+				PBD::debug << "JACK port (" << name << ", " << type << ") registered" << endmsg;
 			}
 
 			std::shared_ptr<JackPort> jp (new JackPort (jack_port));
@@ -292,6 +309,8 @@ JACKAudioBackend::jack_registration_callback (jack_port_id_t id, int reg)
 			_jack_ports.update (ports);
 		}
 	}
+
+	return true;
 }
 
 int
