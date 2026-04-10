@@ -277,9 +277,10 @@ JACKAudioBackend::jack_registration_callback (jack_port_id_t id, int reg)
 		const char* type = jack_port_type (jack_port);
 
 		if (strcmp (type, "other") == 0) {
-			/* Ports that fall under "other" include video ports. Avoiding them
-			 * here avoids a ton of churn caused by actions such as hovering
-			 * over panel icons in kwin which causes stutter in Ardour.
+			/* Ports that fall under "other" include video ports in pipewire.
+			 * Avoiding them here avoids a ton of churn caused by actions such
+			 * as hovering over panel icons in kwin which causes stutter in
+			 * Ardour.
 			 */
 			return false;
 		}
@@ -288,19 +289,19 @@ JACKAudioBackend::jack_registration_callback (jack_port_id_t id, int reg)
 
 		if (!reg) {
 			if (ports->erase (name)) {
-				PBD::debug << "JACK port (" << name << ", " << type << ") unregistered" << endmsg;
+				DEBUG_TRACE (DEBUG::Ports, string_compose ("%1/%2 jack port (%3, %4) unregistered\n", DEBUG_THREAD_SELF, pthread_name(), name, type));
 				_jack_ports.update (ports);
 			} else {
-				PBD::debug << "JACK port (" << name << ", " << type << ") unregistered, but not found locally" << endmsg;
+				DEBUG_TRACE (DEBUG::Ports, string_compose ("%1/%2 jack port (%3, %4) unregistered, but not found locally\n", DEBUG_THREAD_SELF, pthread_name(), name, type));
 				_jack_ports.no_update();
 			}
 		} else {
 			if (ports->find (name) != ports->end()) {
 				/* hmmm, we already have this port */
-				PBD::debug << "JACK port (" << name << ", " << type << ") re-registered" << endmsg;
+				DEBUG_TRACE (DEBUG::Ports, string_compose ("%1/%2 jack port (%3, %4) re-registered\n", DEBUG_THREAD_SELF, pthread_name(), name, type));
 				ports->erase (name);
 			} else {
-				PBD::debug << "JACK port (" << name << ", " << type << ") registered" << endmsg;
+				DEBUG_TRACE (DEBUG::Ports, string_compose ("%1/%2 jack port (%3, %4) registered\n", DEBUG_THREAD_SELF, pthread_name(), name, type));
 			}
 
 			std::shared_ptr<JackPort> jp (new JackPort (jack_port));
