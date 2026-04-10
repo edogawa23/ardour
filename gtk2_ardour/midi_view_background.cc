@@ -259,10 +259,6 @@ MidiViewBackground::maybe_apply_note_range (uint8_t lowest, uint8_t highest, boo
 bool
 MidiViewBackground::apply_note_range (uint8_t lowest, uint8_t highest, bool to_children)
 {
-	if (contents_height() == 0) {
-		return false;
-	}
-
 	bool changed = false;
 
 	/* Enforce a 1 octave minimum */
@@ -281,6 +277,11 @@ MidiViewBackground::apply_note_range (uint8_t lowest, uint8_t highest, bool to_c
 	if (_lowest_note != lowest) {
 		changed = true;
 		_lowest_note = lowest;
+	}
+
+	if (contents_height() == 0) {
+		std::cerr << "early return, no size\n";
+		return false;
 	}
 
 	if (note_range_set && !changed) {
