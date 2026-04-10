@@ -649,13 +649,12 @@ Editor::Editor ()
 	content_right_pane.set_drag_cursor (*_cursors->expand_left_right);
 	editor_summary_pane.set_drag_cursor (*_cursors->expand_up_down);
 
-	float fract;
-	if (!settings || !settings->get_property ("edit-vertical-pane-pos", fract) || fract > 1.0) {
+	float size;
+	if (!settings || !settings->get_property ("edit-vertical-pane-size", size) || size < 1.0) {
 		/* initial allocation so that summary has minimum size*/
-		fract = 0.999;
+		size = -1;
 	}
-	editor_summary_pane.set_divider (0, fract);
-	editor_summary_pane.set_absolute_divider (0, ArdourWidgets::Pane::DividerMode::AbsoluteAfter);
+	editor_summary_pane.set_absolute_divider (0, ArdourWidgets::Pane::DividerMode::AbsoluteAfter, size);
 
 	global_vpacker.set_spacing (0);
 	global_vpacker.set_border_width (0);
@@ -2370,7 +2369,7 @@ Editor::get_state () const
 
 	node->add_child_nocopy (Tabbable::get_state());
 
-	node->set_property("edit-vertical-pane-pos", editor_summary_pane.get_divider());
+	node->set_property("edit-vertical-pane-size", editor_summary_pane.get_absolute_divider());
 
 	maybe_add_mixer_strip_width (*node);
 
