@@ -42,6 +42,7 @@ tags
 # generated folders doc, build, packaging
 .waf-*
 .waf3-*
+waf3-*
 .lock-waf*
 /build/
 /.cache
