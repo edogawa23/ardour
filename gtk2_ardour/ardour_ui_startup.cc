@@ -585,13 +585,20 @@ ARDOUR_UI::starting ()
 	 */
 
 	EngineControl* amd;
+	Timing amd_init;
+	info << "Detecting Audio/MIDI Devices" << endmsg;
+	BootMessage (_("Detecting Audio/MIDI Devices..."));
 
+	amd_init.start();
 	try {
 		amd = dynamic_cast<EngineControl*> (audio_midi_setup.get (true));
 	} catch (...) {
 		std::cerr << "audio-midi engine setup failed."<< std::endl;
 		return -1;
 	}
+	amd_init.update();
+	info << string_compose ("Audio/MIDI Devices detection complete. Elapsed time: %1 uS", amd_init.elapsed()) << endmsg;
+	BootMessage (_("Continuing Startup..."));
 
 	if (nsm_init ()) {
 		return -1;
