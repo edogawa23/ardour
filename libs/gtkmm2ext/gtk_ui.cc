@@ -307,6 +307,9 @@ UI::run (Receiver &old_receiver)
 	_receiver.listen_to (error);
 	_receiver.listen_to (fatal);
 
+	/* stop the old receiver (text/console) once we hit the first idle */
+
+	Glib::signal_idle().connect (bind_return (mem_fun (old_receiver, &Receiver::hangup), false));
 
 	if (starting ()) {
 		return;
