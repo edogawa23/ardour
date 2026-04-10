@@ -653,6 +653,7 @@ Editor::Editor ()
 	if (!settings || !settings->get_property ("edit-vertical-pane-size", size) || size < 1.0) {
 		/* initial allocation so that summary has minimum size*/
 		size = -1;
+		editor_summary_pane.set_divider (0, 0.999);
 	}
 	editor_summary_pane.set_absolute_divider (0, ArdourWidgets::Pane::DividerMode::AbsoluteAfter, size);
 
