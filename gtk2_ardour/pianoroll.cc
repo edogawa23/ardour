@@ -1741,24 +1741,16 @@ Pianoroll::set_region (std::shared_ptr<ARDOUR::Region> region)
 		lane->group->set_data ("linemerger", _active_view);
 	}
 
-	uint8_t lowest_note;
-	uint8_t highest_note;
+	/* Visible note range should always span all regions on display */
 
-	if (_editing_policy == ActiveView) {
+	uint8_t lowest_note = 127;
+	uint8_t highest_note = 0;
+
+	for (auto & [region,view] : region_view_map) {
 		std::shared_ptr<ARDOUR::SMFSource> smf (std::dynamic_pointer_cast<ARDOUR::SMFSource> (region->source()));
 		assert (smf);
-		lowest_note = smf->model()->lowest_note();
-		highest_note = smf->model()->highest_note();
-	} else {
-		lowest_note = 127;
-		highest_note = 0;
-
-		for (auto & [region,view] : region_view_map) {
-			std::shared_ptr<ARDOUR::SMFSource> smf (std::dynamic_pointer_cast<ARDOUR::SMFSource> (region->source()));
-			assert (smf);
-			lowest_note = std::min (lowest_note, smf->model()->lowest_note());
-			highest_note = std::max (highest_note, smf->model()->highest_note());
-		}
+		lowest_note = std::min (lowest_note, smf->model()->lowest_note());
+		highest_note = std::max (highest_note, smf->model()->highest_note());
 	}
 
 	(void) bg->update_data_note_range (lowest_note, highest_note);
