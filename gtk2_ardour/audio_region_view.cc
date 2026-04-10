@@ -128,6 +128,7 @@ AudioRegionView::AudioRegionView (ArdourCanvas::Container *parent, RouteTimeAxis
 	, _amplitude_above_axis(1.0)
 	, trim_fade_in_drag_active(false)
 	, trim_fade_out_drag_active(false)
+	, hovered(false)
 	, _rfx_id (0)
 	, _rdx_param (UINT32_MAX)
 	, _ignore_line_change (false)
@@ -1296,10 +1297,16 @@ AudioRegionView::update_envelope_visibility ()
 	}
 
 	if (trackview.editor().current_mouse_mode() == Editing::MouseDraw || trackview.editor().current_mouse_mode() == Editing::MouseContent ) {
-		_fx_line->set_visibility (EditorAutomationLine::VisibleAspects(EditorAutomationLine::ControlPoints|EditorAutomationLine::Line));
+		_fx_line->add_visibility (EditorAutomationLine::Line);
+		if (hovered) {
+			_fx_line->add_visibility (EditorAutomationLine::ControlPoints);
+		} else {
+			_fx_line->remove_visibility (EditorAutomationLine::ControlPoints);
+		}
 		_fx_line->canvas_group().raise_to_top ();
 	} else if (UIConfiguration::instance().get_show_region_gain() || trackview.editor().current_mouse_mode() == Editing::MouseRange ) {
-		_fx_line->set_visibility (EditorAutomationLine::VisibleAspects(EditorAutomationLine::Line));
+		_fx_line->add_visibility (EditorAutomationLine::Line);
+		_fx_line->remove_visibility (EditorAutomationLine::ControlPoints);
 		_fx_line->canvas_group().raise_to_top ();
 	} else {
 		_fx_line->set_visibility (EditorAutomationLine::VisibleAspects(0));
@@ -1609,6 +1616,8 @@ AudioRegionView::entered ()
 	trackview.editor().set_current_trimmable (_region);
 	trackview.editor().set_current_movable (_region);
 
+	hovered = true;
+
 	update_envelope_visibility();
 
 	if ((trackview.editor().current_mouse_mode() == Editing::MouseObject)) {
@@ -1659,6 +1668,10 @@ AudioRegionView::exited ()
 {
 	trackview.editor().set_current_trimmable (std::shared_ptr<Trimmable>());
 	trackview.editor().set_current_movable (std::shared_ptr<Movable>());
+
+	hovered = false;
+
+	update_envelope_visibility();
 
 	if (fade_in_handle)       { fade_in_handle->hide(); }
 	if (fade_out_handle)      { fade_out_handle->hide(); }

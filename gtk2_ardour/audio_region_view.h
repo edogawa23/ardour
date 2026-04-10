@@ -241,6 +241,8 @@ private:
 	bool trim_fade_in_drag_active;
 	bool trim_fade_out_drag_active;
 
+	bool hovered;
+
 	void set_region_fx_line (std::shared_ptr<ARDOUR::AutomationControl>, std::shared_ptr<ARDOUR::RegionFxPlugin>, uint32_t);
 
 	PBD::ID  _rfx_id;
