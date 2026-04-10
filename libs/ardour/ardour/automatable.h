@@ -97,7 +97,7 @@ public:
 
 	virtual void automation_run (samplepos_t, pframes_t, bool only_active = false);
 
-	virtual std::string describe_parameter(Evoral::Parameter param);
+	virtual std::string describe_parameter(Evoral::Parameter param, bool just_name = false);
 
 	AutoState get_parameter_automation_state (Evoral::Parameter param);
 	virtual void set_parameter_automation_state (Evoral::Parameter param, AutoState);

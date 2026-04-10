@@ -278,7 +278,7 @@ InstrumentInfo::get_patch_name (uint16_t bank, uint8_t program, uint8_t channel,
 }
 
 string
-InstrumentInfo::get_controller_name (Evoral::Parameter param) const
+InstrumentInfo::get_controller_name (Evoral::Parameter param, bool just_name) const
 {
 	if (param.type () != MidiCCAutomation) {
 		return "";
@@ -301,6 +301,9 @@ InstrumentInfo::get_controller_name (Evoral::Parameter param) const
 	std::shared_ptr<const Control> const& c = control_names->control (param.id ());
 
 	if (c) {
+		if (just_name) {
+			return c->name();
+		}
 		return string_compose ("[%1] %2:%3", int (param.channel ()) + 1, param.id (), c->name ());
 	}
 

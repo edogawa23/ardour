@@ -188,7 +188,7 @@ Automatable::add_control(std::shared_ptr<Evoral::Control> ac)
 }
 
 string
-Automatable::describe_parameter (Evoral::Parameter param)
+Automatable::describe_parameter (Evoral::Parameter param, bool just_name)
 {
 	/* derived classes like PluginInsert should override this */
 
@@ -235,15 +235,31 @@ Automatable::describe_parameter (Evoral::Parameter param)
 	} else if (param.type() == MidiVelocityAutomation) {
 		return _("Velocity");
 	} else if (param.type() == MidiCCAutomation) {
-		return string_compose ("[%1] %2:%3", int (param.channel ()) + 1, param.id (), _("Controller"));
+		if (!just_name) {
+			return string_compose ("[%1] %2:%3", int (param.channel ()) + 1, param.id (), _("Controller"));
+		} else {
+			return string_compose ("CC %1", param.id());
+		}
 	} else if (param.type() == MidiPgmChangeAutomation) {
 		return string_compose("Program [%1]", int(param.channel()) + 1);
 	} else if (param.type() == MidiPitchBenderAutomation) {
-		return string_compose("Bender [%1]", int(param.channel()) + 1);
+		if (!just_name) {
+			return string_compose("Bender [%1]", int(param.channel()) + 1);
+		} else {
+			return X_("Bender");
+		}
 	} else if (param.type() == MidiChannelPressureAutomation) {
-		return string_compose("Pressure [%1]", int(param.channel()) + 1);
+		if (!just_name) {
+			return string_compose("Pressure [%1]", int(param.channel()) + 1);
+		} else {
+			return X_("Pressure");
+		}
 	} else if (param.type() == MidiNotePressureAutomation) {
-		return string_compose("PolyPressure [%1]", int(param.channel()) + 1);
+		if (!just_name) {
+			return string_compose("PolyPressure [%1]", int(param.channel()) + 1);
+		} else {
+			return X_("PolyPressure");
+		}
 	} else if (param.type() == PluginPropertyAutomation) {
 		return string_compose("Property %1", URIMap::instance().id_to_uri(param.id()));
 	} else {

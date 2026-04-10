@@ -60,7 +60,7 @@ public:
 
 	std::string get_patch_name (uint16_t bank, uint8_t program, uint8_t channel) const;
 	std::string get_patch_name_without (uint16_t bank, uint8_t program, uint8_t channel) const;
-	std::string get_controller_name (Evoral::Parameter param) const;
+	std::string get_controller_name (Evoral::Parameter param, bool just_name = false) const;
 
 	std::shared_ptr<MIDI::Name::MasterDeviceNames> master_device_names () const;
 
