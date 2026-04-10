@@ -19,10 +19,15 @@
 #pragma once
 
 #include <map>
+#include <memory>
 #include <string>
+
+#include "pbd/xml++.h"
 
 #include "temporal/beats.h"
 #include "temporal/bbt_time.h"
+
+#include "ardour/types.h"
 
 #include "editing.h"
 
@@ -31,7 +36,10 @@ class XMLNode;
 struct RegionUISettings
 {
 	RegionUISettings ();
+	RegionUISettings (RegionUISettings const &);
 
+	RegionUISettings& operator= (RegionUISettings const &);
+	
 	Editing::GridType grid_type;
 	double samples_per_pixel;
 	bool   follow_playhead;
@@ -42,6 +50,8 @@ struct RegionUISettings
 	ARDOUR::NoteMode note_mode;
 	Temporal::timepos_t x_origin;
 	Temporal::BBT_Offset recording_length;
+	ARDOUR::ColorMode color_mode;
+	std::unique_ptr<XMLNode> automation;
 	int width;
 	int height;
 	int x;

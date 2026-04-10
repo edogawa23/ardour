@@ -1825,6 +1825,8 @@ Pianoroll::add_automation_lane (Evoral::Parameter const & param)
 	for (auto & [region,view] : region_view_map) {
 		view->add_automation_lane (param, *lane);
 	}
+
+	instant_save ();
 }
 
 void
@@ -1846,6 +1848,8 @@ Pianoroll::remove_automation_lane (Evoral::Parameter const & param)
 	}
 
 	delete lane;
+
+	instant_save ();
 }
 
 bool
@@ -2394,8 +2398,44 @@ Pianoroll::hide_count_in ()
 void
 Pianoroll::set_from_rsu (RegionUISettings& region_ui_settings)
 {
+	assert (_active_view);
+
 	note_mode_actions[region_ui_settings.note_mode]->set_active (true);
 	CueEditor::set_from_rsu (region_ui_settings);
+
+	for (auto & [region,view] : region_view_map) {
+		view->remove_all_automation ();
+	}
+
+	for (auto & [param,lane] : automation_lanes) {
+		delete lane;
+	}
+
+	automation_lanes.clear ();
+
+	if (!region_ui_settings.automation) {
+		return;
+	}
+
+	/* We can't add the automation lanes as we iterate over the automation
+	 * node children, because adding automation lanes will modify that node
+	 * in place. So get the parameters out of the XMLNodes, and then add
+	 * them.
+	 */
+
+	std::vector<Evoral::Parameter> params_for_automation;
+
+	for (auto const & n : region_ui_settings.automation->children()) {
+		std::string val;
+		if (n->get_property (X_("param"), val)) {
+			params_for_automation.push_back (ARDOUR::EventTypeMap::instance().from_symbol (val));
+		}
+	}
+
+	for (auto & param : params_for_automation) {
+		add_automation_lane (param);
+	}
+
 }
 
 void
@@ -2413,6 +2453,12 @@ Pianoroll::instant_save ()
 		rus.note_min = bg->lowest_note ();
 		rus.note_max = bg->highest_note();
 		rus.note_mode = note_mode ();
+		rus.color_mode = color_mode ();
+
+		XMLNode* as (view->automation_state());
+		if (as) {
+			rus.automation.reset (as);
+		}
 
 		add_region_ui_settings (region->id(), rus);
 	}

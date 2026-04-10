@@ -208,6 +208,8 @@ class Pianoroll : public CueEditor
 	void session_going_away ();
 
 	void set_color_mode (ARDOUR::ColorMode);
+	ARDOUR::ColorMode color_mode() const { return _color_mode; }
+
 	void motion_track (ArdourCanvas::Duple const &);
 
  private:

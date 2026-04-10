@@ -61,9 +61,6 @@ class PianorollMidiView : public MidiView
 	void ghost_add_note (NoteBase*);
 	void ghost_sync_selection (NoteBase*);
 
-	void remove_all_automation ();
-	void swap_automation_channel (int);
-
 	ArdourCanvas::Item* drag_group() const;
 
 	std::list<SelectableOwner*> selectable_owners();
@@ -87,10 +84,16 @@ class PianorollMidiView : public MidiView
 	void add_automation_lane (Evoral::Parameter const &, Pianoroll::AutomationLane& lane_parent);
 	void remove_automation_lane (Evoral::Parameter const &, Pianoroll::AutomationLane& lane_parent);
 	void set_active_automation (Evoral::Parameter const &);
+	void remove_all_automation ();
+	void swap_automation_channel (int);
+
 	void partition_height ();
 
 	void get_selectables (Evoral::Parameter const & param, Temporal::timepos_t const & start, Temporal::timepos_t  const & end, double x, double y, std::list<Selectable*>& sl, bool within = false);
 	void set_sensitive (bool yn);
+
+	XMLNode* automation_state () const;
+	void set_automation_state (XMLNode const &);
 
   protected:
 	bool scroll (GdkEventScroll* ev);

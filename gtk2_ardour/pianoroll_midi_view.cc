@@ -133,6 +133,29 @@ PianorollMidiView::midi_canvas_group_event (GdkEvent* ev)
 	return _editing_context.canvas_bg_event (ev, event_rect);
 }
 
+XMLNode*
+PianorollMidiView::automation_state () const
+{
+	if (automation_map.empty()) {
+		return nullptr;
+	}
+
+	XMLNode* root = new XMLNode (X_("lanes"));
+
+	for (auto const & [param,lane] : automation_map) {
+		XMLNode* child = new XMLNode (X_("lane"));
+		child->set_property (X_("param"), ARDOUR::EventTypeMap::instance().to_symbol (param));
+		root->add_child_nocopy (*child);
+	}
+
+	return root;
+}
+
+void
+PianorollMidiView::set_automation_state (XMLNode const & node)
+{
+}
+
 void
 PianorollMidiView::set_sensitive (bool yn)
 {
@@ -597,6 +620,7 @@ PianorollMidiView::hide_overlay_text ()
 		overlay_text->hide ();
 	}
 }
+
 void
 PianorollMidiView::cut_copy_clear (::Selection& selection, Editing::CutCopyOp op)
 {

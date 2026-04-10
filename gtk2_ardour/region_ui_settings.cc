@@ -43,6 +43,8 @@ RegionUISettings::RegionUISettings ()
 	, note_mode (ARDOUR::Sustained)
 	, x_origin (0)
 	, recording_length (1, 0, 0)
+	, color_mode (ARDOUR::MeterColors)
+	, automation (nullptr)
 	, width (-1)
 	, height (-1)
 	, x (-1)
@@ -53,6 +55,44 @@ RegionUISettings::RegionUISettings ()
 	, note_min (32)
 	, note_max (96)
 {
+}
+
+RegionUISettings::RegionUISettings (RegionUISettings const & other)
+{
+	*this = other;
+}
+
+RegionUISettings&
+RegionUISettings::operator= (RegionUISettings const & other)
+{
+	grid_type = other.grid_type;
+	samples_per_pixel = other.samples_per_pixel;
+	follow_playhead = other.follow_playhead;
+	play_selection = other.play_selection;
+	snap_mode = other.snap_mode;
+	zoom_focus = other.zoom_focus;
+	mouse_mode = other.mouse_mode;
+	note_mode = other.note_mode;
+	x_origin = other.x_origin;
+	recording_length = other.recording_length;
+	color_mode = other.color_mode;
+	width = other.width;
+	height = other.height;
+	x = other.x;
+	y = other.y;
+	draw_length = other.draw_length;
+	draw_velocity = other.draw_velocity;
+	channel = other.channel;
+	note_min = other.note_min;
+	note_max = other.note_max;
+
+	if (other.automation) {
+		automation.reset (new XMLNode (*other.automation));
+	} else {
+		automation.reset ();
+	}
+
+	return *this;
 }
 
 XMLNode&
@@ -69,6 +109,11 @@ RegionUISettings::get_state () const
 	node->set_property (X_("note-mode"), note_mode);
 	node->set_property (X_("x-origin"), x_origin);
 	node->set_property (X_("recording_length"), recording_length);
+	node->set_property (X_("color-mode"), color_mode);
+
+	if (automation) {
+		node->add_child_copy (*automation);
+	}
 
 	node->set_property (X_("draw-length"), draw_length);
 	node->set_property (X_("draw-velocity"), draw_velocity);
@@ -100,6 +145,12 @@ RegionUISettings::set_state (XMLNode const & state, int)
 	state.get_property (X_("note-mode"), note_mode);
 	state.get_property (X_("x-origin"), x_origin);
 	state.get_property (X_("recording_length"), recording_length);
+	state.get_property (X_("color-mode"), color_mode);
+
+	XMLNode* automation_node = state.child (X_("lanes"));
+	if (automation_node) {
+		automation.reset (new XMLNode (*automation_node));
+	}
 
 	state.get_property (X_("draw-length"), draw_length);
 	state.get_property (X_("draw-velocity"), draw_velocity);
