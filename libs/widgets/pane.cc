@@ -642,7 +642,7 @@ Pane::set_divider (Dividers::size_type div, float fract)
 }
 
 void
-Pane::set_absolute_divider (Dividers::size_type div, DividerMode mode)
+Pane::set_absolute_divider (Dividers::size_type div, DividerMode mode, float size)
 {
 	Dividers::iterator d = dividers.begin();
 
@@ -659,6 +659,7 @@ Pane::set_absolute_divider (Dividers::size_type div, DividerMode mode)
 
 	(*d)->mode = mode;
 	if ((*d)->mode != Relative) {
+		(*d)->absolute_child_size = size;
 		/* XXX Absolute divider modes have only been tested with 1 divider */
 		assert (dividers.size () < 2);
 	}
@@ -682,6 +683,26 @@ Pane::get_divider (Dividers::size_type div) const
 	}
 
 	return (*d)->fract;
+}
+
+
+float
+Pane::get_absolute_divider (Dividers::size_type div) const
+{
+	Dividers::const_iterator d = dividers.begin();
+
+	for (d = dividers.begin(); d != dividers.end() && div != 0; ++d, --div) {
+		/* relax */
+	}
+
+	if (d == dividers.end()) {
+		/* caller is trying to set divider that does not exist
+		 * yet.
+		 */
+		return -1.0f;
+	}
+
+	return (*d)->absolute_child_size;
 }
 
 void

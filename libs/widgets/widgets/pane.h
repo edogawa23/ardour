@@ -68,8 +68,9 @@ public:
 
 	void set_divider (std::vector<float>::size_type divider, float fract);
 	float get_divider (std::vector<float>::size_type divider = 0) const;
+	float get_absolute_divider (std::vector<float>::size_type divider = 0) const;
 	void set_child_minsize (Gtk::Widget const &, int32_t);
-	void set_absolute_divider (std::vector<float>::size_type divider, DividerMode mode);
+	void set_absolute_divider (std::vector<float>::size_type divider, DividerMode mode, float size);
 
 	GType child_type_vfunc() const;
 	void set_drag_cursor (Gdk::Cursor);
