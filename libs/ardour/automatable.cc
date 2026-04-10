@@ -188,7 +188,19 @@ Automatable::add_control(std::shared_ptr<Evoral::Control> ac)
 }
 
 string
-Automatable::describe_parameter (Evoral::Parameter param, bool just_name)
+Automatable::get_parameter_name (Evoral::Parameter param) const
+{
+	return get_parameter_string (param, true);
+}
+
+string
+Automatable::describe_parameter (Evoral::Parameter param)
+{
+	return get_parameter_string (param, false);
+}
+
+string
+Automatable::get_parameter_string (Evoral::Parameter param, bool just_name) const
 {
 	/* derived classes like PluginInsert should override this */
 

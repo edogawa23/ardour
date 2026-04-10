@@ -97,7 +97,8 @@ public:
 
 	virtual void automation_run (samplepos_t, pframes_t, bool only_active = false);
 
-	virtual std::string describe_parameter(Evoral::Parameter param, bool just_name = false);
+	virtual std::string describe_parameter(Evoral::Parameter param);
+	std::string get_parameter_name (Evoral::Parameter param) const;
 
 	AutoState get_parameter_automation_state (Evoral::Parameter param);
 	virtual void set_parameter_automation_state (Evoral::Parameter param, AutoState);
@@ -123,6 +124,8 @@ public:
 
 	static void find_next_ac_event (std::shared_ptr<AutomationControl>, Temporal::timepos_t const & start, Temporal::timepos_t const & end, Evoral::ControlEvent& ev);
 	static void find_prev_ac_event (std::shared_ptr<AutomationControl>, Temporal::timepos_t const & start, Temporal::timepos_t const & end, Evoral::ControlEvent& ev);
+
+	std::string get_parameter_string (Evoral::Parameter param, bool just_name) const;
 
 protected:
 	Session& _a_session;

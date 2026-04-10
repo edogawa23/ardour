@@ -664,10 +664,17 @@ MidiTrack::set_note_mode (NoteMode m)
 }
 
 std::string
-MidiTrack::describe_parameter (Evoral::Parameter param, bool just_name)
+MidiTrack::describe_parameter (Evoral::Parameter param)
 {
-	const std::string str(instrument_info().get_controller_name (param, just_name));
-	return str.empty() ? Automatable::describe_parameter (param, just_name) : str;
+	const std::string str(instrument_info().get_controller_name (param, false));
+	return str.empty() ? Automatable::describe_parameter (param) : str;
+}
+
+std::string
+MidiTrack::get_parameter_name (Evoral::Parameter param)
+{
+	const std::string str(instrument_info().get_controller_name (param, true));
+	return str.empty() ? Automatable::get_parameter_name (param) : str;
 }
 
 void

@@ -1811,7 +1811,7 @@ Pianoroll::add_automation_lane (Evoral::Parameter const & param)
 		return;
 	}
 
-	AutomationLane* lane = new AutomationLane (midi_track()->describe_parameter (param, true), data_group, automation_lanes.size());;
+	AutomationLane* lane = new AutomationLane (midi_track()->get_parameter_name (param), data_group, automation_lanes.size());;
 	lane->group->Event.connect ([this,param](GdkEvent* event) { return automation_group_event (event, param); });
 
 	if (_active_view) {

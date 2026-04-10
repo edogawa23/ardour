@@ -96,7 +96,8 @@ public:
 	bool chase_notes() const { return _chase_notes; }
 	void set_chase_notes (bool yn);
 
-	std::string describe_parameter (Evoral::Parameter param, bool just_name = false);
+	std::string describe_parameter (Evoral::Parameter param);
+	std::string get_parameter_name (Evoral::Parameter param);
 
 	bool step_editing() const { return _step_editing; }
 	void set_step_editing (bool yn);
