@@ -280,7 +280,6 @@ MidiViewBackground::apply_note_range (uint8_t lowest, uint8_t highest, bool to_c
 	}
 
 	if (contents_height() == 0) {
-		std::cerr << "early return, no size\n";
 		return false;
 	}
 
