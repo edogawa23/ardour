@@ -1222,13 +1222,10 @@ Editor::canvas_drop_zone_event (GdkEvent* event)
 	ArdourCanvas::Duple winpos;
 
 	switch (event->type) {
+	case GDK_BUTTON_PRESS:
 	case GDK_BUTTON_RELEASE:
-		if (event->button.button == 1) {
-			begin_reversible_selection_op (X_("Nowhere Click"));
-			selection->clear_objects ();
-			selection->clear_tracks ();
-			commit_reversible_selection_op ();
-		}
+		/* Allow starting a selection from the dropzone */
+		return typed_event (_canvas_drop_zone, event, DropZoneItem);
 		break;
 
 	case GDK_SCROLL:

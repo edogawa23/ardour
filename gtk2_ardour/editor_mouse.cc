@@ -738,6 +738,9 @@ Editor::button_press_handler_1 (ArdourCanvas::Item* item, GdkEvent* event, ItemT
 			}
 			break;
 
+		case DropZoneItem:
+			/* fallthrough: allows removing time by selecting a range in the dropzone */
+
 		default:
 			if (Keyboard::modifier_state_equals (event->button.state, Keyboard::RangeSelectModifier) && !selection->time.empty()) {
 				_drags->set (new SelectionDrag (*this, item, SelectionDrag::SelectionExtend), event);
@@ -796,6 +799,8 @@ Editor::button_press_handler_1 (ArdourCanvas::Item* item, GdkEvent* event, ItemT
 			return true;
 			break;
 
+		case DropZoneItem:
+			/* fallthrough: allows starting a selectin from the dropzone */
 		case StreamItem:
 			/* in the past, we created a new midi region here, but perhaps that is best left to the Draw mode */
 			/* .. now we allow for rubberband selection (region gain) */
@@ -937,6 +942,8 @@ Editor::button_press_handler_1 (ArdourCanvas::Item* item, GdkEvent* event, ItemT
 				return true;
 				break;
 
+			case DropZoneItem:
+				/* fallthrough: allows starting a selectin from the dropzone */
 			case StreamItem:
 				_drags->set (new RubberbandSelectDrag (*this, item, [&](GdkEvent* ev, timepos_t const & pos) { return this->rb_click (ev, pos); }), event);
 				return true;
