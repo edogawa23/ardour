@@ -598,16 +598,13 @@ ARDOUR_UI::starting ()
 	} else {
 
 		if (nsm) {
+			ARDOUR_UI::hide_splash ();
 			return 0;
 		}
 
 		startup_fsm = new StartupFSM (*amd);
 		startup_fsm->signal_response().connect (sigc::mem_fun (*this, &ARDOUR_UI::sfsm_response));
 
-
-		/* allow signals to be handled, ShouldLoad() from flush-pending */
-		Splash::instance()->exists(); // create splash
-		flush_pending ();
 
 		if (!startup_fsm) {
 			DEBUG_TRACE (DEBUG::GuiStartup, "Starting: SFSM was driven by flush-pending\n");

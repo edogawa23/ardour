@@ -352,6 +352,9 @@ ARDOUR_UI::ARDOUR_UI (int *argcp, char **argvp[], const char* localedir)
 {
 	Gtkmm2ext::init (localedir);
 
+	Splash::instance()->exists(); // create splash
+	flush_pending ();
+
 	UIConfiguration::instance().post_gui_init ();
 
 	if (ARDOUR::handle_old_configuration_files (std::bind (ask_about_configuration_copy, _1, _2, _3))) {
