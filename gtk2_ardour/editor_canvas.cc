@@ -199,7 +199,6 @@ Editor::initialize_canvas ()
 	ruler_separator = new ArdourCanvas::Line(_time_markers_group);
 	CANVAS_DEBUG_NAME (ruler_separator, "separator between ruler and main canvas");
 	ruler_separator->set (ArdourCanvas::Duple(0.0, 0.0), ArdourCanvas::Duple(ArdourCanvas::COORD_MAX, 0.0));
-	ruler_separator->set_outline_color(Gtkmm2ext::rgba_to_color (0, 0, 0, 1.0));
 	ruler_separator->set_outline_width(1.0);
 	ruler_separator->show();
 
@@ -1039,6 +1038,8 @@ Editor::color_handler()
 
 	range_marker_bar->set_fill_color (UIConfiguration::instance().color_mod ("range marker bar", "marker bar"));
 	range_marker_bar->set_outline_color (UIConfiguration::instance().color ("marker bar separator"));
+
+	ruler_separator->set_outline_color(UIConfiguration::instance().color ("track separator"));
 
 	range_bar_drag_rect->set_fill_color (UIConfiguration::instance().color ("range drag bar rect"));
 	range_bar_drag_rect->set_outline_color (UIConfiguration::instance().color ("range drag bar rect"));

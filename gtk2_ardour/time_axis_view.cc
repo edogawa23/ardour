@@ -137,7 +137,7 @@ TimeAxisView::TimeAxisView (ARDOUR::Session* sess, PublicEditor& ed, TimeAxisVie
 	_canvas_separator = new ArdourCanvas::Line(_canvas_display);
 	CANVAS_DEBUG_NAME (_canvas_separator, "separator for TAV");
 	_canvas_separator->set (ArdourCanvas::Duple(0.0, 0.0), ArdourCanvas::Duple(ArdourCanvas::COORD_MAX, 0.0));
-	_canvas_separator->set_outline_color(Gtkmm2ext::rgba_to_color (0, 0, 0, 1.0));
+	_canvas_separator->set_outline_color(UIConfiguration::instance().color ("track separator"));
 	_canvas_separator->set_outline_width(1.0);
 	_canvas_separator->hide();
 
@@ -1261,6 +1261,8 @@ TimeAxisView::color_handler ()
 		(*i)->end_trim->set_fill_color (UIConfiguration::instance().color ("selection"));
 		(*i)->end_trim->set_outline_color (UIConfiguration::instance().color ("selection"));
 	}
+
+	_canvas_separator->set_outline_color(UIConfiguration::instance().color ("track separator"));
 }
 
 void

@@ -505,6 +505,7 @@
     <ColorAlias name="tracknumber label: fill" alias="arc-background"/>
     <ColorAlias name="tracknumber label: fill active" alias="arc-background-light"/>
     <ColorAlias name="tracknumber label: led active" alias="arc-red"/>
+    <ColorAlias name="track separator" alias="arc-background-dark"/>
     <ColorAlias name="transport active option button: fill" alias="arc-background-light"/>
     <ColorAlias name="transport active option button: fill active" alias="arc-blue"/>
     <ColorAlias name="transport active option button: led active" alias="arc-green"/>
