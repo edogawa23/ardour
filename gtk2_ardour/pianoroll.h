@@ -165,6 +165,9 @@ class Pianoroll : public CueEditor
 
 	void apply_note_range (uint8_t lowest, uint8_t highest);
 
+	void note_entered ();
+	void note_left ();
+
 	struct AutomationLane {
 		AutomationLane (std::string const &, ArdourCanvas::Item*, uint32_t nth);
 		~AutomationLane ();

@@ -206,6 +206,8 @@ class MidiView : public virtual sigc::trackable, public LineMerger
 	void apply_note_diff (bool as_subcommand = false, bool was_copy = false);
 	void abort_note_diff();
 
+	NoteBase* entered_note() const { return _entered_note; }
+
 	void   note_entered(NoteBase* ev);
 	void   note_left(NoteBase* ev);
 	void   patch_entered (PatchChange *);

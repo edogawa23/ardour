@@ -1261,9 +1261,41 @@ Pianoroll::button_release_dispatch (GdkEventButton* ev)
 }
 
 void
+Pianoroll::note_entered ()
+{
+	assert (xcursor);
+	xcursor->hide ();
+}
+
+void
+Pianoroll::note_left ()
+{
+}
+
+void
 Pianoroll::motion_track (ArdourCanvas::Duple const & pos)
 {
 	assert (xcursor);
+	if (!_drags->active() && _active_view && _active_view->entered_note()) {
+		xcursor->hide ();
+		return;
+	}
+
+	auto res = automation_lanes.find (MidiVelocityAutomation);
+	if (res != automation_lanes.end()) {
+		double y0 = res->second->group->position().y;
+		double y1 = y0 + res->second->group->get().height();
+		Duple cp0 (res->second->group->parent()->item_to_canvas (Duple (0, y0)));
+		Duple cp1 (res->second->group->parent()->item_to_canvas (Duple (0, y1)));
+
+		if (pos.y >= cp0.y && pos.y < cp1.y) {
+			xcursor->hide ();
+			return;
+		}
+	}
+
+	xcursor->show ();
+
 	/* when events arrive in the canvas, they are adjusted to canvas
 	   coordinates by using the "best" scrollgroup, which will always be
 	   the HV scroll group. Reverse this transformation to get back to
@@ -1271,19 +1303,6 @@ Pianoroll::motion_track (ArdourCanvas::Duple const & pos)
 	   specifically this transformation, for various reasons.
 	*/
 
-	auto res = automation_lanes.find (MidiVelocityAutomation);
-	if (res != automation_lanes.end()) {
-		double y0 = res->second->group->position().y;
-		double y1 = y0 + res->second->group->get().height();
-		Duple cp (res->second->group->item_to_canvas (Duple (y0, y1)));
-
-		if (pos.y >= y0 && pos.y < y1) {
-			xcursor->hide ();
-			return;
-		}
-	}
-
-	xcursor->show ();
 	xcursor->set_position (ArdourCanvas::Duple (pos.x, pos.y).translate (-hv_scroll_group->scroll_offset()));
 }
 

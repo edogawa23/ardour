@@ -4396,6 +4396,8 @@ MidiView::note_entered (NoteBase* ev)
 	default:
 		break;
 	}
+
+	_editing_context.note_entered ();
 }
 
 void
@@ -4408,6 +4410,7 @@ MidiView::note_left (NoteBase*)
 	}
 
 	hide_verbose_cursor ();
+	_editing_context.note_left ();
 }
 
 void

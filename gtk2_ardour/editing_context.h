@@ -389,6 +389,9 @@ class EditingContext : public ARDOUR::SessionHandlePtr, public AxisViewProvider,
 		return *_verbose_cursor;
 	}
 
+	virtual void note_entered () {}
+	virtual void note_left () {}
+
 	virtual void set_snapped_cursor_position (Temporal::timepos_t const & pos) = 0;
 
 	static sigc::signal<void> DropDownKeys;
