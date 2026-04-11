@@ -150,16 +150,11 @@ Ruler::render (Rect const & area, Cairo::RefPtr<Cairo::Context> cr) const
 
 	setup_outline_context (cr);
 
-	/* draw line on lower edge as a separator */
+	/* draw line on lower edge (but inside the box) as a separator */
+	
+	cr->move_to (self.x0, self.y1 - _outline_width * 0.5);
+	cr->line_to (self.x1, self.y1 - _outline_width * 0.5);
 
-	if (_outline_width == 1.0) {
-		/* Cairo single pixel line correction */
-		cr->move_to (self.x0, self.y1+0.5);
-		cr->line_to (self.x1, self.y1+0.5);
-	} else {
-		cr->move_to (self.x0, self.y1);
-		cr->line_to (self.x1, self.y1);
-	}
 	cr->stroke ();
 
 	if (_metric) {
