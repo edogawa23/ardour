@@ -119,6 +119,11 @@ Rectangle::render (Rect const & area, Cairo::RefPtr<Cairo::Context> context) con
 		Rectangle::What outline_what (_outline_what);
 		Rect outline_rect (self);
 
+		/* Adjust outline rect coordinates so that the outline
+		 * is drawn inside the the bounding box
+		 */
+		outline_rect = outline_rect.expand (-_outline_width * 0.5);
+
 		/* Our goal here is ensure that we do not pass very large
 		 * (typically, > 32767) coordinates to cairo_stroke. Even if we
 		 * are drawing with a clip region imposed (e.g. a the Canvas
@@ -128,37 +133,32 @@ Rectangle::render (Rect const & area, Cairo::RefPtr<Cairo::Context> context) con
 		 * rectangle we attempt to stroke.
 		 */
 
-		if (outline_rect.x0 < draw.x0) {
+		if (outline_rect.x0 - _outline_width * 0.5 < draw.x0) {
 			outline_rect.x0 = draw.x0;
 			outline_what = Rectangle::What (outline_what & ~Rectangle::LEFT);
 		}
 
-		if (outline_rect.x1 > draw.x1) {
+		if (outline_rect.x1 + _outline_width * 0.5 > draw.x1) {
 			outline_rect.x1 = draw.x1;
 			outline_what = Rectangle::What (outline_what & ~Rectangle::RIGHT);
 		}
 
-		if (outline_rect.y0 < draw.y0) {
+		if (outline_rect.y0 - _outline_width * 0.5 < draw.y0) {
 			outline_rect.y0 = draw.y0;
 			outline_what = Rectangle::What (outline_what & ~Rectangle::TOP);
 		}
 
-		if (outline_rect.y1 > draw.y1) {
-			outline_rect.y1= draw.y1;
+		if (outline_rect.y1 + _outline_width * 0.5 > draw.y1) {
+			outline_rect.y1 = draw.y1;
 			outline_what = Rectangle::What (outline_what & ~Rectangle::BOTTOM);
 		}
-
-		/* Adjust to deal with cairo pixel positioning */
-
-		const double shift = _outline_width * 0.5;
-		outline_rect = outline_rect.translate (Duple (shift, shift));
 
 		if (outline_what == ALL) {
 
 			if (_corner_radius) {
-				Gtkmm2ext::rounded_rectangle (context, outline_rect.x0, outline_rect.y0, outline_rect.width() - _outline_width, outline_rect.height() - _outline_width, _corner_radius);
+				Gtkmm2ext::rounded_rectangle (context, outline_rect.x0, outline_rect.y0, outline_rect.width(), outline_rect.height() , _corner_radius);
 			} else {
-				context->rectangle (outline_rect.x0, outline_rect.y0, outline_rect.width() - _outline_width, outline_rect.height() - _outline_width);
+				context->rectangle (outline_rect.x0, outline_rect.y0, outline_rect.width(), outline_rect.height());
 			}
 
 		} else {
