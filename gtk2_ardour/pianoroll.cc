@@ -76,6 +76,9 @@ using namespace ArdourWidgets;
 using namespace Gtkmm2ext;
 using namespace Temporal;
 
+std::map<std::string,std::string> Pianoroll::controller_name_map;
+
+
 Pianoroll::Pianoroll (std::string const & name, bool with_transport, bool expandabl)
 	: CueEditor (name, with_transport)
 	, prh (nullptr)
@@ -90,6 +93,10 @@ Pianoroll::Pianoroll (std::string const & name, bool with_transport, bool expand
 	, ignore_channel_changes (false)
 	, xcursor (nullptr)
 {
+	if (controller_name_map.empty()) {
+		build_midi_controller_name_map ();
+	}
+
 	autoscroll_vertical_allowed = false;
 
 	load_bindings ();
@@ -1815,7 +1822,16 @@ Pianoroll::add_automation_lane (Evoral::Parameter const & param)
 		return;
 	}
 
-	AutomationLane* lane = new AutomationLane (midi_track()->get_parameter_name (param), data_group, automation_lanes.size());;
+	std::string parameter_name = midi_track()->get_parameter_name (param);
+	auto res = controller_name_map.find (parameter_name);
+
+	/* Try to find a short name */
+
+	if (res != controller_name_map.end()) {
+		parameter_name = res->second;
+	}
+
+	AutomationLane* lane = new AutomationLane (parameter_name, data_group, automation_lanes.size());;
 	lane->group->Event.connect ([this,param](GdkEvent* event) { return automation_group_event (event, param); });
 
 	if (_active_view) {
@@ -2665,4 +2681,90 @@ void
 ControllerControls::set_editing (bool yn)
 {
 	edit_button->set_active_state (yn ? Gtkmm2ext::ExplicitActive : Gtkmm2ext::Off);
+}
+
+void
+Pianoroll::build_midi_controller_name_map ()
+{
+	/* Maps names from MIDNAM/MIDI standard names for controllers to shorter
+	   versions. Anything missing here means "use the given name as
+	   is". The map keys come from somewhere that is non-translatable, but
+	   the map values are translatable. 
+	*/
+	using namespace std;
+
+	controller_name_map.insert (make_pair<string,string> (X_("Modulation Wheel or Lever"), _("Modulation")));
+	controller_name_map.insert (make_pair<string,string> (X_("Breath Controller"), _("Breath Ctrlr")));
+	controller_name_map.insert (make_pair<string,string> (X_("Foot Controller"), _("Foot Ctrlr")));
+	controller_name_map.insert (make_pair<string,string> (X_("Portamento Time"), _("Portamento Time")));
+	controller_name_map.insert (make_pair<string,string> (X_("Data Entry MSB"), _("Data Entry MSB")));
+	controller_name_map.insert (make_pair<string,string> (X_("Channel Volume"), _("Channel Volume")));
+	controller_name_map.insert (make_pair<string,string> (X_("Expression Controller"), _("Expression Ctrlr")));
+	controller_name_map.insert (make_pair<string,string> (X_("Effect Control 1"), _("Effect Control 1")));
+	controller_name_map.insert (make_pair<string,string> (X_("Effect Control 2"), _("Effect Control 2")));
+	controller_name_map.insert (make_pair<string,string> (X_("General Purpose Controller 1"), _("Gen, Ctrlr 1")));
+	controller_name_map.insert (make_pair<string,string> (X_("General Purpose Controller 2"), _("Gen. Ctrlr 2")));
+	controller_name_map.insert (make_pair<string,string> (X_("General Purpose Controller 3"), _("Gen. Ctrlr 3")));
+	controller_name_map.insert (make_pair<string,string> (X_("General Purpose Controller 4"), _("Gen. Ctrlr 4")));
+	controller_name_map.insert (make_pair<string,string> (X_("LSB for Control 0 (Bank Select) (Fine)"), _("Ctrlr 0 LSB")));
+	controller_name_map.insert (make_pair<string,string> (X_("LSB for Control 1 (Modulation Wheel or Lever) (Fine)"), _("Modulation LSB")));
+	controller_name_map.insert (make_pair<string,string> (X_("LSB for Control 2 (Breath Controller) (Fine)"), _("Breath LSB")));
+	controller_name_map.insert (make_pair<string,string> (X_("LSB for Control 3 (Undefined) (Fine)"), _("Ctrlr 3 LSB")));
+	controller_name_map.insert (make_pair<string,string> (X_("LSB for Control 4 (Foot Controller) (Fine)"), _("Foot LSB")));
+	controller_name_map.insert (make_pair<string,string> (X_("LSB for Control 5 (Portamento Time) (Fine)"), _("Portamento LSB")));
+	controller_name_map.insert (make_pair<string,string> (X_("LSB for Control 6 (Data Entry) (Fine)"), _("Data LSB")));
+	controller_name_map.insert (make_pair<string,string> (X_("LSB for Control 7 (Channel Volume) (Fine)"), _("Chn. Vol LSB")));
+	controller_name_map.insert (make_pair<string,string> (X_("LSB for Control 8 (Balance) (Fine)"), _("Balance LSB")));
+	controller_name_map.insert (make_pair<string,string> (X_("LSB for Control 9 (Undefined) (Fine)"), _("Ctrlr 9 LSB")));
+	controller_name_map.insert (make_pair<string,string> (X_("LSB for Control 10 (Pan) (Fine)"), _("Ctrlr 10 LSB")));
+	controller_name_map.insert (make_pair<string,string> (X_("LSB for Control 11 (Expression Controller) (Fine)"), _("Ctrlr 11 LSB")));
+	controller_name_map.insert (make_pair<string,string> (X_("LSB for Control 12 (Effect control 1) (Fine)"), _("Ctrlr 12 LSB")));
+	controller_name_map.insert (make_pair<string,string> (X_("LSB for Control 13 (Effect control 2) (Fine)"), _("Ctrlr 13 LSB")));
+	controller_name_map.insert (make_pair<string,string> (X_("LSB for Control 14 (Undefined) (Fine)"), _("Ctrlr 14 LSB")));
+	controller_name_map.insert (make_pair<string,string> (X_("LSB for Control 15 (Undefined) (Fine)"), _("Ctrlr 15 LSB")));
+	controller_name_map.insert (make_pair<string,string> (X_("LSB for Control 16 (General Purpose Controller 1) (Fine)"), _("Ctrlr 16 LSB")));
+	controller_name_map.insert (make_pair<string,string> (X_("LSB for Control 17 (General Purpose Controller 2) (Fine)"), _("Ctrlr 17 LSB")));
+	controller_name_map.insert (make_pair<string,string> (X_("LSB for Control 18 (General Purpose Controller 3) (Fine)"), _("Ctrlr 18 LSB")));
+	controller_name_map.insert (make_pair<string,string> (X_("LSB for Control 19 (General Purpose Controller 4) (Fine)"), _("Ctrlr 19 LSB")));
+	controller_name_map.insert (make_pair<string,string> (X_("LSB for Control 20 (Undefined) (Fine)"), _("Ctrlr 20 LSB")));
+	controller_name_map.insert (make_pair<string,string> (X_("LSB for Control 21 (Undefined) (Fine)"), _("Ctrlr 21 LSB")));
+	controller_name_map.insert (make_pair<string,string> (X_("LSB for Control 22 (Undefined) (Fine)"), _("Ctrlr 22 LSB")));
+	controller_name_map.insert (make_pair<string,string> (X_("LSB for Control 23 (Undefined) (Fine)"), _("Ctrlr 23 LSB")));
+	controller_name_map.insert (make_pair<string,string> (X_("LSB for Control 24 (Undefined) (Fine)"), _("Ctrlr 24 LSB")));
+	controller_name_map.insert (make_pair<string,string> (X_("LSB for Control 25 (Undefined) (Fine)"), _("Ctrlr 25 LSB")));
+	controller_name_map.insert (make_pair<string,string> (X_("LSB for Control 26 (Undefined) (Fine)"), _("Ctrlr 26 LSB")));
+	controller_name_map.insert (make_pair<string,string> (X_("LSB for Control 27 (Undefined) (Fine)"), _("Ctrlr 27 LSB")));
+	controller_name_map.insert (make_pair<string,string> (X_("LSB for Control 28 (Undefined) (Fine)"), _("Ctrlr 28 LSB")));
+	controller_name_map.insert (make_pair<string,string> (X_("LSB for Control 29 (Undefined) (Fine)"), _("Ctrlr 29 LSB")));
+	controller_name_map.insert (make_pair<string,string> (X_("LSB for Control 30 (Undefined) (Fine)"), _(_("Ctrlr 30 LSB"))));
+	controller_name_map.insert (make_pair<string,string> (X_("LSB for Control 31 (Undefined) (Fine)"), _("Ctrlr 31 LSB")));
+	controller_name_map.insert (make_pair<string,string> (X_("Damper Pedal on/off (Sustain) ≤63 off, ≥64 on"), _("Sustain on/off")));
+	controller_name_map.insert (make_pair<string,string> (X_("Portamento On/Off ≤63 off, ≥64 on"), _("Portamento on/off")));
+	controller_name_map.insert (make_pair<string,string> (X_("Sostenuto On/Off ≤63 off, ≥64 on"), _("Sostenuto on/off")));
+	controller_name_map.insert (make_pair<string,string> (X_("Soft Pedal On/Off ≤63 off, ≥64 on"), _("Soft Pedal on/off")));
+	controller_name_map.insert (make_pair<string,string> (X_("Legato Footswitch ≤63 Normal, ≥64 Legato"), _("Legato Footswitch")));
+	controller_name_map.insert (make_pair<string,string> (X_("Hold 2 ≤63 off, ≥64 on"), _("Hold 2 ≤63 off, ≥64 on")));
+	controller_name_map.insert (make_pair<string,string> (X_("Sound Controller 1 (default: Sound Variation) (Fine)"), _("Sound Ctrlr 1")));
+	controller_name_map.insert (make_pair<string,string> (X_("Sound Controller 2 (default: Timbre/Harmonic Intens.) (Fine)"), _("Sound Ctrlr 2")));
+	controller_name_map.insert (make_pair<string,string> (X_("Sound Controller 3 (default: Release Time) (Fine)"), _("Sound Ctrlr 3")));
+	controller_name_map.insert (make_pair<string,string> (X_("Sound Controller 4 (default: Attack Time) (Fine)"), _("Sound Ctrlr 4")));
+	controller_name_map.insert (make_pair<string,string> (X_("Sound Controller 5 (default: Brightness) (Fine)"), _("Sound Ctrlr 5")));
+	controller_name_map.insert (make_pair<string,string> (X_("Sound Controller 6 (default: Decay Time) (Fine)"), _("Sound Ctrlr 6")));
+	controller_name_map.insert (make_pair<string,string> (X_("Sound Controller 7 (default: Vibrato Rate) (Fine)"), _("Sound Ctrlr 7")));
+	controller_name_map.insert (make_pair<string,string> (X_("Sound Controller 8 (default: Vibrato Depth) (Fine)"), _("Sound Ctrlr 8")));
+	controller_name_map.insert (make_pair<string,string> (X_("Sound Controller 9 (default: Vibrato Delay) (Fine)"), _("Sound Ctrlr 9")));
+	controller_name_map.insert (make_pair<string,string> (X_("Sound Controller 10 (default undefined) (Fine)"), _("Sound Ctrlr 10")));
+	controller_name_map.insert (make_pair<string,string> (X_("General Purpose Controller 5 (Fine)"), _("Gen. Ctrlr 5 LSB")));
+	controller_name_map.insert (make_pair<string,string> (X_("General Purpose Controller 6 (Fine)"), _("Gen. Ctrlr 6 LSB")));
+	controller_name_map.insert (make_pair<string,string> (X_("General Purpose Controller 7 (Fine)"), _("Gen. Ctrlr 7 LSB")));
+	controller_name_map.insert (make_pair<string,string> (X_("General Purpose Controller 8 (Fine)"), _("Gen. Ctrlr 8 LSB")));
+	controller_name_map.insert (make_pair<string,string> (X_("Portamento Control (Fine)"), _("Portamento (Fine)")));
+	controller_name_map.insert (make_pair<string,string> (X_("High Resolution Velocity Prefix (Velocity LSB)"), _("Hi-Res Velo. Prefix")));
+	controller_name_map.insert (make_pair<string,string> (X_("Effects 1 Depth (default: Reverb Send Level)"), _("Effects 1 Depth")));
+	controller_name_map.insert (make_pair<string,string> (X_("Data Increment (Data Entry +1)"), _("Data Increment")));
+	controller_name_map.insert (make_pair<string,string> (X_("Data Decrement (Data Entry -1)"), _("Data Decrement")));
+	controller_name_map.insert (make_pair<string,string> (X_("Non-Registered Parameter Number LSB"), _("NRPN LSB")));
+	controller_name_map.insert (make_pair<string,string> (X_("Non-Registered Parameter Number MSB"), _("NPRN MSB")));
+	controller_name_map.insert (make_pair<string,string> (X_("Registered Parameter Number LSB"), _("RPN LSB")));
+	controller_name_map.insert (make_pair<string,string> (X_("Registered Parameter Number MSB"), _("RPN MSB")));
 }
