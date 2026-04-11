@@ -236,7 +236,7 @@
     <ColorAlias name="lua action button: fill" alias="arc-background-light"/>
     <ColorAlias name="mapping bar" alias="arc-background-light"/>
     <ColorAlias name="marker bar" alias="arc-background-light"/>
-    <ColorAlias name="marker bar separator" alias="arc-green"/>
+    <ColorAlias name="marker bar separator" alias="arc-background-dark"/>
     <ColorAlias name="marker drag line" alias="arc-green"/>
     <ColorAlias name="marker label" alias="arc-background-dark"/>
     <ColorAlias name="marker track" alias="arc-foreground"/>
