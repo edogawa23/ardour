@@ -669,7 +669,7 @@ Editor::update_ruler_visibility ()
 		_selection_marker_group->hide ();
 	}
 
-	int ruler_separator_y = std::max(1, (int)(timebar_height * visible_timebars));
+	int ruler_separator_y = std::max(1, (int)(timebar_height * visible_timebars) - 1);
 	ruler_separator->set_y_position (ruler_separator_y);
 	time_bars_vbox.set_size_request (-1, ruler_separator_y);
 
