@@ -341,4 +341,6 @@ class Pianoroll : public CueEditor
 
 	ARDOUR::Quantize* get_quantize_op ();
 	sigc::connection selection_connection;
+
+	void show_automation_for_all ();
 };

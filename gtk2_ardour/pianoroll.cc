@@ -1761,6 +1761,10 @@ Pianoroll::set_region (std::shared_ptr<ARDOUR::Region> region)
 		zoom_to_show (max_zoom_extent());
 	}
 
+	if (region_view_map.size() > 1) {
+		show_automation_for_all ();
+	}
+
 	if (r->source()->empty()) {
 		std::shared_ptr<MidiTrack> mt (std::dynamic_pointer_cast<ARDOUR::MidiTrack> (_track));
 		if (mt) {
@@ -2403,6 +2407,17 @@ Pianoroll::set_from_rsu (RegionUISettings& region_ui_settings)
 	note_mode_actions[region_ui_settings.note_mode]->set_active (true);
 	CueEditor::set_from_rsu (region_ui_settings);
 
+	if (region_view_map.size() > 1) {
+		return;
+	}
+
+	/* there's only 1 region, show it's automation */
+	show_automation_for_all ();
+}
+
+void
+Pianoroll::show_automation_for_all ()
+{
 	for (auto & [region,view] : region_view_map) {
 		view->remove_all_automation ();
 	}
@@ -2413,30 +2428,37 @@ Pianoroll::set_from_rsu (RegionUISettings& region_ui_settings)
 
 	automation_lanes.clear ();
 
-	if (!region_ui_settings.automation) {
-		return;
-	}
+	std::set<Evoral::Parameter> params_for_automation;
 
-	/* We can't add the automation lanes as we iterate over the automation
-	 * node children, because adding automation lanes will modify that node
-	 * in place. So get the parameters out of the XMLNodes, and then add
-	 * them.
-	 */
+	for (auto & [region,view] : region_view_map) {
+		RegionUISettingsManager::iterator rsu = ARDOUR_UI::instance()->region_ui_settings_manager.find (region->id());
+		if (rsu != ARDOUR_UI::instance()->region_ui_settings_manager.end()) {
 
-	std::vector<Evoral::Parameter> params_for_automation;
+			if (!rsu->second.automation) {
+				continue;
+			}
 
-	for (auto const & n : region_ui_settings.automation->children()) {
-		std::string val;
-		if (n->get_property (X_("param"), val)) {
-			params_for_automation.push_back (ARDOUR::EventTypeMap::instance().from_symbol (val));
+			/* We can't add the automation lanes as we iterate over the automation
+			 * node children, because adding automation lanes will modify that node
+			 * in place. So get the parameters out of the XMLNodes, and then add
+			 * them.
+			 */
+
+
+			for (auto const & n : rsu->second.automation->children()) {
+				std::string val;
+				if (n->get_property (X_("param"), val)) {
+					params_for_automation.insert (ARDOUR::EventTypeMap::instance().from_symbol (val));
+				}
+			}
 		}
 	}
 
 	for (auto & param : params_for_automation) {
 		add_automation_lane (param);
 	}
-
 }
+
 
 void
 Pianoroll::instant_save ()
