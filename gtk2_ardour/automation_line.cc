@@ -96,6 +96,7 @@ AutomationLine::AutomationLine (const string&                   name,
 	:_name (name)
 	, _height (0)
 	, _line_color_name ("automation line")
+	, _sensitive_line_color (0x0)
 	, _insensitive_line_color (0x0)
 	, _view_index_offset (0)
 	, alist (al)
@@ -154,14 +155,6 @@ AutomationLine::set_sensitive (bool yn)
 	_sensitive = yn;
 
 	set_line_color (_line_color_name, _line_color_mod);
-
-	for (auto & cp : control_points) {
-		if (yn) {
-			cp->show();
-		} else {
-			cp->hide ();
-		}
-	}
 }
 
 timepos_t
@@ -193,11 +186,11 @@ AutomationLine::update_visibility ()
 			line->hide ();
 		}
 
-		if (_visible & ControlPoints) {
+		if (_sensitive && (_visible & ControlPoints)) {
 			for (auto & cp : control_points) {
 				cp->show ();
 			}
-		} else if (_visible & SelectedControlPoints) {
+		} else if (_sensitive && (_visible & SelectedControlPoints)) {
 			for (auto & cp : control_points) {
 				if (cp->selected()) {
 					cp->show ();
@@ -214,7 +207,7 @@ AutomationLine::update_visibility ()
 	} else {
 		line->hide ();
 		for (auto & cp : control_points) {
-			if (_visible & ControlPoints) {
+			if (_sensitive && (_visible & ControlPoints)) {
 				cp->show ();
 			} else {
 				cp->hide ();
@@ -304,7 +297,11 @@ AutomationLine::set_line_color (string const & color_name, string color_mod)
 	_line_color_mod = color_mod;
 
 	if (_sensitive) {
-		line->set_outline_color (UIConfiguration::instance().color (color_name));
+		if (_sensitive_line_color) {
+			line->set_outline_color (_sensitive_line_color);
+		} else {
+			line->set_outline_color (UIConfiguration::instance().color (color_name));
+		}
 	} else {
 		line->set_outline_color (_insensitive_line_color);
 	}
@@ -337,6 +334,12 @@ void
 AutomationLine::set_insensitive_line_color (uint32_t color)
 {
 	_insensitive_line_color = color;
+}
+
+void
+AutomationLine::set_sensitive_line_color (uint32_t color)
+{
+	_sensitive_line_color = color;
 }
 
 uint32_t
