@@ -120,7 +120,7 @@ Rectangle::render (Rect const & area, Cairo::RefPtr<Cairo::Context> context) con
 		Rect outline_rect (self);
 
 		/* Adjust outline rect coordinates so that the outline
-		 * is drawn inside the the bounding box
+		 * is drawn inside the bounding box
 		 */
 		outline_rect = outline_rect.expand (-_outline_width * 0.5);
 
