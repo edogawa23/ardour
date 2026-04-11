@@ -343,6 +343,7 @@ class Pianoroll : public CueEditor
 	sigc::connection selection_connection;
 
 	void show_automation_for_all ();
+	std::string parameter_name (Evoral::Parameter const &) const;
 	static void build_midi_controller_name_map ();
 	static std::map<std::string,std::string> controller_name_map;
 };

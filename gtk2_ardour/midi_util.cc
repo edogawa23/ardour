@@ -85,7 +85,9 @@ build_controller_menu (Gtk::Menu& menu, InstrumentInfo const & instrument_info, 
 		for (MasterDeviceNames::ControlNameLists::const_iterator l = ctllist.begin(); l != ctllist.end(); ++l) {
 
 			uint16_t channels  = instrument_info.channels_for_control_list (l->first);
+			channels = channels & channel_mask;
 			bool multi_channel = (0 != (channels & (channels - 1)));
+
 
 			std::shared_ptr<ControlNameList> name_list = l->second;
 			Menu* ctl_menu = nullptr;
@@ -145,6 +147,7 @@ build_controller_menu (Gtk::Menu& menu, InstrumentInfo const & instrument_info, 
 		/* No controllers names, generate generic numeric menu */
 
 		bool multi_channel = (0 != (channel_mask & (channel_mask - 1)));
+		std::cerr << "is mc #2 " << multi_channel << std::endl;
 
 		/* count the number of selected channels because we will build a different menu
 		 * structure if there is more than 1 selected.
