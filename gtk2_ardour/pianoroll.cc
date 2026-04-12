@@ -743,9 +743,6 @@ Pianoroll::canvas_enter_leave (GdkEventCrossing* ev)
 			_canvas.grab_focus ();
 			ActionManager::set_sensitive (_midi_actions, true);
 			within_track_canvas = true;
-			if (xcursor) {
-				xcursor->show ();
-			}
 		}
 		break;
 	case GDK_LEAVE_NOTIFY:
@@ -837,6 +834,7 @@ Pianoroll::canvas_allocate (Gtk::Allocation alloc)
 		xcursor = new CrossCursor (_canvas.root());
 		xcursor->set_line_width (5);
 		xcursor->set_outline_color (0xffffffcd);
+		xcursor->hide (); /* for now, it will become visible on first motion */
 	}
 
 	xcursor->set_extents (_visible_canvas_width, _visible_canvas_height);
