@@ -109,7 +109,7 @@ Pianoroll::Pianoroll (std::string const & name, bool with_transport, bool expand
 
 	policy_dropdown.add_menu_elem (MenuElem (_("All Regions"), sigc::bind (sigc::mem_fun (*this, &Pianoroll::set_editing_policy), AllViews)));
 	policy_dropdown.add_menu_elem (MenuElem (_("Active Region"), sigc::bind (sigc::mem_fun (*this, &Pianoroll::set_editing_policy), ActiveView)));
-	policy_dropdown.set_active (1);
+	set_editing_policy (ActiveView);
 
 	/* Ordering must match enum declaration order */
 	colors_dropdown.add_menu_elem (MenuElem (_("Velocity"), sigc::bind (sigc::mem_fun (*this, &Pianoroll::set_color_mode), ARDOUR::MeterColors)));
@@ -181,6 +181,27 @@ void
 Pianoroll::set_editing_policy (EditingPolicy ep)
 {
 	_editing_policy = ep;
+	std::string txt;
+	switch (_editing_policy) {
+	case AllViews:
+		txt = _("All Views");
+		break;
+	case ActiveView:
+		txt = _("Active View");
+		break;
+	}
+
+	policy_dropdown.set_text (txt);
+
+	if (_editing_policy == ActiveView) {
+		for (auto & [region,view] : region_view_map) {
+			view->set_sensitive ((view == _active_view));
+		}
+	} else {
+		for (auto & [region,view] : region_view_map) {
+			view->set_sensitive (true);
+		}
+	}
 }
 
 void
@@ -1276,9 +1297,24 @@ void
 Pianoroll::motion_track (ArdourCanvas::Duple const & pos)
 {
 	assert (xcursor);
-	if (!_drags->active() && _active_view && _active_view->entered_note()) {
-		xcursor->hide ();
-		return;
+
+	if (!_drags->active()) {
+		switch (_editing_policy) {
+		case ActiveView:
+			if (_active_view && _active_view->entered_note()) {
+				xcursor->hide ();
+				return;
+			}
+			break;
+		case AllViews:
+			for (auto & [region,view] : region_view_map) {
+				if (view->entered_note()) {
+					xcursor->hide ();
+					return;
+				}
+			}
+			break;
+		}
 	}
 
 	auto res = automation_lanes.find (MidiVelocityAutomation);

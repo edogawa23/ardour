@@ -78,8 +78,8 @@ class Pianoroll : public CueEditor
 {
   public:
 	enum EditingPolicy {
+		AllViews,
 		ActiveView,
-		AllViews
 	};
 
 

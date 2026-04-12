@@ -473,8 +473,12 @@ PianorollMidiView::add_automation_lane (Evoral::Parameter const & param, Pianoro
 		                                                     ac->alist(),
 		                                                     ac->desc()));
 
+		Gtkmm2ext::Color c (_midi_track->presentation_info().color ());
+		line->set_sensitive_line_color (c);
+		c = Gtkmm2ext::change_alpha (c, 0.2);
+		line->set_insensitive_line_color (c);
 		line->set_sensitive (_sensitive);
-		line->set_insensitive_line_color (line_color_for (param));
+
 		lane = new AutomationLane (ac, line, false, lane_parent);
 	}
 
