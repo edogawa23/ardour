@@ -237,6 +237,7 @@ InternalSend::run (BufferSet& bufs, samplepos_t start_sample, samplepos_t end_sa
 
 	if ((tgain == GAIN_COEFF_ZERO) && converged) {
 		if (can_return_early) {
+			Amp::apply_simple_gain (mixbufs, nframes, GAIN_COEFF_ZERO);
 			_meter->reset ();
 			return;
 		}
