@@ -233,13 +233,15 @@ ArdourDropdown::disable_scrolling()
 }
 
 void
-ArdourDropdown::append_text_item (std::string const& text) {
+ArdourDropdown::append_text_item (std::string const& text)
+{
 	using namespace Gtkmm2ext;
 	add_menu_elem (MenuElemNoMnemonic (text, sigc::bind (sigc::mem_fun (*this, &ArdourDropdown::default_text_handler), text)));
 }
 
 void
-ArdourDropdown::default_text_handler (std::string const& text) {
+ArdourDropdown::default_text_handler (std::string const& text)
+{
 	set_text (text);
 	StateChanged (); /* EMIT SIGNAL */
 }
