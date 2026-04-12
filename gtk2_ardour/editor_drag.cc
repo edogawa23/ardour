@@ -7440,9 +7440,8 @@ FreehandLineDrag<OrderedPointList,OrderedPoint>::motion (GdkEvent* ev, bool firs
 		dragging_line->set_outline_color (UIConfiguration::instance().color ("automation line")); // XXX -> get color from EditorAutomationLine
 		dragging_line->raise_to_top ();
 
-		/* for freehand drawing, we only support left->right direction, for now. */
-		direction = 1;
-		edge_x = 0;
+		direction = 0;
+		edge_x = -1;
 		/* TODO:  allow the user to move "far" left, and then start drawing from the new leftmost position.
 		  ...start_grab() already occurred so this is non-trivial */
 
@@ -7459,12 +7458,6 @@ FreehandLineDrag<OrderedPointList,OrderedPoint>::maybe_add_point (GdkEvent* ev, 
 {
 	timepos_t pos (cpos);
 
-	/* Enforce left-to-right drawing */
-
-	if (direction <= 0) {
-		return;
-	}
-
 	editing_context.snap_to_with_modifier (pos, ev, Temporal::RoundNearest, ARDOUR::SnapToAny_Visual, true);
 
 	if (pos != _drags->current_pointer_time()) {
@@ -7476,6 +7469,8 @@ FreehandLineDrag<OrderedPointList,OrderedPoint>::maybe_add_point (GdkEvent* ev, 
 	 */
 
 	double const timeline_x = editing_context.time_to_pixel (pos);
+
+	if (edge_x == -1) edge_x = timeline_x;
 
 	ArdourCanvas::Rect r = base_rect.item_to_canvas (base_rect.get());
 
@@ -7492,12 +7487,6 @@ FreehandLineDrag<OrderedPointList,OrderedPoint>::maybe_add_point (GdkEvent* ev, 
 		line_start_y = y;
 	}
 
-	if (x < 0) {
-		dragging_line->clear ();
-		drawn_points.clear ();
-		edge_x = 0;
-		return;
-	}
 
 	/* Clamp y coordinate to the area of the base rect */
 
@@ -7507,6 +7496,23 @@ FreehandLineDrag<OrderedPointList,OrderedPoint>::maybe_add_point (GdkEvent* ev, 
 	bool pop_point = false;
 
 	const bool straight_line = Keyboard::modifier_state_equals (ev->motion.state, Keyboard::PrimaryModifier);
+
+	/* determine current drawing direction */
+
+	int current_direction = 0;
+	if (timeline_x != edge_x) {
+		current_direction = timeline_x > edge_x ? 1 : -1;
+	}
+
+	/* Make sure we can't change direction once it's been determined
+	 * Except for straight line mode that's bidirectionnal but only
+	 * if no other points have been drawn already.
+	 */
+	if (direction == 0) {
+		direction = current_direction;
+	} else if (current_direction != direction && !(straight_line && dragging_line->get().size() < 3)) {
+		return;
+	}
 
 	if (direction > 0) {
 		if (x < r.width() && (straight_line || (timeline_x > edge_x) || (timeline_x == edge_x && ev->motion.y != last_pointer_y()))) {
@@ -7571,7 +7577,7 @@ FreehandLineDrag<OrderedPointList,OrderedPoint>::maybe_add_point (GdkEvent* ev, 
 		}
 	}
 
-	if (add_point) {
+	if (add_point && !pop_point) {
 		edge_x = timeline_x;
 	}
 }
