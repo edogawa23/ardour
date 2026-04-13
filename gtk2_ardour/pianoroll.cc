@@ -1311,22 +1311,13 @@ Pianoroll::motion_track (ArdourCanvas::Duple const & pos)
 	assert (xcursor);
 
 	if (!_drags->active()) {
-		switch (_editing_policy) {
-		case ActiveView:
-			if (_active_view && _active_view->entered_note()) {
-				xcursor->hide ();
-				return;
-			}
-			break;
-		case AllViews:
-			for (auto & [region,view] : region_view_map) {
-				if (view->entered_note()) {
-					xcursor->hide ();
-					return;
-				}
-			}
-			break;
-		}
+		xcursor->hide ();
+		return;
+	}
+
+	if (_drags->dragging_lollipop()) {
+		xcursor->hide ();
+		return;
 	}
 
 	auto res = automation_lanes.find (MidiVelocityAutomation);
@@ -1351,7 +1342,19 @@ Pianoroll::motion_track (ArdourCanvas::Duple const & pos)
 	   specifically this transformation, for various reasons.
 	*/
 
-	xcursor->set_position (ArdourCanvas::Duple (pos.x, pos.y).translate (-hv_scroll_group->scroll_offset()));
+	ArdourCanvas::Duple xc (ArdourCanvas::Duple (pos.x, pos.y).translate (-hv_scroll_group->scroll_offset()));
+
+	ArdourCanvas::Item const * bounds = _drags->drags().front()->bounding_item();
+
+	if (bounds) {
+		ArdourCanvas::Rect rect (bounds->item_to_window (bounds->bounding_box()));
+		xc.x = std::max (xc.x, rect.x0);
+		xc.x = std::min (xc.x, rect.x1);
+		xc.y = std::max (xc.y, rect.y0);
+		xc.y = std::min (xc.y, rect.y1);
+	}
+
+	xcursor->set_position (xc);
 }
 
 bool
