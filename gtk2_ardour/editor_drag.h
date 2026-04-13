@@ -161,9 +161,8 @@ public:
 		_drags = m;
 	}
 
-	void set_bounding_item (ArdourCanvas::Item const * i) {
-		_bounding_item = i;
-	}
+	ArdourCanvas::Item const * bounding_item() const { return _bounding_item; }
+	void set_bounding_item (ArdourCanvas::Item const * i);
 
 	/** @return the canvas item being dragged */
 	ArdourCanvas::Item* item () const {

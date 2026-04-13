@@ -310,6 +310,12 @@ Drag::~Drag ()
 	DEBUG_TRACE (DEBUG::Drags, "drag destroyed\n");
 }
 
+void
+Drag::set_bounding_item (ArdourCanvas::Item const * i)
+{
+	_bounding_item = i;
+}
+
 Drag::MoveThreshold
 Drag::move_threshold () const
 {
