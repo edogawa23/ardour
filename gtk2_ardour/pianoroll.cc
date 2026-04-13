@@ -44,6 +44,7 @@
 
 #include "ardour_ui.h"
 #include "chord_box.h"
+#include "control_point.h"
 #include "cross_cursor.h"
 #include "editing_convert.h"
 #include "editor_cursors.h"
@@ -1059,7 +1060,20 @@ Pianoroll::button_press_handler_1 (ArdourCanvas::Item* item, GdkEvent* event, It
 
 	case ControlPointItem:
 		if (mouse_mode == Editing::MouseContent) {
-			_drags->set (new ControlPointDrag (*this, item), event);
+			ControlPointDrag* cpd = new ControlPointDrag (*this, item);
+
+			ControlPoint* cp = reinterpret_cast<ControlPoint*> (item->get_data ("control_point"));
+			if (cp) {
+				AutomationLine& line (cp->line());
+				Evoral::Parameter line_param (line.the_list()->parameter());
+				for (auto & [param,lane] : automation_lanes) {
+					if (param == line_param) {
+						cpd->set_bounding_item (lane->group);
+						break;
+					}
+				}
+			}
+			_drags->set (cpd, event);
 		}
 		return true;
 		break;
