@@ -2431,6 +2431,19 @@ MackieControlProtocol::is_mapped (std::shared_ptr<Stripable> r) const
 void
 MackieControlProtocol::stripable_selection_changed ()
 {
+	if (!_device_info.single_fader_follows_selection() && _device_info.follows_selection()) {
+		std::shared_ptr<Stripable> ss = ControlProtocol::first_selected_stripable ();
+		if (ss) {
+			if (!is_mapped (ss)) {
+				/* Sane order values start at 1, due to master
+				   etc. not really being ordered in any particular
+				   way (so zero is a kind of sentinel value).
+				*/
+				switch_banks (ss->presentation_info().order() - 1, false);
+			}
+		}
+	}
+
 	//this function is called after the stripable selection is "stable", so this is the place to check surface selection state
 	{
 		PBD::Mutex::Lock lm (surfaces_lock);
