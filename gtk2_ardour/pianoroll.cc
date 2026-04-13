@@ -1124,12 +1124,19 @@ Pianoroll::button_press_handler_1 (ArdourCanvas::Item* item, GdkEvent* event, It
 	case EditorAutomationLineItem: {
 		ARDOUR::SelectionOperation op = ArdourKeyboard::selection_type (event->button.state);
 		select_automation_line (&event->button, item, op);
-		switch (mouse_mode) {
-		case Editing::MouseContent:
-			_drags->set (new LineDrag (*this, item, [&](GdkEvent* ev,timepos_t const & pos, double) { _active_view->line_drag_click (ev, pos); }), event);
-			break;
-		default:
-			break;
+		if (mouse_mode == Editing::MouseContent) {
+			LineDrag* ld = new LineDrag (*this, item, [&](GdkEvent* ev,timepos_t const & pos, double) { _active_view->line_drag_click (ev, pos); });
+			AutomationLine* line = reinterpret_cast<AutomationLine*> (item->get_data ("line"));
+			if (line) {
+				Evoral::Parameter line_param (line->the_list()->parameter());
+				for (auto & [param,lane] : automation_lanes) {
+					if (param == line_param) {
+						ld->set_bounding_item (lane->group);
+						break;
+					}
+				}
+			}
+			_drags->set (ld, event);
 		}
 		return true;
 	}
