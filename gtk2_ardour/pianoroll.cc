@@ -833,7 +833,7 @@ Pianoroll::canvas_allocate (Gtk::Allocation alloc)
 	if (!xcursor) {
 		xcursor = new CrossCursor (_canvas.root());
 		xcursor->set_line_width (5);
-		xcursor->set_outline_color (0xffffffcd);
+		xcursor->set_outline_color (UIConfiguration::instance().color_mod ("verbose canvas cursor", "verbose canvas cursor"));
 		xcursor->hide (); /* for now, it will become visible on first motion */
 	}
 
