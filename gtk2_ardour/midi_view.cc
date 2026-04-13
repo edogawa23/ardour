@@ -2983,7 +2983,7 @@ MidiView::note_deselected(NoteBase* ev)
 }
 
 void
-MidiView::update_drag_selection(timepos_t const & start, timepos_t const & end, double gy0, double gy1, bool extend)
+MidiView::update_drag_selection(timepos_t const & start, timepos_t const & end, double gy0, double gy1, bool extend, bool drag_in_progress)
 {
 	if (!_midi_region) {
 		return;
@@ -3020,7 +3020,13 @@ MidiView::update_drag_selection(timepos_t const & start, timepos_t const & end, 
 		}
 	}
 
-	add_control_points_to_selection (start, end, gy0, gy1);
+	if (!drag_in_progress) {
+		/* Updating control point selection is relatively slow,
+		 * we only do it once the drag oparation is finished
+		 * XXX applying this logic to note selection might be relevant too
+		 */
+		add_control_points_to_selection (start, end, gy0, gy1);
+	}
 
 	SelectionChanged ();
 }
