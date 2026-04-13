@@ -651,13 +651,13 @@ MidiRegionView::add_control_points_to_selection (timepos_t const & start, timepo
 	typedef std::list<Selectable*>              Selectables;
 
 	const ATracks& atracks = dynamic_cast<StripableTimeAxisView*>(&trackview)->automation_tracks();
-	Selectables    selectables;
 	_editing_context.get_selection().clear_points();
 
 	timepos_t st (start);
 	timepos_t et (end);
 
 	for (auto const & at : atracks) {
+		Selectables    selectables;
 
 		at.second->get_selectables (st, et, gy0, gy1, selectables);
 
