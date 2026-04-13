@@ -74,6 +74,7 @@ ControlPoint::ControlPoint (const ControlPoint& other, bool /*dummy_arg_to_force
 	_item = new ArdourCanvas::Rectangle (&_line.canvas_group());
 	_item->set_fill (true);
 	_item->set_outline_color (UIConfiguration::instance().color ("control point outline"));
+	_item->set_data ("control_point", this);
 
 	/* NOTE: no event handling in copied ControlPoints */
 
