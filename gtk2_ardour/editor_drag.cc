@@ -153,6 +153,17 @@ DragManager::set (Drag* d, GdkEvent* e, Gdk::Cursor* c)
 }
 
 bool
+DragManager::dragging_lollipop () const
+{
+	for (auto const & drag: _drags) {
+		if (dynamic_cast<LollipopDrag*> (drag)) {
+			return true;
+		}
+	}
+	return false;
+}
+
+bool
 DragManager::preview_video () const
 {
 	for (auto const & drag : _drags) {

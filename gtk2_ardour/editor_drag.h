@@ -140,6 +140,9 @@ public:
 	/** return drag-motion displays video-frame of drag-location */
 	bool preview_video () const;
 
+	bool dragging_lollipop () const;
+	std::list<Drag*> const & drags() const { return _drags; }
+
 private:
 	EditingContext* _editing_context;
 	std::list<Drag*> _drags;
