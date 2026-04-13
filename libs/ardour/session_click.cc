@@ -27,7 +27,9 @@
 #include "ardour/buffer_set.h"
 #include "ardour/click.h"
 #include "ardour/io.h"
+#include "ardour/resampled_source.h"
 #include "ardour/session.h"
+#include "ardour/sndfileimportable.h"
 #include "ardour/tempo.h"
 #include "ardour/types.h"
 
@@ -264,53 +266,73 @@ Session::setup_click_sounds (Sample** data, Sample const * default_data, samplec
 
 	if (path.empty ()) {
 
-		*data = const_cast<Sample*> (default_data);
-		*length = default_length;
+		if (nominal_sample_rate() == 44100) {
+			*data = const_cast<Sample*> (default_data);
+			*length = default_length;
+		} else {
+			SRC_STATE* _src_state;
+			SRC_DATA   _src_data;
+
+			_src_state = src_new (SRC_SINC_BEST_QUALITY, 1, NULL);
+
+			_src_data.src_ratio     = nominal_sample_rate () / 44100.0;
+			_src_data.input_frames  = default_length;
+			_src_data.output_frames = default_length * _src_data.src_ratio;
+			_src_data.data_in       = default_data;
+			_src_data.end_of_input  = 1;
+
+			*data = new Sample[_src_data.output_frames];
+			*length = _src_data.output_frames;
+			_src_data.data_out = *data;
+
+			if (src_process (_src_state, &_src_data)) {
+				delete[] (data);
+				*data = 0;
+				_clicking = false;
+			}
+			src_delete (_src_state);
+		}
 
 	} else {
-
-		SF_INFO info;
-		SNDFILE* sndfile;
-
-		info.format = 0;
-		if ((sndfile = sf_open (path.c_str(), SFM_READ, &info)) == 0) {
-			char errbuf[256];
-			sf_error_str (0, errbuf, sizeof (errbuf) - 1);
-			warning << string_compose (_("cannot open click soundfile %1 (%2)"), path, errbuf) << endmsg;
+		std::shared_ptr<ImportableSource> source;
+		try {
+			source = std::shared_ptr<SndFileImportableSource> (new SndFileImportableSource (path));
+			if (source->samplerate() != nominal_sample_rate ()) {
+				source = std::shared_ptr<ImportableSource>(new ResampledImportableSource(source, nominal_sample_rate (), SrcBest));
+			}
+		} catch (...) {
 			_clicking = false;
 			return;
 		}
 
-		/* read the (possibly multi-channel) click data into a temporary buffer */
+		uint32_t n_channels = source->channels();
+		int64_t samples     = source->ratio() * source->length();
+		int64_t to_read     = samples * n_channels;
 
-		sf_count_t const samples = info.frames * info.channels;
+		Sample* tmp = new Sample[to_read];
+		samples = source->read (tmp, to_read) / n_channels;
 
-		Sample* tmp = new Sample[samples];
-
-		if (sf_readf_float (sndfile, tmp, info.frames) != info.frames) {
-
-			warning << _("cannot read data from click soundfile") << endmsg;
+		if (samples < 1) {
 			*data = 0;
 			_clicking = false;
+			delete[] tmp;
+			return;
+		}
 
-		} else {
+		*data = new Sample[samples];
+		*length = samples;
 
-			*data = new Sample[info.frames];
-			*length = info.frames;
+		/* mix down to mono */
 
-			/* mix down to mono */
-
-			for (int i = 0; i < info.frames; ++i) {
-				(*data)[i] = 0;
-				for (int j = 0; j < info.channels; ++j) {
-					(*data)[i] = tmp[i * info.channels + j];
-				}
-				(*data)[i] /= info.channels;
+		for (int i = 0; i < samples; ++i) {
+			(*data)[i] = 0;
+			for (uint32_t j = 0; j < n_channels; ++j) {
+				(*data)[i] = tmp[i * n_channels + j];
 			}
+			(*data)[i] /= (float)n_channels;
 		}
 
 		delete[] tmp;
-		sf_close (sndfile);
 	}
 
 	/* Overwhelmingly likely that we will have zero or 1 click grid point
