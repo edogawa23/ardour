@@ -42,7 +42,7 @@ compiler_flags_dictionaries= {
         # Flags to use posix pipes between compiler stages
         'pipe' : '-pipe',
         # Flags for maximally optimized build
-        'full-optimization' : [ '-O3', '-fomit-frame-pointer', '-ffast-math', '-fstrength-reduce' ],
+        'full-optimization' : [ '-O3', '-fomit-frame-pointer', '-ffast-math', '-fno-finite-math-only', '-fstrength-reduce' ],
         # Flag to ensure that compiler error output includes column/line numbers
         'show-column' : '-fshow-column',
         # Flags required to build for x86 only (OS X feature)
@@ -152,12 +152,12 @@ clang_dict['cxx-strict'] = [ '-ansi', '-Wnon-virtual-dtor', '-Woverloaded-virtua
 clang_dict['strict'] = ['-Wall', '-Wcast-align', '-Wextra', '-Wwrite-strings' ]
 clang_dict['generic-x86'] = [ '-arch', 'i386' ]
 clang_dict['generic-arm64'] = [ '-arch', 'arm64' ]
-clang_dict['full-optimization'] = [ '-O3', '-fomit-frame-pointer', '-ffast-math', ]
+clang_dict['full-optimization'] = [ '-O3', '-fomit-frame-pointer', '-ffast-math', '-fno-finite-math-only' ]
 compiler_flags_dictionaries['clang'] = clang_dict
 
 clang_darwin_dict = compiler_flags_dictionaries['clang'].copy()
 clang_darwin_dict['cxx-strict'] = [ '-ansi', '-Wnon-virtual-dtor', '-Woverloaded-virtual', ]
-clang_darwin_dict['full-optimization'] = [ '-O3', '-ffast-math']
+clang_darwin_dict['full-optimization'] = [ '-O3', '-ffast-math', '-fno-finite-math-only' ]
 compiler_flags_dictionaries['clang-darwin'] = clang_darwin_dict
 
 # Xcode 15 does not like our boost version, producing warnings from almost every file
