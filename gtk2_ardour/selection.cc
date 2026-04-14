@@ -860,11 +860,13 @@ Selection::empty (bool internal_selection)
 }
 
 void
-Selection::toggle (ControlPoint* cp)
+Selection::toggle (ControlPoint* cp, bool single)
 {
-	clear_time(); // enforce region/object exclusivity
-	clear_tracks(); // enforce object/track exclusivity
-	clear_triggers(); // enforce trigger exclusivity
+	if (single) {
+		clear_time(); // enforce region/object exclusivity
+		clear_tracks(); // enforce object/track exclusivity
+		clear_triggers(); // enforce trigger exclusivity
+	}
 
 	cp->set_selected (!cp->selected ());
 	PointSelection::iterator i = find (points.begin(), points.end(), cp);
@@ -874,7 +876,9 @@ Selection::toggle (ControlPoint* cp)
 		points.erase (i);
 	}
 
-	PointsChanged (); /* EMIT SIGNAL */
+	if (single) {
+		PointsChanged (); /* EMIT SIGNAL */
+	}
 }
 
 void
@@ -885,8 +889,10 @@ Selection::toggle (vector<ControlPoint*> const & cps)
 	clear_triggers(); // enforce trigger exclusivity
 
 	for (vector<ControlPoint*>::const_iterator i = cps.begin(); i != cps.end(); ++i) {
-		toggle (*i);
+		toggle (*i, false);
 	}
+
+	PointsChanged ();
 }
 
 void

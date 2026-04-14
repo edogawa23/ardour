@@ -159,7 +159,7 @@ public:
 	void toggle (ARDOUR::AutomationList*);
 	void toggle (std::shared_ptr<ARDOUR::Playlist>);
 	void toggle (const std::list<std::shared_ptr<ARDOUR::Playlist> >&);
-	void toggle (ControlPoint *);
+	void toggle (ControlPoint *, bool single = true);
 	void toggle (std::vector<ControlPoint*> const &);
 	void toggle (ArdourMarker*);
 	void toggle (TriggerEntry*);
