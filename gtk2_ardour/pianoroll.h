@@ -28,7 +28,6 @@
 #include "canvas/ruler.h"
 #include "widgets/eventboxext.h"
 
-#include "canvas_icon.h"
 #include "cue_editor.h"
 
 namespace Gtk {
@@ -41,6 +40,7 @@ namespace ArdourCanvas {
 	class Canvas;
 	class Container;
 	class GtkCanvasViewport;
+	class Icon;
 	class PianoRollHeader;
 	class ScrollGroup;
 	class Widget;

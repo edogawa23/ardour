@@ -43,6 +43,7 @@
 #include "widgets/tooltips.h"
 
 #include "ardour_ui.h"
+#include "canvas_icon.h"
 #include "chord_box.h"
 #include "control_point.h"
 #include "cross_cursor.h"
