@@ -173,7 +173,7 @@ class Pianoroll : public CueEditor
 	void note_left ();
 
 	struct AutomationLane {
-		AutomationLane (std::string const &, ArdourCanvas::Item*, uint32_t nth);
+		AutomationLane (Evoral::Parameter const &, Pianoroll const &, ArdourCanvas::Item*, uint32_t nth);
 		~AutomationLane ();
 
 		double height() const { return group->height(); }
@@ -222,6 +222,7 @@ class Pianoroll : public CueEditor
 	ARDOUR::ColorMode color_mode() const { return _color_mode; }
 
 	void motion_track (ArdourCanvas::Duple const &);
+	std::string parameter_name (Evoral::Parameter const &) const;
 
  private:
 	ArdourCanvas::Ruler*     bbt_ruler;
@@ -357,7 +358,6 @@ class Pianoroll : public CueEditor
 	Gtk::Menu* build_automation_menu ();
 	void automation_button_clicked ();
 	void show_automation_for_all ();
-	std::string parameter_name (Evoral::Parameter const &) const;
 	static void build_midi_controller_name_map ();
 	static std::map<std::string,std::string> controller_name_map;
 };

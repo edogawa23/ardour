@@ -808,7 +808,9 @@ Pianoroll::partition_height ()
 		lane->group->set (ArdourCanvas::Rect (0., 0., ArdourCanvas::COORD_MAX, per_lane));
 		lane->close_x->set_position (ArdourCanvas::Duple (4, ay + 30));
 		lane->label->set_position (ArdourCanvas::Duple (20, ay + 30));
-		lane->clear_button->set_position (ArdourCanvas::Duple (prh->get().width() - (lane->clear_button->size().x + 4), ay + 25));
+		if (lane->clear_button) {
+			lane->clear_button->set_position (ArdourCanvas::Duple (prh->get().width() - (lane->clear_button->size().x + 4), ay + 25));
+		}
 		ay += per_lane + 2;
 	}
 
@@ -1902,25 +1904,27 @@ Pianoroll::apply_note_range (uint8_t lowest, uint8_t highest)
 	}
 }
 
-Pianoroll::AutomationLane::AutomationLane (std::string const & txt, ArdourCanvas::Item* parent, uint32_t nth)
+Pianoroll::AutomationLane::AutomationLane (Evoral::Parameter const & param, Pianoroll const & pr, ArdourCanvas::Item* parent, uint32_t nth)
 	: group (new ArdourCanvas::Rectangle (parent))
 	, label (new ArdourCanvas::Text (parent->canvas()->root()))
 	, close_x (new ArdourCanvas::Icon (parent->canvas()->root(), ArdourWidgets::ArdourIcon::CloseCross))
-	, clear_button (new ArdourCanvas::Button (parent->canvas()->root(), _("Clear"), UIConfiguration::instance().get_SmallFont()))
+	, clear_button ((param.type() == MidiVelocityAutomation) ? nullptr : new ArdourCanvas::Button (parent->canvas()->root(), _("Clear"), UIConfiguration::instance().get_SmallFont()))
 {
 	group->set_outline (false);
-	CANVAS_DEBUG_NAME (group, std::string ("pr auto group for ") + txt);
+	CANVAS_DEBUG_NAME (group, std::string ("pr auto group for ") + pr.parameter_name (param));
 
-	label->set (txt);
+	label->set (pr.parameter_name (param));
 	label->set_color (UIConfiguration::instance().color (X_("gtk_foreground")));
 	label->set_font_description (UIConfiguration::instance().get_SmallFont());
 
 	close_x->set (ArdourCanvas::Rect (0, 0, 12, 12));
 	close_x->set_outline_color (UIConfiguration::instance().color (X_("gtk_foreground")));
 
-	clear_button->text()->set_color (UIConfiguration::instance().color (X_("gtk_foreground")));
-	clear_button->set_highlight (true);
-	clear_button->set_size (clear_button->text()->width() + 8, clear_button->text()->height() + 8);
+	if (clear_button) {
+		clear_button->text()->set_color (UIConfiguration::instance().color (X_("gtk_foreground")));
+		clear_button->set_highlight (true);
+		clear_button->set_size (clear_button->text()->width() + 8, clear_button->text()->height() + 8);
+	}
 }
 
 Pianoroll::AutomationLane::~AutomationLane ()
@@ -1996,10 +2000,12 @@ Pianoroll::add_automation_lane (Evoral::Parameter const & param)
 		return;
 	}
 
-	AutomationLane* lane = new AutomationLane (parameter_name (param), data_group, automation_lanes.size());;
+	AutomationLane* lane = new AutomationLane (param, *this, data_group, automation_lanes.size());;
 	lane->group->Event.connect ([this,param](GdkEvent* event) { return automation_group_event (event, param); });
 	lane->close_x->Event.connect ([this,param](GdkEvent* event) { return automation_close_event (event, param); });
-	lane->clear_button->Event.connect ([this,param](GdkEvent* event) { return automation_clear_event (event, param); });
+	if (lane->clear_button) {
+		lane->clear_button->Event.connect ([this,param](GdkEvent* event) { return automation_clear_event (event, param); });
+	}
 
 	if (_active_view) {
 		lane->group->set_data ("linemerger", _active_view);
