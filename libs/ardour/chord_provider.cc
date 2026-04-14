@@ -18,6 +18,7 @@
 
 #include <algorithm>
 #include <cassert>
+#include <cstdint>
 
 #include "ardour/chord_provider.h"
 #include "ardour/parameter_descriptor.h"
