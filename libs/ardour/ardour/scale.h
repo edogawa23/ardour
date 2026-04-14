@@ -44,7 +44,7 @@ enum MusicalModeCulture {
 	China
 };
 
-class MusicalMode {
+class LIBARDOUR_API MusicalMode {
    public:
 
 	enum Name {
@@ -129,7 +129,7 @@ class MusicalMode {
 };
 
 
-class MusicalKey : public MusicalMode
+class LIBARDOUR_API MusicalKey : public MusicalMode
 {
     public:
 	MusicalKey (float root, MusicalMode const &);

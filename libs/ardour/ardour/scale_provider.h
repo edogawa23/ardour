@@ -26,7 +26,7 @@ namespace ARDOUR {
 
 class MusicalKey;
 
-class ScaleProvider {
+class LIBARDOUR_API ScaleProvider {
    public:
 	ScaleProvider (ScaleProvider* parent);
 	virtual ~ScaleProvider ();

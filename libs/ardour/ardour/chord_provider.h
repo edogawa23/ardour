@@ -26,7 +26,7 @@ namespace ARDOUR {
 
 class ScaleProvider;
 
-class ChordProvider
+class LIBARDOUR_API ChordProvider
 {
   public:
 	ChordProvider () {}
