@@ -788,9 +788,9 @@ Pianoroll::partition_height ()
 	for (auto & [param, lane] : automation_lanes) {
 		lane->group->set_position (ArdourCanvas::Duple (0., ay));
 		lane->group->set (ArdourCanvas::Rect (0., 0., ArdourCanvas::COORD_MAX, per_lane));
-		lane->close_x->set_position (ArdourCanvas::Duple (8, ay + 18));
-		lane->label->set_position (ArdourCanvas::Duple (20, ay + 18));
-		lane->clear_button->set_position (ArdourCanvas::Duple (prh->get().width() - 40, ay + 30));
+		lane->close_x->set_position (ArdourCanvas::Duple (4, ay + 30));
+		lane->label->set_position (ArdourCanvas::Duple (20, ay + 30));
+		lane->clear_button->set_position (ArdourCanvas::Duple (prh->get().width() - (lane->clear_button->size().x + 4), ay + 25));
 		ay += per_lane + 2;
 	}
 
@@ -1936,6 +1936,21 @@ Pianoroll::parameter_name (Evoral::Parameter const & param) const
 }
 
 bool
+Pianoroll::automation_clear_event (GdkEvent* ev, Evoral::Parameter param)
+{
+	switch (ev->type) {
+	case GDK_BUTTON_PRESS:
+		return true;
+	case GDK_BUTTON_RELEASE:
+		clear_automation_lane (param);
+		return true;
+	default:
+		break;
+	}
+	return true;
+}
+
+bool
 Pianoroll::automation_close_event (GdkEvent* ev, Evoral::Parameter param)
 {
 	switch (ev->type) {
@@ -1960,6 +1975,7 @@ Pianoroll::add_automation_lane (Evoral::Parameter const & param)
 	AutomationLane* lane = new AutomationLane (parameter_name (param), data_group, automation_lanes.size());;
 	lane->group->Event.connect ([this,param](GdkEvent* event) { return automation_group_event (event, param); });
 	lane->close_x->Event.connect ([this,param](GdkEvent* event) { return automation_close_event (event, param); });
+	lane->clear_button->Event.connect ([this,param](GdkEvent* event) { return automation_clear_event (event, param); });
 
 	if (_active_view) {
 		lane->group->set_data ("linemerger", _active_view);
@@ -1997,6 +2013,26 @@ Pianoroll::remove_automation_lane (Evoral::Parameter const & param)
 	delete lane;
 
 	instant_save ();
+}
+
+void
+Pianoroll::clear_automation_lane (Evoral::Parameter const & param)
+{
+	auto res = automation_lanes.find (param);
+	if (res == automation_lanes.end()) {
+		return;
+	}
+
+	if (_editing_policy == ActiveView) {
+
+		_active_view->clear_automation_lane (param);
+
+	} else if (_editing_policy == AllViews) {
+
+		for (auto & [region,view] : region_view_map) {
+			view->clear_automation_lane (param);
+		}
+	}
 }
 
 bool

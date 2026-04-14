@@ -426,6 +426,19 @@ PianorollMidiView::set_active_automation (Evoral::Parameter const & param)
 }
 
 void
+PianorollMidiView::clear_automation_lane (Evoral::Parameter const & param)
+{
+	AutomationLane* lane = automation_lane_by_param (param);
+	if (!lane) {
+		return;
+	}
+
+	editing_context().begin_reversible_command (_("Clear automation"));
+	lane->line->clear ();
+	editing_context().commit_reversible_command ();
+}
+
+void
 PianorollMidiView::add_automation_lane (Evoral::Parameter const & param, Pianoroll::AutomationLane& lane_parent)
 {
 	if (!midi_region()) {

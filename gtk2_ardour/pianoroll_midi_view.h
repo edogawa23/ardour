@@ -86,6 +86,7 @@ class PianorollMidiView : public MidiView
 	void set_active_automation (Evoral::Parameter const &);
 	void remove_all_automation ();
 	void swap_automation_channel (int);
+	void clear_automation_lane (Evoral::Parameter const &);
 
 	void partition_height ();
 

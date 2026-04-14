@@ -109,6 +109,7 @@ class Pianoroll : public CueEditor
 	bool canvas_bg_event (GdkEvent* event, ArdourCanvas::Item*);
 	bool automation_group_event (GdkEvent* event, Evoral::Parameter);
 	bool automation_close_event (GdkEvent* event, Evoral::Parameter);
+	bool automation_clear_event (GdkEvent* event, Evoral::Parameter);
 
 	int32_t get_grid_beat_divisions (Editing::GridType gt) const { return 1; }
 	int32_t get_grid_music_divisions (Editing::GridType gt) const { return 1; }
@@ -185,6 +186,7 @@ class Pianoroll : public CueEditor
 
 	void add_automation_lane (Evoral::Parameter const & param);
 	void remove_automation_lane (Evoral::Parameter const & param);
+	void clear_automation_lane (Evoral::Parameter const & param);
 
 	bool get_midi_chord (int root_pitch, std::vector<int>& pitches) const;
 
