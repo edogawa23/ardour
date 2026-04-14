@@ -37,6 +37,7 @@ namespace Gtk {
 
 namespace ArdourCanvas {
 	class Box;
+	class Button;
 	class Canvas;
 	class Container;
 	class GtkCanvasViewport;
@@ -179,6 +180,7 @@ class Pianoroll : public CueEditor
 		ArdourCanvas::Rectangle* group;
 		ArdourCanvas::Text* label;
 		ArdourCanvas::Icon* close_x;
+		ArdourCanvas::Button* clear_button;
 	};
 
 	void add_automation_lane (Evoral::Parameter const & param);

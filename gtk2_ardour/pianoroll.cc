@@ -28,6 +28,7 @@
 #include "ardour/smf_source.h"
 
 #include "canvas/box.h"
+#include "canvas/button.h"
 #include "canvas/canvas.h"
 #include "canvas/container.h"
 #include "canvas/debug.h"
@@ -787,8 +788,9 @@ Pianoroll::partition_height ()
 	for (auto & [param, lane] : automation_lanes) {
 		lane->group->set_position (ArdourCanvas::Duple (0., ay));
 		lane->group->set (ArdourCanvas::Rect (0., 0., ArdourCanvas::COORD_MAX, per_lane));
-		lane->label->set_position (ArdourCanvas::Duple (8, ay + 18));
-		lane->close_x->set_position (ArdourCanvas::Duple (8, ay + 30));
+		lane->close_x->set_position (ArdourCanvas::Duple (8, ay + 18));
+		lane->label->set_position (ArdourCanvas::Duple (20, ay + 18));
+		lane->clear_button->set_position (ArdourCanvas::Duple (prh->get().width() - 40, ay + 30));
 		ay += per_lane + 2;
 	}
 
@@ -1886,6 +1888,7 @@ Pianoroll::AutomationLane::AutomationLane (std::string const & txt, ArdourCanvas
 	: group (new ArdourCanvas::Rectangle (parent))
 	, label (new ArdourCanvas::Text (parent->canvas()->root()))
 	, close_x (new ArdourCanvas::Icon (parent->canvas()->root(), ArdourWidgets::ArdourIcon::CloseCross))
+	, clear_button (new ArdourCanvas::Button (parent->canvas()->root(), _("Clear"), UIConfiguration::instance().get_SmallFont()))
 {
 	if (nth % 2 != 0) {
 		group->set_fill_color (UIConfiguration::instance().color ("midi automation track fill"));
@@ -1903,6 +1906,10 @@ Pianoroll::AutomationLane::AutomationLane (std::string const & txt, ArdourCanvas
 
 	close_x->set (ArdourCanvas::Rect (0, 0, 12, 12));
 	close_x->set_outline_color (UIConfiguration::instance().color (X_("gtk_foreground")));
+
+	clear_button->text()->set_color (UIConfiguration::instance().color (X_("gtk_foreground")));
+	clear_button->set_highlight (true);
+	clear_button->set_size (clear_button->text()->width() + 8, clear_button->text()->height() + 8);
 }
 
 Pianoroll::AutomationLane::~AutomationLane ()
@@ -1910,6 +1917,7 @@ Pianoroll::AutomationLane::~AutomationLane ()
 	delete group;
 	delete label;
 	delete close_x;
+	delete clear_button;
 }
 
 std::string
