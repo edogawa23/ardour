@@ -88,6 +88,7 @@ Pianoroll::Pianoroll (std::string const & name, bool with_transport, bool expand
 	, _editing_policy (ActiveView)
 	, _color_mode (UIConfiguration::instance().get_default_midi_note_color_mode())
 	, size_button (ArdourButton::default_elements, true)
+	, automation_button (_("A"))
 	, expandable (expandabl)
 	, no_toggle (false)
 	, bg (nullptr)
@@ -107,6 +108,8 @@ Pianoroll::Pianoroll (std::string const & name, bool with_transport, bool expand
 
 	size_button.set_icon (ArdourIcon::ZoomFull);
 	size_button.signal_clicked.connect ([&]() { toggle_size (); });
+
+	automation_button.signal_clicked.connect ([&]() { automation_button_clicked(); });
 
 	using namespace Gtk::Menu_Helpers;
 
@@ -348,11 +351,26 @@ Pianoroll::pack_outer (Gtk::Box& box)
 	if (expandable) {
 		box.pack_end (size_button, false, false);
 	}
+
+	ArdourWidgets::set_tooltip (automation_button, _("Select visible MIDI automation"));
+
+	box.pack_end (automation_button, false, false);
 	box.pack_end (colors_dropdown, false, false);
 	box.pack_end (region_dropdown, false, false);
 	box.pack_end (policy_dropdown, false, false);
 	region_dropdown.show ();
 	policy_dropdown.show ();
+}
+
+void
+Pianoroll::automation_button_clicked ()
+{
+	Gtk::Menu* am = build_automation_menu ();
+	if (!am) {
+		return;
+	}
+
+	am->popup (1, 0);
 }
 
 void
@@ -1890,13 +1908,6 @@ Pianoroll::AutomationLane::AutomationLane (std::string const & txt, ArdourCanvas
 	, close_x (new ArdourCanvas::Icon (parent->canvas()->root(), ArdourWidgets::ArdourIcon::CloseCross))
 	, clear_button (new ArdourCanvas::Button (parent->canvas()->root(), _("Clear"), UIConfiguration::instance().get_SmallFont()))
 {
-	if (nth % 2 != 0) {
-		group->set_fill_color (UIConfiguration::instance().color ("midi automation track fill"));
-	} else {
-		Gtkmm2ext::HSV hsv (UIConfiguration::instance().color ("midi automation track fill"));
-		hsv = hsv.lighter (0.05);
-		group->set_fill_color (hsv.color());
-	}
 	group->set_outline (false);
 	CANVAS_DEBUG_NAME (group, std::string ("pr auto group for ") + txt);
 
@@ -1919,6 +1930,19 @@ Pianoroll::AutomationLane::~AutomationLane ()
 	delete close_x;
 	delete clear_button;
 }
+
+void
+Pianoroll::AutomationLane::deduce_color (uint32_t nth)
+{
+	if (nth % 2 != 0) {
+		group->set_fill_color (UIConfiguration::instance().color ("midi automation track fill"));
+	} else {
+		Gtkmm2ext::HSV hsv (UIConfiguration::instance().color ("midi automation track fill"));
+		hsv = hsv.lighter (0.05);
+		group->set_fill_color (hsv.color());
+	}
+}
+
 
 std::string
 Pianoroll::parameter_name (Evoral::Parameter const & param) const
@@ -1989,6 +2013,13 @@ Pianoroll::add_automation_lane (Evoral::Parameter const & param)
 		view->add_automation_lane (param, *lane);
 	}
 
+	/* recolor lane backgrounds, since ordering may have changed */
+
+	uint32_t n = 0;
+	for (auto & [param,lane] : automation_lanes) {
+		lane->deduce_color (n++);
+	}
+
 	instant_save ();
 }
 
@@ -2011,6 +2042,13 @@ Pianoroll::remove_automation_lane (Evoral::Parameter const & param)
 	}
 
 	delete lane;
+
+	/* recolor lane backgrounds, since ordering has changed */
+
+	uint32_t n = 0;
+	for (auto & [param,lane] : automation_lanes) {
+		lane->deduce_color (n++);
+	}
 
 	instant_save ();
 }
@@ -2690,6 +2728,41 @@ Pianoroll::source_to_timeline (timepos_t const & source_pos) const
 }
 
 Gtk::Menu*
+Pianoroll::build_automation_menu ()
+{
+	using namespace Gtk;
+	using namespace Menu_Helpers;
+
+	if (!_track) {
+		return nullptr;
+	}
+
+	Menu* automation_menu = new Menu;
+	int mask = (1 << _visible_channel);
+	std::vector<Evoral::Parameter> params {
+		MidiVelocityAutomation,
+		MidiPitchBenderAutomation,
+		MidiChannelPressureAutomation,
+		MidiNotePressureAutomation };
+
+	for (auto p : params) {
+		automation_menu->items().push_back (CheckMenuElem (parameter_name(p), [this,p]() { toggle_automation (p); }));
+		if (automation_lanes.find (p) != automation_lanes.end()) {
+			Gtk::CheckMenuItem* cmi = static_cast<Gtk::CheckMenuItem*> (&automation_menu->items().back());
+			PBD::Unwinder<bool> uw (no_toggle, true);
+			cmi->set_active();
+		}
+	}
+
+	build_controller_menu (*automation_menu, _track->instrument_info(), mask,
+	                       sigc::mem_fun (*this, &Pianoroll::add_single_controller_item),
+	                       sigc::mem_fun (*this, &Pianoroll::add_multi_controller_item),
+	                       20);
+
+	return automation_menu;
+}
+
+Gtk::Menu*
 Pianoroll::get_single_region_context_menu ()
 {
 	using namespace Gtk;
@@ -2705,24 +2778,9 @@ Pianoroll::get_single_region_context_menu ()
 	// items.push_back (MenuElem (_("Insert Patch Change..."), sigc::bind (sigc::mem_fun (*this, &EditingContext::insert_patch_change), false)));
 	// items.push_back (MenuElem (_("Insert Patch Change..."), sigc::bind (sigc::mem_fun (*this, &EditingContext::insert_patch_change), true)));
 
-	if (_track) {
-		Evoral::Parameter p (MidiVelocityAutomation);;
-		Menu* automation_menu = new Menu;
-		int mask = (1 << _visible_channel);
-
-		automation_menu->items().push_back (CheckMenuElem (_("Velocity"), [this]() { toggle_automation (MidiVelocityAutomation); }));
-
-		if (automation_lanes.find (p) != automation_lanes.end()) {
-			Gtk::CheckMenuItem* cmi = static_cast<Gtk::CheckMenuItem*> (&automation_menu->items().back());
-			PBD::Unwinder<bool> uw (no_toggle, true);
-			cmi->set_active();
-		}
-
-		build_controller_menu (*automation_menu, _track->instrument_info(), mask,
-		                       sigc::mem_fun (*this, &Pianoroll::add_single_controller_item),
-		                       sigc::mem_fun (*this, &Pianoroll::add_multi_controller_item),
-		                       20);
-		items.push_back (MenuElem (_("Automation"), *automation_menu));
+	Gtk::Menu* am = build_automation_menu ();
+	if (am) {
+		items.push_back (MenuElem (_("Automation"), *am));
 	}
 
 	return m;

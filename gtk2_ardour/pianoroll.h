@@ -177,6 +177,7 @@ class Pianoroll : public CueEditor
 		~AutomationLane ();
 
 		double height() const { return group->height(); }
+		void deduce_color (uint32_t nth);
 
 		ArdourCanvas::Rectangle* group;
 		ArdourCanvas::Text* label;
@@ -231,6 +232,7 @@ class Pianoroll : public CueEditor
 	ARDOUR::ColorMode _color_mode;
 
 	ArdourWidgets::ArdourButton size_button;
+	ArdourWidgets::ArdourButton automation_button;
 	bool expandable;
 	void toggle_size();
 
@@ -352,6 +354,8 @@ class Pianoroll : public CueEditor
 	ARDOUR::Quantize* get_quantize_op ();
 	sigc::connection selection_connection;
 
+	Gtk::Menu* build_automation_menu ();
+	void automation_button_clicked ();
 	void show_automation_for_all ();
 	std::string parameter_name (Evoral::Parameter const &) const;
 	static void build_midi_controller_name_map ();
