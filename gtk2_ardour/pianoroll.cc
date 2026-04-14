@@ -2270,7 +2270,7 @@ Pianoroll::set_session (ARDOUR::Session* s)
 
 	if (with_transport_controls) {
 		if (_session) {
-			_session->TransportStateChange.connect (_session_connections, MISSING_INVALIDATOR, std::bind (&Pianoroll::map_transport_state, this), gui_context());
+			_session->TransportStateChange.connect (_session_connections, invalidator (*this), std::bind (&Pianoroll::map_transport_state, this), gui_context());
 		} else {
 			_session_connections.drop_connections();
 		}
