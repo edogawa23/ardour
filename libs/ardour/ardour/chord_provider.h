@@ -22,6 +22,8 @@
 #include <string>
 #include <map>
 
+#include "ardour/libardour_visibility.h"
+
 namespace ARDOUR {
 
 class ScaleProvider;

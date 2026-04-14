@@ -23,6 +23,8 @@
 
 #include "pbd/signals.h"
 
+#include "ardour/libardour_visibility.h"
+
 namespace ARDOUR {
 
 enum MusicalModeType {
