@@ -1908,6 +1908,7 @@ Pianoroll::AutomationLane::~AutomationLane ()
 {
 	delete group;
 	delete label;
+	delete close_x;
 }
 
 std::string
@@ -1925,6 +1926,21 @@ Pianoroll::parameter_name (Evoral::Parameter const & param) const
 	return str;
 }
 
+bool
+Pianoroll::automation_close_event (GdkEvent* ev, Evoral::Parameter param)
+{
+	switch (ev->type) {
+	case GDK_BUTTON_PRESS:
+		return true;
+	case GDK_BUTTON_RELEASE:
+		remove_automation_lane (param);
+		return true;
+	default:
+		break;
+	}
+	return false;
+}
+
 void
 Pianoroll::add_automation_lane (Evoral::Parameter const & param)
 {
@@ -1934,6 +1950,7 @@ Pianoroll::add_automation_lane (Evoral::Parameter const & param)
 
 	AutomationLane* lane = new AutomationLane (parameter_name (param), data_group, automation_lanes.size());;
 	lane->group->Event.connect ([this,param](GdkEvent* event) { return automation_group_event (event, param); });
+	lane->close_x->Event.connect ([this,param](GdkEvent* event) { return automation_close_event (event, param); });
 
 	if (_active_view) {
 		lane->group->set_data ("linemerger", _active_view);

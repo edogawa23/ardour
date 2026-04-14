@@ -107,6 +107,7 @@ class Pianoroll : public CueEditor
 	bool canvas_cue_end_event (GdkEvent* event, ArdourCanvas::Item*);
 	bool canvas_bg_event (GdkEvent* event, ArdourCanvas::Item*);
 	bool automation_group_event (GdkEvent* event, Evoral::Parameter);
+	bool automation_close_event (GdkEvent* event, Evoral::Parameter);
 
 	int32_t get_grid_beat_divisions (Editing::GridType gt) const { return 1; }
 	int32_t get_grid_music_divisions (Editing::GridType gt) const { return 1; }
