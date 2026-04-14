@@ -55,6 +55,7 @@ public:
   private:
 	double width;
 	double height;
+	double margin;
 	Text* _label;
 	bool prelight;
 	bool highlight;

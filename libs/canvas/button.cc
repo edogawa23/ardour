@@ -36,7 +36,8 @@ Button::Button (Canvas* canvas, double w, double h, Pango::FontDescription const
 	: Rectangle (canvas)
 	, width (w)
 	, height (h)
-	, _label (new Text (canvas))
+	, margin (2)
+	, _label (new Text (this))
 	, prelight (false)
 	, highlight (false)
 	, clicking (false)
@@ -47,6 +48,7 @@ Button::Button (Canvas* canvas, double w, double h, Pango::FontDescription const
 
 Button::Button (Item* parent, double w, double h, Pango::FontDescription const & font_description)
 	: Rectangle (parent)
+	, margin (2)
 	, _label (new Text (this))
 	, prelight (false)
 	, highlight (false)
@@ -59,24 +61,7 @@ Button::Button (Item* parent, double w, double h, Pango::FontDescription const &
 
 Button::Button (Canvas* canvas, std::string const & str, Pango::FontDescription const & font_description)
 	: Rectangle (canvas)
-	, _label (new Text (canvas))
-	, prelight (false)
-	, highlight (false)
-	, clicking (false)
-{
-	_label->set_font_description (font_description);
-	_label->set (str);
-
-	Rect r = _label->bounding_box();
-
-	width = r.width();
-	height = r.height();
-
-	init ();
-}
-
-Button::Button (Item* parent, std::string const & str, Pango::FontDescription const & font_description)
-	: Rectangle (parent)
+	, margin (2)
 	, _label (new Text (this))
 	, prelight (false)
 	, highlight (false)
@@ -87,8 +72,27 @@ Button::Button (Item* parent, std::string const & str, Pango::FontDescription co
 
 	Rect r = _label->bounding_box();
 
-	width = r.width();
-	height = r.height();
+	width = r.width() + (2 * margin);
+	height = r.height() + (2 * margin);;
+
+	init ();
+}
+
+Button::Button (Item* parent, std::string const & str, Pango::FontDescription const & font_description)
+	: Rectangle (parent)
+	, margin (2)
+	, _label (new Text (this))
+	, prelight (false)
+	, highlight (false)
+	, clicking (false)
+{
+	_label->set_font_description (font_description);
+	_label->set (str);
+
+	Rect r = _label->bounding_box();
+
+	width = r.width() + (2 * margin);
+	height = r.height() + (2 * margin);;
 
 	init ();
 }
@@ -178,8 +182,10 @@ Button::render (Rect const & area, Cairo::RefPtr<Cairo::Context> context) const
 	}
 
 	context->restore ();
-
-	Item::render_children (area, context);
+	context->save ();
+	context->translate (margin, margin);
+	_label->render (area, context);
+	context->restore ();
 }
 
 void
