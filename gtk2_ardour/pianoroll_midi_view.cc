@@ -25,7 +25,6 @@
 #include "gtkmm2ext/utils.h"
 
 #include "canvas/box.h"
-#include "canvas/button.h"
 #include "canvas/canvas.h"
 #include "canvas/debug.h"
 #include "canvas/text.h"
