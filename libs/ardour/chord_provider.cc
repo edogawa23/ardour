@@ -21,14 +21,15 @@
 #include <cstdint>
 
 #include "ardour/chord_provider.h"
+#include "ardour/libardour_visibility.h"
 #include "ardour/parameter_descriptor.h"
 
 #include "pbd/i18n.h"
 
 using namespace ARDOUR;
 
-ChordProvider::ChordNameToIntervals ChordProvider::tet12_chords;
-ChordProvider::IntervalsToChordName ChordProvider::tet12_names;
+LIBARDOUR_API ChordProvider::ChordNameToIntervals ChordProvider::tet12_chords;
+LIBARDOUR_API ChordProvider::IntervalsToChordName ChordProvider::tet12_names;
 
 static int64_t
 hash_intervals (ChordProvider::Intervals const & intervals)

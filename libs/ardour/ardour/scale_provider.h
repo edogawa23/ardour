@@ -18,6 +18,8 @@
 
 #pragma once
 
+#include "ardour/libardour_visibility.h"
+
 namespace Temporal {
 	class timepos_t;
 }
