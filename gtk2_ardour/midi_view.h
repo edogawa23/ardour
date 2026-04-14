@@ -230,7 +230,7 @@ class MidiView : public virtual sigc::trackable, public LineMerger
 	void replace_chord (std::vector<int> const & intervals);
 	void invert_selected_chord (bool up);
 	void drop_selected_chord (std::vector<int> const & which_notes);
-	void add_semitone_interval (int semitones);
+	void add_semitone_interval (int semitones, bool as_subcommand = false);
 
 	Temporal::Beats earliest_in_selection ();
 	void move_selection(Temporal::timecnt_t const & dx, double dy, double cumulative_dy);

@@ -538,7 +538,7 @@ class EditingContext : public ARDOUR::SessionHandlePtr, public AxisViewProvider,
 	std::string const & draw_chord_name() const { return _draw_chord_name; }
 	bool have_draw_chord() const { return !_draw_chord_name.empty(); }
 
-	virtual void add_semitone_interval (int semitones) { }
+	virtual void add_semitone_interval (int semitones);
 
   protected:
 	std::string _name;

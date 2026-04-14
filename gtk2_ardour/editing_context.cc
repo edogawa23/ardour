@@ -2276,6 +2276,29 @@ EditingContext::transform_regions (const MidiViews& rs)
 }
 
 void
+EditingContext::add_semitone_interval (int semitones)
+{
+	EC_LOCAL_TEMPO_SCOPE;
+
+	MidiViews mvs (midiviews_from_region_selection (region_selection ()));
+
+	if (mvs.empty()) {
+		return;
+	}
+
+	if (mvs.size() == 1) {
+		mvs.front()->add_semitone_interval (semitones);
+		return;
+	}
+
+	begin_reversible_command (string_compose (_("Add note interval of %1 semitones"), semitones));
+	for (auto & mv : mvs) {
+		mv->add_semitone_interval (semitones, true);
+	}
+	commit_reversible_command ();
+}
+
+void
 EditingContext::transpose_region ()
 {
 	EC_LOCAL_TEMPO_SCOPE;

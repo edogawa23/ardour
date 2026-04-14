@@ -982,7 +982,7 @@ MidiView::create_note_at (timepos_t const & source_relative_start, double y, Tem
 }
 
 void
-MidiView::add_semitone_interval (int semitones)
+MidiView::add_semitone_interval (int semitones, bool as_subcommand)
 {
 	/* XXX assumes 1 MIDI pitch number is 1 semitone */
 

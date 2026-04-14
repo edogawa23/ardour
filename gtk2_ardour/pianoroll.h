@@ -350,7 +350,6 @@ class Pianoroll : public CueEditor
 	void replace_chord (std::vector<int> intervals);
 	void invert_selected_chord (bool up);
 	void drop_selected_chord (std::vector<int> which_notes);
-	void add_semitone_interval (int semitones);
 
 	ARDOUR::Quantize* get_quantize_op ();
 	sigc::connection selection_connection;
