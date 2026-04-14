@@ -1106,7 +1106,7 @@ AutomationLine::set_selected_points (PointSelection const & points)
 
 	if (points.empty()) {
 		remove_visibility (SelectedControlPoints);
-	} else if (!(_visibility & SelectedControlPoints)) {
+	} else if (!(_visible & SelectedControlPoints)) {
 		add_visibility (SelectedControlPoints);
 	} else {
 		/* make sure points are visible when added to an existing selection */
