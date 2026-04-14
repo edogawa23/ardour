@@ -28,6 +28,7 @@
 #include "canvas/ruler.h"
 #include "widgets/eventboxext.h"
 
+#include "canvas_icon.h"
 #include "cue_editor.h"
 
 namespace Gtk {
@@ -176,6 +177,7 @@ class Pianoroll : public CueEditor
 
 		ArdourCanvas::Rectangle* group;
 		ArdourCanvas::Text* label;
+		ArdourCanvas::Icon* close_x;
 	};
 
 	void add_automation_lane (Evoral::Parameter const & param);

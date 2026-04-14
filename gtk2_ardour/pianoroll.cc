@@ -787,6 +787,7 @@ Pianoroll::partition_height ()
 		lane->group->set_position (ArdourCanvas::Duple (0., ay));
 		lane->group->set (ArdourCanvas::Rect (0., 0., ArdourCanvas::COORD_MAX, per_lane));
 		lane->label->set_position (ArdourCanvas::Duple (8, ay + 18));
+		lane->close_x->set_position (ArdourCanvas::Duple (8, ay + 30));
 		ay += per_lane + 2;
 	}
 
@@ -1883,6 +1884,7 @@ Pianoroll::apply_note_range (uint8_t lowest, uint8_t highest)
 Pianoroll::AutomationLane::AutomationLane (std::string const & txt, ArdourCanvas::Item* parent, uint32_t nth)
 	: group (new ArdourCanvas::Rectangle (parent))
 	, label (new ArdourCanvas::Text (parent->canvas()->root()))
+	, close_x (new ArdourCanvas::Icon (parent->canvas()->root(), ArdourWidgets::ArdourIcon::CloseCross))
 {
 	if (nth % 2 != 0) {
 		group->set_fill_color (UIConfiguration::instance().color ("midi automation track fill"));
@@ -1897,6 +1899,9 @@ Pianoroll::AutomationLane::AutomationLane (std::string const & txt, ArdourCanvas
 	label->set (txt);
 	label->set_color (UIConfiguration::instance().color (X_("gtk_foreground")));
 	label->set_font_description (UIConfiguration::instance().get_SmallFont());
+
+	close_x->set (ArdourCanvas::Rect (0, 0, 12, 12));
+	close_x->set_outline_color (UIConfiguration::instance().color (X_("gtk_foreground")));
 }
 
 Pianoroll::AutomationLane::~AutomationLane ()
