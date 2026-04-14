@@ -215,3 +215,12 @@ Button::label() const
 {
 	return _label->text();
 }
+
+Duple
+Button::size() const
+{
+	Duple d;
+	d.x = width;
+	d.y = height;
+	return d;
+}

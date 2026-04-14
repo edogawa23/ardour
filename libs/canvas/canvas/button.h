@@ -51,6 +51,7 @@ public:
 
 	void set_size (double w, double h);
 	void set_highlight (bool);
+	Duple size () const;
 
   private:
 	double width;
