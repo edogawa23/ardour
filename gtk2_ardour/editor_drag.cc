@@ -726,12 +726,13 @@ void
 RegionDrag::region_going_away (RegionView* v)
 {
 	list<DraggingView>::iterator i = _views.begin ();
-	while (i != _views.end () && i->view != v) {
-		++i;
-	}
 
-	if (i != _views.end ()) {
-		_views.erase (i);
+	while (i != _views.end ()) {
+		if (i->view == v) {
+			_views.erase (i);
+			return;
+		}
+		++i;
 	}
 }
 
