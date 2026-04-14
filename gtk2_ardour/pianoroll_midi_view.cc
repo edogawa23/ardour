@@ -415,7 +415,6 @@ PianorollMidiView::set_active_automation (Evoral::Parameter const & param)
 		lane = automation_lane_by_param (active_automation_parameter);
 		if (lane && lane->line) {
 			lane->line->track_exited ();
-			lane->line->set_selected_points (empty);
 		}
 	}
 
