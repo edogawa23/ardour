@@ -725,14 +725,11 @@ RegionDrag::RegionDrag (Editor& e, ArdourCanvas::Item* i, RegionView* p, list<Re
 void
 RegionDrag::region_going_away (RegionView* v)
 {
-	list<DraggingView>::iterator i = _views.begin ();
-
-	while (i != _views.end ()) {
+	for (auto i = _views.begin(); i != _views.end(); ++i) {
 		if (i->view == v) {
 			_views.erase (i);
 			return;
 		}
-		++i;
 	}
 }
 
