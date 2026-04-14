@@ -96,7 +96,7 @@ PianoRollHeader::size_request (double& w, double& h) const
 	h = _midi_context.contents_height();
 
 	if (show_scroomer()) {
-		_scroomer_size = 60.f * UIConfiguration::instance().get_ui_scale();
+		_scroomer_size = 120.f * UIConfiguration::instance().get_ui_scale();
 	} else {
 		_scroomer_size = kbd_width * UIConfiguration::instance().get_ui_scale();
 	}
