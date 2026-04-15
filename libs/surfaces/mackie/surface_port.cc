@@ -212,11 +212,7 @@ SurfacePort::write (const MidiByteArray & mba)
 		std::cerr << "TOO LONG WRITE: " << mba << std::endl;
 	}
 
-	/* this call relies on std::vector<T> using contiguous storage. not
-	 * actually guaranteed by the standard, but way, way beyond likely.
-	 */
-
-	int count = output_port().write (&mba[0], mba.size(), 0);
+	int count = output_port().write (mba.data(), mba.size(), 0);
 
 	if  (count != (int) mba.size()) {
 
