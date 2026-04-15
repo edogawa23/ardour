@@ -6766,9 +6766,13 @@ MidiRubberbandSelectDrag::MidiRubberbandSelectDrag (EditingContext& ec, MidiView
 void
 MidiRubberbandSelectDrag::select_things (int button_state, timepos_t const& x1, timepos_t const& x2, double y1, double y2, bool drag_in_progress)
 {
-	_midi_view->update_drag_selection (
+	bool notes_selected = _midi_view->update_drag_selection (
 	    x1, x2, y1, y2,
 	    Keyboard::modifier_state_contains (button_state, Keyboard::TertiaryModifier), drag_in_progress);
+
+	if (!notes_selected) {
+		RubberbandSelectDrag::select_things (button_state, x1, x2, y1, y2, drag_in_progress);
+	}
 }
 
 void

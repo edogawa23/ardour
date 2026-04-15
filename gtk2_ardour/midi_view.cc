@@ -2982,11 +2982,11 @@ MidiView::note_deselected(NoteBase* ev)
 	SelectionChanged ();
 }
 
-void
-MidiView::update_drag_selection(timepos_t const & start, timepos_t const & end, double gy0, double gy1, bool extend, bool drag_in_progress)
+bool
+MidiView::update_drag_selection(timepos_t const & start, timepos_t const & end, double gy0, double gy1, bool extend, bool /* drag_in_progress */)
 {
 	if (!_midi_region) {
-		return;
+		return false;
 	}
 
 	// Convert to local coordinates
@@ -3020,15 +3020,14 @@ MidiView::update_drag_selection(timepos_t const & start, timepos_t const & end, 
 		}
 	}
 
-	if (!drag_in_progress) {
-		/* Updating control point selection is relatively slow,
-		 * we only do it once the drag oparation is finished
-		 * XXX applying this logic to note selection might be relevant too
-		 */
-		add_control_points_to_selection (start, end, gy0, gy1);
-	}
-
 	SelectionChanged ();
+
+	if (!_selection.empty()) {
+		return true;
+	} else {
+		/* let default rubberband selection know that we can select control points */
+		return false;
+	}
 }
 
 void

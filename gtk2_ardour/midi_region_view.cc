@@ -644,34 +644,6 @@ MidiRegionView::make_merger ()
 	return nullptr;
 }
 
-void
-MidiRegionView::add_control_points_to_selection (timepos_t const & start, timepos_t const & end, double gy0, double gy1)
-{
-	typedef RouteTimeAxisView::AutomationTracks ATracks;
-	typedef std::list<Selectable*>              Selectables;
-
-	const ATracks& atracks = dynamic_cast<StripableTimeAxisView*>(&trackview)->automation_tracks();
-	_editing_context.get_selection().clear_points();
-
-	timepos_t st (start);
-	timepos_t et (end);
-
-	for (auto const & at : atracks) {
-		Selectables    selectables;
-
-		at.second->get_selectables (st, et, gy0, gy1, selectables);
-
-		for (Selectables::const_iterator s = selectables.begin(); s != selectables.end(); ++s) {
-			ControlPoint* cp = dynamic_cast<ControlPoint*>(*s);
-			if (cp) {
-				_editing_context.get_selection().add(cp);
-			}
-		}
-
-		at.second->set_selected_points (_editing_context.get_selection().points);
-	}
-}
-
 bool
 MidiRegionView::pianoroll_window_deleted (GdkEventAny*)
 {
