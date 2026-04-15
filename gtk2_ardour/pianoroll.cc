@@ -181,6 +181,8 @@ Pianoroll::update_pitch_colors ()
 	for (auto & [region,view] : region_view_map) {
 		view->color_handler ();
 	}
+
+	NoteBase::save_colors ();
 }
 
 void

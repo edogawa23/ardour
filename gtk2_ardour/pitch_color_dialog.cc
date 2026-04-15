@@ -65,7 +65,7 @@ PitchColorDialog::color_chosen (int n, ColorButton* cb)
 {
 	uint32_t c = Gtkmm2ext::gdk_color_to_rgba (cb->get_color ());
 
-	if (n < (int) NoteBase::pitch_colors.size()) {
+	if (n >= (int) NoteBase::pitch_colors.size()) {
 		NoteBase::pitch_colors.resize (n + 12);
 	}
 
