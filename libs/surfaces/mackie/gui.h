@@ -114,6 +114,7 @@ class MackieControlProtocolGUI : public Gtk::Notebook
 	void profile_combo_changed ();
 	void ipmidi_spinner_changed ();
 
+	Gtk::CheckButton follow_selection_button;
 	Gtk::CheckButton relay_click_button;
 	Gtk::CheckButton backlight_button;
 	Gtk::RadioButton absolute_touch_mode_button;
@@ -126,6 +127,7 @@ class MackieControlProtocolGUI : public Gtk::Notebook
 	Gtk::HBox  hpacker;
 	Gtk::Image image;
 
+	void follow_selection_clicked ();
 	void recalibrate_faders ();
 	void toggle_backlight ();
 	void touch_sensitive_change ();

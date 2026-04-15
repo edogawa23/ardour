@@ -681,6 +681,12 @@ DeviceInfo::reload_device_info ()
 	}
 }
 
+void
+DeviceInfo::set_follows_selection (bool yn)
+{
+	_follows_selection = yn;
+}
+
 std::ostream& operator<< (std::ostream& os, const MACKIE_NAMESPACE::DeviceInfo& di)
 {
 	os << di.name() << ' '

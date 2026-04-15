@@ -172,8 +172,22 @@ MackieControlProtocolGUI::MackieControlProtocolGUI (MackieControlProtocol& p)
 	recalibrate_fader_button.signal_clicked().connect (sigc::mem_fun (*this, &MackieControlProtocolGUI::recalibrate_faders));
 	backlight_button.signal_clicked().connect (sigc::mem_fun (*this, &MackieControlProtocolGUI::toggle_backlight));
 
+	if (_cp.device_info().follows_selection()) {
+		follow_selection_button.set_active (true);
+	}
+	follow_selection_button.signal_clicked().connect (sigc::mem_fun (*this, &MackieControlProtocolGUI::follow_selection_clicked));
+
 	touch_sensitivity_adjustment.signal_value_changed().connect (sigc::mem_fun (*this, &MackieControlProtocolGUI::touch_sensitive_change));
 	touch_sensitivity_scale.set_update_policy (Gtk::UPDATE_DISCONTINUOUS);
+
+	l = manage (new Gtk::Label (_("Follow Selection")));
+	l->set_alignment (1.0, 0.5);
+	table.attach (*l, 0, 1, row, row+1, AttachOptions(FILL|EXPAND), AttachOptions (0));
+	align = manage (new Alignment);
+	align->set (0.0, 0.5);
+	align->add (follow_selection_button);
+	table.attach (*align, 1, 2, row, row+1, AttachOptions(FILL|EXPAND), AttachOptions (0));
+	row++;
 
 	l = manage (new Gtk::Label (_("Button click")));
 	l->set_alignment (1.0, 0.5);
@@ -772,6 +786,13 @@ void
 MackieControlProtocolGUI::recalibrate_faders ()
 {
 	_cp.recalibrate_faders ();
+}
+
+void
+MackieControlProtocolGUI::follow_selection_clicked ()
+{
+	bool yn = !_cp.device_info().follows_selection();
+	_cp.device_info().set_follows_selection (yn);
 }
 
 void

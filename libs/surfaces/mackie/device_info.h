@@ -94,6 +94,8 @@ class DeviceInfo
 	bool follows_selection() const;
 	const std::string& name() const;
 
+	void set_follows_selection (bool);
+
 	static std::map<std::string,DeviceInfo> device_info;
 	static void reload_device_info();
 

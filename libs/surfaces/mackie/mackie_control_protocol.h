@@ -109,7 +109,7 @@ class MackieControlProtocol
 
 	static MackieControlProtocol* instance() { return _instance; }
 
-	const MACKIE_NAMESPACE::DeviceInfo& device_info() const { return _device_info; }
+	MACKIE_NAMESPACE::DeviceInfo& device_info() { return _device_info; }
 	MACKIE_NAMESPACE::DeviceProfile& device_profile() { return _device_profile; }
 
 	PBD::Signal<void()> DeviceChanged;
