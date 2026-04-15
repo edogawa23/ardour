@@ -41,6 +41,7 @@
 #include "note.h"
 #include "ui_config.h"
 #include "velocity_display.h"
+#include "verbose_cursor.h"
 
 #include "pbd/i18n.h"
 
@@ -123,10 +124,11 @@ PianorollMidiView::midi_canvas_group_event (GdkEvent* ev)
 
 	EC_LOCAL_TEMPO_SCOPE_ARG (_editing_context);
 
-	/* Let MidiView do its thing */
-
-	if (MidiView::midi_canvas_group_event (ev)) {
-		return true;
+	if (ev->type != GDK_MOTION_NOTIFY || (active_automation_parameter.type() == NullAutomation)) {
+		/* Let MidiView do its thing */
+		if (MidiView::midi_canvas_group_event (ev)) {
+			return true;
+		}
 	}
 
 	return _editing_context.canvas_bg_event (ev, event_rect);
@@ -423,6 +425,9 @@ PianorollMidiView::set_active_automation (Evoral::Parameter const & param)
 	if (lane && lane->line) {
 		lane->line->track_entered ();
 	}
+
+	_editing_context.verbose_cursor().set ("");
+	hide_verbose_cursor();
 }
 
 void

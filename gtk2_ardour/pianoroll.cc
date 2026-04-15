@@ -2074,7 +2074,7 @@ Pianoroll::automation_group_event (GdkEvent* event, Evoral::Parameter param)
 	case GDK_LEAVE_NOTIFY:
 		if (event->crossing.detail != GDK_NOTIFY_INFERIOR) {
 			for (auto & [region,view] : region_view_map) {
-				view->set_active_automation (param);
+				view->set_active_automation (NullAutomation);
 			}
 		}
 		break;
