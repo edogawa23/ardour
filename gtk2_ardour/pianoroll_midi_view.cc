@@ -410,7 +410,6 @@ void
 PianorollMidiView::set_active_automation (Evoral::Parameter const & param)
 {
 	AutomationLane* lane;
-	PointSelection empty;
 
 	if (active_automation_parameter.type() != NullAutomation) {
 		lane = automation_lane_by_param (active_automation_parameter);
