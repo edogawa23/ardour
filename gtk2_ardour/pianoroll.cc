@@ -2339,20 +2339,22 @@ Pianoroll::select_all_within (Temporal::timepos_t const & start, Temporal::timep
 	case SelectionAdd:
 		begin_reversible_selection_op (X_("add select all within"));
 		selection->add (found);
+		commit_reversible_selection_op ();
 		break;
 	case SelectionToggle:
 		begin_reversible_selection_op (X_("toggle select all within"));
 		selection->toggle (found);
+		commit_reversible_selection_op ();
 		break;
 	case SelectionSet:
 		begin_reversible_selection_op (X_("select all within"));
 		selection->set (found);
+		commit_reversible_selection_op ();
 		break;
 	default:
 		return;
 	}
 
-	commit_reversible_selection_op ();
 }
 
 void
